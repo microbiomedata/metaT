@@ -1,7 +1,7 @@
 task CalScores{
 	File edgeR="scripts/edgeR.R"
-	Int cpu
-	String projectName
+	Int no_of_cpu
+	String project_name
 	File fc_file
 
 	meta {
@@ -10,11 +10,11 @@ task CalScores{
 
 	command {
 		mv ${edgeR} script.R
-		Rscript script.R -r ${fc_file} -n CDS -o ${projectName}_sc_tbl.tsv -s ${projectName}
+		Rscript script.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
 	}
 
 	output {
-	File sc_tbl = "${projectName}_sc_tbl.tsv"
+	File sc_tbl = "${project_name}_sc_tbl.tsv"
 	}
 }
 
@@ -22,7 +22,7 @@ task CalScores{
 
 task shift_CalScores{
 	Int cpu
-	String projectName
+	String project_name
 	File fc_file
 	String container
 
@@ -31,7 +31,7 @@ task shift_CalScores{
 	}
 
 	command {
-		shifter --image=${container} edgeR.R -r ${fc_file} -n CDS -o ${projectName}_sc_tbl.tsv -s ${projectName}
+		shifter --image=${container} edgeR.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
 	}
 
 	runtime {
@@ -45,14 +45,14 @@ task shift_CalScores{
 	}
 
 	output {
-	File sc_tbl = "${projectName}_sc_tbl.tsv"
+	File sc_tbl = "${project_name}_sc_tbl.tsv"
 	}
 }
 
 
 task dock_CalScores{
 	Int cpu
-	String projectName
+	String project_name
 	File fc_file
 
 	meta {
@@ -60,11 +60,11 @@ task dock_CalScores{
 	}
 
 	command {
-		edgeR.R -r ${fc_file} -n CDS -o ${projectName}_sc_tbl.tsv -s ${projectName}
+		edgeR.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
 	}
 
 	output {
-	File sc_tbl = "${projectName}_sc_tbl.tsv"
+	File sc_tbl = "${project_name}_sc_tbl.tsv"
 	}
 
 	runtime {
