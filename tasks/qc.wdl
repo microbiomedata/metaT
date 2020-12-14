@@ -3,7 +3,7 @@ task qc{
     File? QCSingleRead
     String opts
     Int cpu
-    String projectName
+    String project_name
     String outdir
 
     # need to add shifter command here when running it in NERSC
@@ -26,7 +26,7 @@ task shift_qc{
     File? QCSingleRead
     String opts
     Int cpu
-    String projectName
+    String project_name
     String outdir
     String container
 
@@ -63,7 +63,7 @@ task dock_qc{
     File? QCSingleRead
     String opts
     Int cpu
-    String projectName
+    String project_name
     String outdir
 
     # need to add shifter command here when running it in NERSC
