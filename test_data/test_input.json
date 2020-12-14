@@ -1,10 +1,15 @@
 {
-    "metaT.projectName":"SRR2126941",
-    "metaT.cpu" : 1,
-    "metaT.outdir": "test_results",
-    "metaT.DoQC" : true,
-    "metaT.QCopts" :"-min_L 50 -n 4",
-    "metaT.PairedReads":["test_data/BTT_test27_R1.fastq.gz","test_data/BTT_test27_R2.fastq.gz"],
-    "metaT.ref_genome": "test_data/test_prok.fna",
-    "metaT.ref_gff": "test_data/test_prok.gff"
-  }
+  "metat_omics.project_name": "1781_100346",
+  "metat_omics.no_of_cpu": 1,
+  "metat_omics.path_to_out": "test_results",
+  "metat_omics.contig_file_path": "test_data/1781_100346/assembly/assembly_contigs.fna",
+  "metat_omics.gff_file_path": "test_data/1781_100346/annotation/1781_100346_functional_annotation.gff",
+  "metat_omics.bam_file_path": "test_data/1781_100346/assembly/pairedMapped_sorted.bam",
+  "metat_omics.feat_name_list": [
+    "CDS",
+    "CRISPR",
+    "ncRNA",
+    "rRNA",
+    "tmRNA"
+  ]
+}
