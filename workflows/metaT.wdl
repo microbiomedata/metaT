@@ -1,5 +1,5 @@
-import "tasks/feature_counts.wdl" as fc
-import "tasks/calc_scores.wdl" as cs
+import "../tasks/feature_counts.wdl" as fc
+import "../tasks/calc_scores.wdl" as cs
 
 workflow metat_omics {
 	Array[String] feat_name_list
@@ -11,6 +11,7 @@ workflow metat_omics {
 	String? project_name = "metatranscriptomics"
 
 	scatter (feat in feat_name_list) {
+# FIXME i am getting ERROR: failed to find the gene identifier attribute in the 9th column of the provided GTF file error with other features. See whats going ont here later.
 		call fc.featurecount{
 		input: no_of_cpu = no_of_cpu,
 		project_name = project_name,
