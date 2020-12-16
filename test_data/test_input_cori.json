@@ -1,10 +1,9 @@
 {
-    "metaT.projectName":"SRR2126941",
-    "metaT.cpu" : 4,
-    "metaT.outdir": "test_results",
-    "metaT.DoQC" : true,
-    "metaT.QCopts" :"-min_L 50 -n 4",
-    "metaT.PairedReads":["/global/common/software/m3408/aim2/metaT/metatranscriptomics/test_data/BTT_test27_R1.fastq.gz","/global/common/software/m3408/aim2/metaT/metatranscriptomics/test_data/BTT_test27_R2.fastq.gz"],
-    "metaT.ref_genome": "/global/common/software/m3408/aim2/metaT/metatranscriptomics/test_data/test_prok.fna",
-    "metaT.ref_gff": "/global/common/software/m3408/aim2/metaT/metatranscriptomics/test_data/test_prok.gff"
-  }
+  "metat_omics.contig_file_path": [
+    "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/assembly_contigs.fna"
+  ],
+  "metat_omics.gff_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/annotation/1781_100357_functional_annotation.gff",
+  "metat_omics.bam_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/pairedMapped_sorted.bam",
+  "metat_omics.no_of_cpu": 4,
+  "metat_omics.path_to_out": "test_out"
+}
