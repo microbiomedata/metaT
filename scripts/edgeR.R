@@ -25,11 +25,15 @@ out_tbl <- opt$out_tbl
 #==============================================================================#
 
 # read the output of featureCounts
-col_names = c("Geneid", "Chr", "Start", "End", "Strand", "Length", as.character(opt$sample))
+# create variable for the count column
+count_col = paste("rd_ct", opt$sample, sep="_")
+col_names = c("Geneid", "Chr", "Start", "End", "Strand", "Length", count_col)
+print(col_names)
 read_counts <- read.table(reads_file, sep = "\t", header = TRUE, comment.char = "#",
                           col.names=col_names)
-read_counts_non0 <- dplyr::filter(read_counts, !!as.symbol(opt$sample) > 0)
-
+print(head(read_counts))
+read_counts_non0 <- dplyr::filter(read_counts, !!as.symbol(count_col) > 0)
+print(read_counts_non0)
 #==============================================================================#
 # convert first column to row names
 row.names(read_counts_non0) <- read_counts_non0[, 1]
