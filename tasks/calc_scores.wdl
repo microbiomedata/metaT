@@ -1,7 +1,7 @@
 task CalScores{
 	File edgeR="scripts/edgeR.R"
-	Int no_of_cpu
 	String project_name
+	String name_of_feat
 	File fc_file
 
 	meta {
@@ -10,7 +10,7 @@ task CalScores{
 
 	command {
 		mv ${edgeR} script.R
-		Rscript script.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
+		Rscript script.R -r ${fc_file} -n ${name_of_feat} -o ${project_name}_sc_tbl.tsv -s ${project_name}
 	}
 
 	output {
