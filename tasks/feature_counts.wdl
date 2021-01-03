@@ -46,11 +46,13 @@ task shift_featurecount{
 task dock_featurecount{
 	Int no_of_cpu
 	String project_name
-	File ref_gff
+	File gff_file_path
 	File bam_file_path
+	String name_of_feat
 
 	command {
-		featureCounts -a ${ref_gff} -B -p -P -C -g ID -t CDS -T ${no_of_cpu} -o ${project_name}.count ${bam_file_path} 
+		sed "s/\'//g" ${gff_file_path} > clean.gff
+		featureCounts -a clean.gff -B -p -P -C -g ID -t ${name_of_feat} -T ${no_of_cpu} -o ${name_of_feat}.count ${bam_file_path} 
 	}
 
 	output{
@@ -59,6 +61,13 @@ task dock_featurecount{
 
 	runtime {
 		docker: 'migun/nmdc_metat:latest'
+		memory: "50G"
+		cpu: no_of_cpu
+	}
+
+	meta {
+		author: "Migun Shakya, B10, LANL"
+		email: "migun@lanl.gov"
 	}
 
 }
