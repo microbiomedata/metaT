@@ -4,8 +4,8 @@
   "metat_omics.path_to_out": "test_results",
   "metat_omics.contig_file_path": "test_data/1781_100346/assembly/assembly_contigs.fna",
   "metat_omics.gff_file_path": "test_data/1781_100346/annotation/1781_100346_functional_annotation.gff",
-  "metat_omics.bam_file_path": "test_data/1781_100346/assembly/pairedMapped_sorted.bam",
   "metat_omics.feat_name_list": [
     "CDS"
-  ]
+  ],
+  "metat_omics.bam_file_path": "test_data/1781_100346/assembly/pairedMapped_sorted.bam"
 }
