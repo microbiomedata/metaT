@@ -10,11 +10,11 @@ task CalScores{
 
 	command {
 		mv ${edgeR} script.R
-		Rscript script.R -r ${fc_file} -n ${name_of_feat} -o ${project_name}_sc_tbl.tsv -s ${project_name}
+		Rscript script.R -r ${fc_file} -n ${name_of_feat} -o ${project_name}_${name_of_feat}_sc.tsv -s ${project_name}
 	}
 
 	output {
-	File sc_tbl = "${project_name}_sc_tbl.tsv"
+	File sc_tbl = "${project_name}_${name_of_feat}_sc.tsv"
 	}
 }
 
