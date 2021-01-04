@@ -6,8 +6,7 @@ task featurecount{
 	String name_of_feat
 
 	command {
-		sed "s/\'//g" ${gff_file_path} > clean.gff
-		featureCounts -a clean.gff -B -p -P -C -g ID -t ${name_of_feat} -T ${no_of_cpu} -o ${name_of_feat}.count ${bam_file_path} 
+		featureCounts -a ${gff_file_path} -B -p -P -C -g ID -t ${name_of_feat} -T ${no_of_cpu} -o ${name_of_feat}.count ${bam_file_path} 
 	}
 
 	output{
