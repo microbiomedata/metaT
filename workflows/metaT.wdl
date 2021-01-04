@@ -4,7 +4,6 @@ import "../tasks/to_json.wdl" as tj
 import "../tasks/misc_tasks.wdl" as mt
 
 workflow metat_omics {
-	Array[String] feat_name_list
 	File contig_file_path
 	File gff_file_path
 	File bam_file_path
