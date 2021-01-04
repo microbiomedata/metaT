@@ -8,7 +8,6 @@ workflow metat_omics {
 	File gff_file_path
 	File bam_file_path
 	Int no_of_cpu
-	String path_to_out
 	String? project_name = "metatranscriptomics"
 
 	call mt.clean_gff{
