@@ -11,17 +11,18 @@ from Bio.Seq import Seq
 
 class ConverToJson():
     """ Summarizes and converts all the results to one big JSON file."""
-    def __init__(self, gff_file_name, list_of_feat, name_of_proj, fasta_file_name, out_json_file):
+    def __init__(self, gff_file_name, rd_count_fn, name_of_feat, pkm_sc_fn, fasta_file_name, out_json_file):
         self.gff_file_name = gff_file_name
         self.fasta_file_name = fasta_file_name
-        self.name_of_proj = name_of_proj
-        self.list_of_feat = list_of_feat
+        self.rd_count_fn = rd_count_fn
+        self.pkm_sc_fn = pkm_sc_fn
+        self.name_of_feat = name_of_feat
         self.out_json_file = out_json_file
 
-    def get_pkms_summ(self, name_of_feat):
+    def get_pkms_summ(self):
         """Get PKM values."""
-        pm_file_name = self.name_of_proj + "_" + name_of_feat + "_sc.tsv"
-        pm_dict_obj = pd.read_csv(pm_file_name, sep=",", engine='python',
+        # pm_file_name = self.name_of_proj + "_" + name_of_feat + "_sc.tsv"
+        pm_dict_obj = pd.read_csv(self.pkm_sc_fn, sep=",", engine='python',
                               comment="#", index_col="Geneid").to_dict(orient="index")
         for feat, rpkm_dic in pm_dict_obj.items():
             feat_rpkm = {}
@@ -42,11 +43,8 @@ class ConverToJson():
         dic_of_pkms = {}
         dic_of_reads = {}
         with open(self.out_json_file, "w") as json_file:
-            for feat in self.list_of_feat:
-                print(feat)
-                # print(dic_of_pkms)
-                dic_of_pkms[feat] = self.get_pkms_summ(feat)
-                dic_of_reads[feat] = self.read_summary(feat)
+            dic_of_pkms[self.name_of_feat] = self.get_pkms_summ()
+            dic_of_reads[self.name_of_feat] = self.read_summary()
             json_list = []
             for feat_obj in gff_as_db.all_features():
                 feat_dic = {}  # an empty dictionary to append features
@@ -151,10 +149,10 @@ class ConverToJson():
         except KeyError:
             feat_dic["edger_rpkm"] = None
 
-    def read_summary(self, feat_type):
+    def read_summary(self):
         """Get read values as a dictionary."""
-        read_file = feat_type + ".count"
-        read_data = pd.read_csv(read_file, sep="\t", comment="#", index_col="Geneid")
+        # read_file = feat_type + ".count"
+        read_data = pd.read_csv(self.rd_count_fn, sep="\t", comment="#", index_col="Geneid")
         
             # use regular expression to get rid of the whole path
         read_data.columns = [x.split(".mapping.")[-1].split(".")[0] for x in read_data.columns]
