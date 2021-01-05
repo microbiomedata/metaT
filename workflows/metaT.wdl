@@ -31,7 +31,7 @@ workflow metat_omics {
 		name_of_feat = feat
 	}
 
-	call cs.CalScores{
+	call cs.cal_scores{
 		input: project_name = project_name,
 		name_of_feat = feat,
 		fc_file = featurecount.ct_tbl
@@ -41,7 +41,7 @@ workflow metat_omics {
 		input:gff_file_path = clean_gff.cln_gff_fl,
 		fasta_file_name = contig_file_path,
 		rd_count_fn = featurecount.ct_tbl,
-		pkm_sc_fn = CalScores.sc_tbl,
+		pkm_sc_fn = cal_scores.sc_tbl,
 		name_of_feat = feat,
 		gff_db_fn = create_gffdb.gff_db_fn
 	}
