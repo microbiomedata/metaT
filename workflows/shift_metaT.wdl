@@ -13,14 +13,14 @@ workflow metaT {
    File ref_gff
    File? SingleRead
    String? QCopts=""
-   String? projectName = "metatranscriptomics"
-   String container = "docker:migun/nmdc_metat:latest"
+   String? project_name = "metatranscriptomics"
+   String container = "docker:microbiomedata/meta_t:latest"
 
 	if (DoQC){
 		call qc.shift_qc{
 			input: opts = QCopts,
 			cpu = cpu,
-			projectName = projectName,
+			project_name = project_name,
 			outdir = outdir,
 			PairedReads = PairedReads,
 			QCSingleRead = SingleRead,
@@ -39,21 +39,21 @@ workflow metaT {
 		PairedReads = if DoQC then shift_qc.QCedPaired else PairedReads,
 		hisat2_ref = shift_BuildHisat2.hs,
 		db = shift_BuildHisat2.db,
-		projectName = projectName,
+		project_name = project_name,
 		container = container
 	}
 
 	call fc.shift_featurecount{
 		input: cpu = cpu,
-		projectName = projectName,
+		project_name = project_name,
 		ref_gff = ref_gff,
 		bam_file = shift_mapping.map_bam,
 		container = container
 	}
 
-	call cs.shift_CalScores{
+	call cs.shift_cal_scores{
 		input: cpu = cpu,
-		projectName = projectName,
+		project_name = project_name,
 		fc_file = shift_featurecount.ct_tbl,
 		container = container
 	}

@@ -23,7 +23,7 @@ task dockcal_scores{
 	String project_name
 	String name_of_feat
 	File fc_file
-
+	String DOCKER 
 	meta {
 		description: "Calculate RPKMs"
 	}
@@ -39,6 +39,6 @@ task dockcal_scores{
 	}
 
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 	}
 }

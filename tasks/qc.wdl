@@ -79,6 +79,6 @@ task dock_qc{
     }
 
     runtime {
-        docker: 'migun/nmdc_metat:latest'
+        docker: 'microbiomedata/meta_t:latest'
     }
 }

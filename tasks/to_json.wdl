@@ -28,6 +28,7 @@ task dock_convtojson{
 	File pkm_sc_fn
 	File rd_count_fn
 	String name_of_feat
+	String DOCKER
 	File py_pack_path="pyp_metat"
 
 	command <<<
@@ -44,6 +45,6 @@ task dock_convtojson{
 	}
 
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 	}
 }

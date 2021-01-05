@@ -1,9 +1,7 @@
 {
-  "metat_omics.contig_file_path": [
-    "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/assembly_contigs.fna"
-  ],
+  "metat_omics.project_name": "1781_100346",
+  "metat_omics.no_of_cpu": 16,
+  "metat_omics.contig_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/assembly_contigs.fna",
   "metat_omics.gff_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/annotation/1781_100357_functional_annotation.gff",
-  "metat_omics.bam_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/pairedMapped_sorted.bam",
-  "metat_omics.no_of_cpu": 4,
-  "metat_omics.path_to_out": "test_out"
+  "metat_omics.bam_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/pairedMapped_sorted.bam"
 }

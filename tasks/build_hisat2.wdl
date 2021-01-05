@@ -87,6 +87,6 @@ task dock_BuildHisat2{
 		File db = ref_name
 	}
 	runtime {
-		docker: 'migun/nmdc_metat:latest'
+		docker: 'microbiomedata/meta_t:latest'
 	}
 }

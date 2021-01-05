@@ -59,6 +59,6 @@ task dock_mapping{
 	}
 	
 	runtime {
-		docker: 'migun/nmdc_metat:latest'
+		docker: 'microbiomedata/meta_t:latest'
 	}
 }

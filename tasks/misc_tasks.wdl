@@ -15,7 +15,7 @@ task clean_gff{
 
 task dockclean_gff{
 	File gff_file_path
-
+	String DOCKER
 	command <<<
     # removing special characters that featurecount didnt like when parsing gff
 		sed "s/\'//g" ${gff_file_path} | sed "s/-/_/g"  > clean.gff
@@ -27,7 +27,7 @@ task dockclean_gff{
 	}
 	
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 	}
 }
 
@@ -46,6 +46,7 @@ task extract_feats{
 
 task dockextract_feats{
 	File gff_file_path
+	String DOCKER
 
 	command <<<
 		awk -F'\t' '{print $3}' ${gff_file_path} | sort | uniq
@@ -56,7 +57,7 @@ task dockextract_feats{
 	}
 
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 	}
 }
 
@@ -79,6 +80,7 @@ task create_gffdb{
 
 task dockcreate_gffdb{
 	File gff_file_path
+	String DOCKER
 
 	command <<<
 		python <<CODE
@@ -91,6 +93,6 @@ task dockcreate_gffdb{
 		File gff_db_fn = "gff.db"
 	}
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 	}
 }

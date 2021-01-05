@@ -22,6 +22,7 @@ task dock_featurecount{
 	File gff_file_path
 	File bam_file_path
 	String name_of_feat
+	String DOCKER
 
 	command {
 		featureCounts -a ${gff_file_path} -B -p -P -C -g ID -t ${name_of_feat} -T ${no_of_cpu} -o ${name_of_feat}.count ${bam_file_path} 
@@ -32,7 +33,7 @@ task dock_featurecount{
 	}
 
 	runtime {
-		docker: 'microbiomedata/meta_t:latest'
+		docker: DOCKER
 		memory: "50G"
 		cpu: no_of_cpu
 	}
