@@ -1,11 +1,11 @@
-task CalScores{
+task cal_scores{
 	File edgeR="scripts/edgeR.R"
 	String project_name
 	String name_of_feat
 	File fc_file
 
 	meta {
-		description: "Calculate RPKMs for CDS"
+		description: "Calculate RPKMs"
 	}
 
 	command {
@@ -14,60 +14,31 @@ task CalScores{
 	}
 
 	output {
-	File sc_tbl = "${name_of_feat}_sc.tsv"
+		File sc_tbl = "${name_of_feat}_sc.tsv"
 	}
 }
 
-
-
-task shift_CalScores{
-	Int cpu
+task dockcal_scores{
+	File edgeR="scripts/edgeR.R"
 	String project_name
-	File fc_file
-	String container
-
-	meta {
-		description: "Calculate RPKMs for CDS"
-	}
-
-	command {
-		shifter --image=${container} edgeR.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
-	}
-
-	runtime {
-		poolname: "aim2_metaT"
-		cluster: "cori"
-		time: "01:00:00"
-		cpu: cpu
-		mem: "10GB"
-		node: 1
-		nwpn: 1
-	}
-
-	output {
-	File sc_tbl = "${project_name}_sc_tbl.tsv"
-	}
-}
-
-
-task dock_CalScores{
-	Int cpu
-	String project_name
+	String name_of_feat
 	File fc_file
 
 	meta {
-		description: "Calculate RPKMs for CDS"
+		description: "Calculate RPKMs"
 	}
 
+
 	command {
-		edgeR.R -r ${fc_file} -n CDS -o ${project_name}_sc_tbl.tsv -s ${project_name}
+		mv ${edgeR} script.R
+		Rscript script.R -r ${fc_file} -n ${name_of_feat} -o ${name_of_feat}_sc.tsv -s ${project_name}
 	}
 
 	output {
-	File sc_tbl = "${project_name}_sc_tbl.tsv"
+		File sc_tbl = "${name_of_feat}_sc.tsv"
 	}
 
 	runtime {
-		docker: 'migun/nmdc_metat:latest'
+		docker: 'microbiomedata/meta_t:latest'
 	}
 }
