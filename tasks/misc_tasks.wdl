@@ -110,7 +110,7 @@ task collect_output{
 			with open(f, "rb") as infile:
 				result.append(json.load(infile))
 		with open("output.json", "w") as outfile:
-			json.dump(result, outfile)
+			json.dump(result, outfile, indent=4)
 		OEF
 	>>>
 
@@ -137,7 +137,7 @@ task dockcollect_output{
 			with open(f, "rb") as infile:
 				result.append(json.load(infile))
 		with open("output.json", "w") as outfile:
-			json.dump(result, outfile)
+			json.dump(result, outfile, indent=4)
 		OEF
 	>>>
 
