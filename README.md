@@ -77,7 +77,7 @@ json: json file with paths to input and additional information (see below)
 
 ```
 ## Outputs
-The output files are a set of JSON formatted file such as `CDS.json`, `rRNA.json`, etc. that contains raw read counts, rpkms, and additional annotation metadata from gff file. File names are based on the feature (third column of a gff file) listed in gff files. An example JSON record:
+The output file is a JSON formatted file called `output.JSON` with JSON records that contains raw read counts, rpkms, and additional annotation metadata from gff file. An example JSON record:
 
 ```json
 {
