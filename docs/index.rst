@@ -1,26 +1,29 @@
-Metatranscriptome workflow
-==========================
+metaT: The Metatranscriptome Workflow
+=====================================
 
 Summary
 -------
 
-Metatranscriptome workflow
+This workflow analyzes metatranscriptomes. It takes contigs and BAM file from [metaAssembly](https://github.com/microbiomedata/metaAssembly) and gff file from [mg_annotation](https://github.com/microbiomedata/mg_annotation) as inputs. It outputs a single JSON file that has metadata derived from gff and read count and RPKM values.
 
 Workflow Diagram
 ------------------
 
-.. image:: metat_workflow.png
+.. image:: workflow_metatranscripomics.png
    :scale: 40%
    :alt: Metatranscriptome workflow
 
 Workflow Dependencies
 ---------------------
 
-Third party software / packages
+Third-party software/packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- samtools > v1.9 (MIT License)
-- featureCounts ≥ v2.0.0 (GPLv3)
+1. featureCounts ≥ v2.0.0 (GPLv3)    
+2. R ≥ v3.5.1
+3. edgeR ≥ v3.24.3(an R package)
+4. Python ≥ v3.7.6
+5. pandas ≥ v1.0.5 (python package)
+6. gffutils ≥ v0.10.1 (python package)
 
 Database 
 ~~~~~~~~
@@ -31,86 +34,62 @@ Workflow Availability
 The workflow is available in GitHub:
 https://github.com/microbiomedata/metaT
 
-The container is available at Docker Hub (microbiomedata):
-
-
+The container is available at Docker Hub (`microbiomedata/meta_t) <https://hub.docker.com/repository/docker/microbiomedata/meta_t>`_.
 
 Test datasets
 -------------
 
-.. #TODO add my test dataset
-`metaMAGs_test_dataset.tgz <https://portal.nersc.gov/cfs/m3408/test_data/metaMAGs_test_dataset.tgz>`_
 
 Details
 -------
-metaT takes the assembled contigs and BAM file from the NMDC metaassembly workflow as the input along with the gff file from the annotation workflow and outputs a table with Transcript per million values for different features found in the gff file.
+metaT takes the assembled contigs and BAM file from the NMDC metaAssembly workflow as the input along with the gff file from the mg_annotation workflow and outputs a table with RPKM values for different features found in the off file.
 
 Inputs
 ~~~~~~
 
-A json files with following entries:
+A JSON files with the following entries:
 
-1. Number of CPUs, 
-2. Output directory
-3. Project name
-4. Metagenome Assembled Contig fasta file
-5. Sam/Bam file from reads mapping back to contigs
-6. GFF file from the annotation workflow
-7. Features such as CDS that are available in gff file
+1. Number of CPUs
+2. Project name
+3. Metagenome Assembled Contig fasta file
+4. Bam file from reads mapping back to contigs
+5. GFF file from the annotation workflow
 
 .. code-block:: JSON
 
-{
-  "metat_omics.project_name": "1781_100346",
-  "metat_omics.no_of_cpu": 1,
-  "metat_omics.path_to_out": "test_results",
-  "metat_omics.contig_file_path": "test_data/1781_100346/assembly/assembly_contigs.fna",
-  "metat_omics.gff_file_path": "test_data/1781_100346/annotation/1781_100346_functional_annotation.gff",
-  "metat_omics.bam_file_path": "test_data/1781_100346/assembly/pairedMapped_sorted.bam",
-  "metat_omics.feat_name_list": [
-    "CDS"
-  ]
+	{
+		"metat_omics.project_name": "A_GOOD_PROJECT",
+		"metat_omics.no_of_cpu": 1,
+		"metat_omics.contig_file_path": "PATH/TO/CONTIG/FASTA",
+		"metat_omics.gff_file_path": "PATH/TO/GFF/FILE",
+		"metat_omics.bam_file_path": "PATH/TO/BAM/FILE"
+	}
 
 Outputs
 ~~~~~~~
 
-The output will have a bunch of output directories, files, including statistical numbers, status log and a shell script to reproduce the steps etc. 
+The output file is a JSON formatted file called `output.JSON` with JSON records that contains raw read counts, rpkms, and additional annotation metadata from gff file. An example JSON record:
 
-The final `MiMAG <https://www.nature.com/articles/nbt.3893#Tab1>`_ output is in `hqmq-metabat-bins` directory and its corresponding lineage result in `gtdbtk_output` directory.::
+.. code-block:: JSON
 
-	|-- 3300037552.bam.sorted
-	|-- 3300037552.depth
-	|-- 3300037552.depth.mapped
-	|-- bins.lowDepth.fa
-	|-- bins.tooShort.fa
-	|-- bins.unbinned.fa
-	|-- checkm-out
-	|   |-- bins/
-	|   |-- checkm.log
-	|   |-- lineage.ms
-	|   `-- storage
-	|-- checkm_qa.out
-	|-- gtdbtk_output
-	|   |-- align/
-	|   |-- classify/
-	|   |-- identify/
-	|   |-- gtdbtk.ar122.classify.tree -> classify/gtdbtk.ar122.classify.tree
-	|   |-- gtdbtk.ar122.markers_summary.tsv -> identify/gtdbtk.ar122.markers_summary.tsv
-	|   |-- gtdbtk.ar122.summary.tsv -> classify/gtdbtk.ar122.summary.tsv
-	|   |-- gtdbtk.bac120.classify.tree -> classify/gtdbtk.bac120.classify.tree
-	|   |-- gtdbtk.bac120.markers_summary.tsv -> identify/gtdbtk.bac120.markers_summary.tsv
-	|   |-- gtdbtk.bac120.summary.tsv -> classify/gtdbtk.bac120.summary.tsv
-	|   `-- ..etc 
-	|-- hqmq-metabat-bins
-	|   |-- bins.11.fa
-	|   |-- bins.13.fa
-	|   `-- ... etc 
-	|-- mbin-2020-05-24.sqlite
-	|-- mbin-nmdc.20200524.log
-	|-- metabat-bins
-	|   |-- bins.1.fa
-	|   |-- bins.10.fa
-	|   `-- ... etc 
+    {
+        "read_count": 5,
+        "rpkm": 9780.908,
+        "featuretype": "CDS",
+        "seqid": "1781_100346_scf_10009_c1",
+        "id": "1781_100346_scf_10009_c1_3_452",
+        "source": "GeneMark.hmm_2 v1.05",
+        "start": 3,
+        "end": 452,
+        "length": 450,
+        "strand": "_",
+        "frame": "0",
+        "extra": [],
+        "cog": "COG0568",
+        "ko": "KO:K03086",
+        "pfam": "Sigma70_r",
+        "product": "RNA polymerase primary sigma factor"
+    }
 
 
 Requirements for Execution
@@ -119,20 +98,39 @@ Requirements for Execution
 - Docker or other Container Runtime
 - `Cromwell <https://github.com/broadinstitute/cromwell>`_ or other WDL-capable Workflow Execution Tool
 
-Running Workflow in Cromwell on Cori
-------------------------------------
-We provide two ways to run the workflow.  
+Running Workflow
+----------------
 
-1. `SlurmCromwellShifter/`: The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications. 
+In local computer/server with third party tools installed and in PATH
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running workflow in a local computer or server where all the dependencies are installed and in path. 
 
-2. `CromwellSlurmShifter/`: The Cromwell run in head node and manages the workflow by submitting each step of workflow to compute node where applications were ran by Shifter.
+`cd` into the folder and:
 
-Description of the files in each sud-directory:
+.. code-block:: sh
 
- - `.wdl` file: the WDL file for workflow definition
- - `.json` file: the example input for the workflow
- - `.conf` file: the conf file for running Cromwell.
- - `.sh` file: the shell script for running the example workflow
+	$ java -jar /path/to/cromwell-XX.jar run workflows/metaT.wdl -i test_data/test_input.json -m metadata_out.json
+
+
+
+In a local computer/server with docker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running workflow in a local computer or server using docker.
+
+.. code-block:: sh
+
+   java  -jar /path/to/cromwell-XX.jar run workflows/dock_metaT.wdl -i  test_data/test_input.json -m metadata_out.json 
+
+
+In cori with shifter 
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications.
+
+.. code-block:: sh
+
+	java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out.json -i test_data/test_input_cori.json workflows/dock_metaT.wdl
+
 
 Version History
 ---------------

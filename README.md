@@ -13,7 +13,7 @@ pandas v1.0.5 (python package)
 gffutils v0.10.1 (python package)
 ```
 
-![metatranscriptomics workflow](workflow_metatranscriptomics.png)
+![metatranscriptomics workflow](docs/workflow_metatranscriptomics.png)
 ## Running workflow
 
 <!-- ````
@@ -41,20 +41,12 @@ Running workflow in a local computer or server using docker. cromwell should be 
 
 ###  In cori with shifter 
 
-Running workflow in cori with JTM:
-
 The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications.
 
 ```
 java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out.json -i test_data/test_input_cori.json workflows/dock_metaT.wdl
 
 ```
-### In cori with shifter and JTM
-
-```
-java -Dconfig.file=jtm.conf -jar cromwell-XX.jar run -i test_data/test_input.json workflows/shift_metaT.wdl
-```
-
 ## Docker image
 
 The docker images for all profilers is at the docker hub: `microbiomedata/meta_t:latest`. The `Dockerfile` can be found in `Docker/metatranscriptomics/` directory.
