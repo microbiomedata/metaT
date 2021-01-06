@@ -1,3 +1,11 @@
 cromwell-workflow-logs/
 cromwell-executions/
 cromwell/
+*.buildinfo
+*.html
+*.js
+*.doctree
+*.css
+docs/_build/
+docs/chapters/
+*.ai
