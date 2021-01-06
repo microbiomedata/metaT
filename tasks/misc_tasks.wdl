@@ -96,3 +96,56 @@ task dockcreate_gffdb{
 		docker: DOCKER
 	}
 }
+
+
+task collect_output{
+	Array[File] out_files
+
+	command <<<
+		python <<OEF
+		import json
+		result = []
+		list_of_fls = ['${sep="','" out_files}']
+		for f in list_of_fls:
+			with open(f, "rb") as infile:
+				result.append(json.load(infile))
+		with open("output.json", "w") as outfile:
+			json.dump(result, outfile)
+		OEF
+	>>>
+
+	runtime {
+		memory: "1 GiB"
+		cpu: 1
+	}
+
+	output{
+		File out_json_file = "output.json"
+	}
+}
+
+task dockcollect_output{
+	Array[File] out_files
+	String DOCKER
+
+	command <<<
+		python <<OEF
+		import json
+		result = []
+		list_of_fls = ['${sep="','" out_files}']
+		for f in list_of_fls:
+			with open(f, "rb") as infile:
+				result.append(json.load(infile))
+		with open("output.json", "w") as outfile:
+			json.dump(result, outfile)
+		OEF
+	>>>
+
+	runtime {
+		docker: DOCKER
+	}
+
+	output{
+		File out_json_file = "output.json"
+	}
+}

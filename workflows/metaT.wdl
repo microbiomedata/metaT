@@ -45,7 +45,9 @@ workflow metat_omics {
 		name_of_feat = feat,
 		gff_db_fn = create_gffdb.gff_db_fn
 	}
-
+	}
+	call mt.collect_output{
+		input: out_files = conv_to_json.out_json_file
 	}
 
 	meta {

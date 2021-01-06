@@ -55,6 +55,11 @@ workflow metat_omics {
 
 	}
 
+	call mt.dockcollect_output{
+		input: out_files = dock_convtojson.out_json_file,
+		DOCKER = docker
+	}
+
 	meta {
 		author: "Migun Shakya, B10, LANL"
 		email: "migun@lanl.gov"
