@@ -1,6 +1,7 @@
 {
+    "metat_omics.project_name": "A_GOOD_PROJECT",
+    "metat_omics.no_of_cpu": 1,
     "metat_omics.contig_file_path": "PATH/TO/CONTIG/FASTA",
-    "metat_omics.gff_file_path": "503125_160870",
-    "metat_omics.bam_file_path": "/global/cfs/projectdirs/m3408/aim2/metagenome/assembly/ficus/503125_160870",
-    "metat_omics."
+    "metat_omics.gff_file_path": "PATH/TO/GFF/FILE",
+    "metat_omics.bam_file_path": "PATH/TO/BAM/FILE"
 }
