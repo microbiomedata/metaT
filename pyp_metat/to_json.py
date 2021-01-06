@@ -76,6 +76,18 @@ class ConverToJson():
         except KeyError:
             pass
         try:
+            feat_dic['ko'] = feat_obj.attributes['ko'][0]
+        except KeyError:
+            pass
+        try:
+            feat_dic['pfam'] = feat_obj.attributes['pfam'][0]
+        except KeyError:
+            pass
+        try:
+            feat_dic['ec_number'] = feat_obj.attributes['ec_number'][0]
+        except KeyError:
+            pass
+        try:
             feat_dic['locus_tag'] = feat_obj.attributes['locus_tag'][0]
         except KeyError:
             pass

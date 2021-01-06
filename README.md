@@ -80,21 +80,24 @@ json: json file with paths to input and additional information (see below)
 The output files are a set of JSON formatted file such as `CDS.json`, `rRNA.json`, etc. that contains raw read counts, rpkms, and additional annotation metadata from gff file. File names are based on the feature (third column of a gff file) listed in gff files. An example JSON record:
 
 ```json
-
-    {
-        "read_count": 18,
-        "rpkm": 12569.236,
-        "featuretype": "rRNA",
-        "seqid": "1781_100346_scf_5982_c1",
-        "id": "1781_100346_scf_5982_c1_1_571",
-        "source": "1.1.2",
-        "start": 1,
-        "end": 571,
-        "length": 571,
-        "strand": "_",
-        "frame": ".",
-        "extra": []
-    }
+{
+    "read_count": 5,
+    "rpkm": 9780.908,
+    "featuretype": "CDS",
+    "seqid": "1781_100346_scf_10009_c1",
+    "id": "1781_100346_scf_10009_c1_3_452",
+    "source": "GeneMark.hmm_2 v1.05",
+    "start": 3,
+    "end": 452,
+    "length": 450,
+    "strand": "_",
+    "frame": "0",
+    "extra": [],
+    "cog": "COG0568",
+    "ko": "KO:K03086",
+    "pfam": "Sigma70_r",
+    "product": "RNA polymerase primary sigma factor"
+}
 
 ```
 
