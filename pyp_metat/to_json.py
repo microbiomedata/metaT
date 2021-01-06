@@ -72,7 +72,15 @@ class ConverToJson():
         feat_dic['frame'] = feat_obj.frame
         feat_dic['extra'] = feat_obj.extra
         try:
+            feat_dic['cog'] = feat_obj.attributes['cog'][0]
+        except KeyError:
+            pass
+        try:
             feat_dic['locus_tag'] = feat_obj.attributes['locus_tag'][0]
+        except KeyError:
+            pass
+        try:
+            feat_dic['product'] = feat_obj.attributes['product'][0]
         except KeyError:
             pass
         try:
