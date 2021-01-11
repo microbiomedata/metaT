@@ -149,3 +149,25 @@ task dockcollect_output{
 		File out_json_file = "output.json"
 	}
 }
+
+
+
+task dockcollect_output{
+	File intleave_fq_fl
+
+	command <<<
+		cat ${intleave_fq_fl} | paste - - - - - - - - | tee | cut -f 1-4 | tr "\t" "\n" | egrep -v '^$' > R1.fastq
+		cat ${intleave_fq_fl} | paste - - - - - - - - | tee | cut -f 5-8 | tr "\t" "\n" | egrep -v '^$' > R2.fastq
+		
+	>>>
+
+	runtime {
+		docker: DOCKER
+	}
+
+	output{
+		File out_r1_file = "R1.fastq"
+		File out_r2_file = "R2.fastq"
+	}
+}
+
