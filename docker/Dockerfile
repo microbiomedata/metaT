@@ -4,7 +4,7 @@ FROM conda/miniconda3:latest
 # $ docker login
 # $ docker push microbiomedata/meta_t:latest
 
-LABEL version="0.0.2"
+LABEL version="0.0.3"
 LABEL software="NMDC_metatranscriptomics workflow"
 LABEL tags="bioinformatics"
 
@@ -28,18 +28,23 @@ RUN conda update -n base -c defaults conda \
     && conda install samtools \
     && conda install -c bioconda gffutils \
     && conda install -c anaconda pandas \
-    && conda install R \
+    && conda install sortmerna \
+    && conda install stringtie \
+    && conda install megahit \
+    && conda install hisat2 \
     && conda clean -a
+# && conda install R \
 
-RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
-    && R -e "BiocManager::install('edgeR')"
 
-RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
-    R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
+# RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
+#     && R -e "BiocManager::install('edgeR')"
 
-RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
-    && unzip master.zip \
-    && cp WorkflowPlanning-master/metatranscriptomics/scripts/edgeR.R /usr/local/bin \
-    && rm -rf WorkflowPlanning-master/ master.zip
+# RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
+#     R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
+
+# RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
+#     && unzip master.zip \
+#     && cp WorkflowPlanning-master/metatranscriptomics/scripts/edgeR.R /usr/local/bin \
+#     && rm -rf WorkflowPlanning-master/ master.zip
 
 CMD ["/bin/bash"]
