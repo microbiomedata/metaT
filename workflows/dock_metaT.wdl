@@ -1,64 +1,109 @@
 import "../tasks/feature_counts.wdl" as fc
+import "../tasks/build_hisat2.wdl" as bh
+import "../tasks/map_hisat2.wdl" as mh
 import "../tasks/calc_scores.wdl" as cs
 import "../tasks/to_json.wdl" as tj
 import "../tasks/misc_tasks.wdl" as mt
+import "../tasks/additional_qc.wdl" as aq
+import "../tasks/metat_assembly.wdl" as ma
+import "../tasks/run_stringtie.wdl" as rs
 
 workflow metat_omics {
-	File contig_file_path
-	File gff_file_path
-	File bam_file_path
-	Int no_of_cpu
+	File rqc_clean_reads
+	# File contig_file_path
+	# File gff_file_path
+	# File bam_file_path
+	Map[String, File] sort_rna_db
+	Int no_of_cpus
 	String? project_name = "metatranscriptomics"
 	String? docker = "microbiomedata/meta_t:latest"
 
-	call mt.dockclean_gff{
-		input:gff_file_path = gff_file_path,
-		DOCKER = docker
+	call aq.remove_rrna{
+		input:rqc_clean_reads = rqc_clean_reads,
+		sort_rna_db = sort_rna_db,
+		no_of_threads = no_of_cpus
 	}
 
-	call mt.dockextract_feats{
-		input:gff_file_path = dockclean_gff.cln_gff_fl,
-		DOCKER = docker
+	call ma.megahit_assembly{
+		input:rrna_clean_reads = remove_rrna.non_rrna_reads,
+		assem_out_fdr = "out_fdr",
+		assem_out_prefix = "megahit_assem",
+		no_of_cpus = no_of_cpus
+	}
+	call mt.split_fastq{
+		input:intleave_fq_fl=remove_rrna.non_rrna_reads
+	}
+	call bh.dock_BuildHisat2{
+		input:no_of_cpu = no_of_cpus,
+		assem_contig_fna = megahit_assembly.assem_fna_file
+	}
+	call mh.hisat2_mapping{
+		input:rna_clean_reads = [split_fastq.out_r1_file, split_fastq.out_r2_file],
+		no_of_cpus = no_of_cpus,
+		hisat2_ref_dbs = dock_BuildHisat2.hs,
+		hisat_db_name = dock_BuildHisat2.db
 	}
 
-	call mt.dockcreate_gffdb{
-		input:gff_file_path = dockclean_gff.cln_gff_fl,
-		DOCKER = docker
-	}
-
-	scatter (feat in dockextract_feats.feats_in_gff) {
-		call fc.dock_featurecount{
-		input: no_of_cpu = no_of_cpu,
-		project_name = project_name,
-		gff_file_path = dockclean_gff.cln_gff_fl,
-		bam_file_path = bam_file_path,
-		name_of_feat = feat,
-		DOCKER = docker
-	}
-
-	call cs.dockcal_scores{
-		input: project_name = project_name,
-		name_of_feat = feat,
-		fc_file = dock_featurecount.ct_tbl,
-		DOCKER = docker
-	}
-
-	call tj.dock_convtojson{
-		input:gff_file_path = dockclean_gff.cln_gff_fl,
-		fasta_file_name = contig_file_path,
-		rd_count_fn = dock_featurecount.ct_tbl,
-		pkm_sc_fn = dockcal_scores.sc_tbl,
-		name_of_feat = feat,
-		gff_db_fn = dockcreate_gffdb.gff_db_fn,
-		DOCKER = docker
-	}
+	call rs.run_stringtie{
+		input:bam_fl_path = hisat2_mapping.map_bam,
+		no_of_cpus = no_of_cpus
 
 	}
 
-	call mt.dockcollect_output{
-		input: out_files = dock_convtojson.out_json_file,
+	call tj.dock_gtftojson{
+		input:gtf_file_name = run_stringtie.out_info_fl,
+		name_of_feat = "transcript",
 		DOCKER = docker
+	
 	}
+	# call mt.dockclean_gff{
+	# 	input:gff_file_path = gff_file_path,
+	# 	DOCKER = docker
+	# }
+
+	# call mt.dockextract_feats{
+	# 	input:gff_file_path = dockclean_gff.cln_gff_fl,
+	# 	DOCKER = docker
+	# }
+
+	# call mt.dockcreate_gffdb{
+	# 	input:gff_file_path = dockclean_gff.cln_gff_fl,
+	# 	DOCKER = docker
+	# }
+
+	# scatter (feat in dockextract_feats.feats_in_gff) {
+	# 	call fc.dock_featurecount{
+	# 	input: no_of_cpu = no_of_cpu,
+	# 	project_name = project_name,
+	# 	gff_file_path = dockclean_gff.cln_gff_fl,
+	# 	bam_file_path = bam_file_path,
+	# 	name_of_feat = feat,
+	# 	DOCKER = docker
+	# }
+
+	# call cs.dockcal_scores{
+	# 	input: project_name = project_name,
+	# 	name_of_feat = feat,
+	# 	fc_file = dock_featurecount.ct_tbl,
+	# 	DOCKER = docker
+	# }
+
+	# call tj.dock_convtojson{
+	# 	input:gff_file_path = dockclean_gff.cln_gff_fl,
+	# 	fasta_file_name = contig_file_path,
+	# 	rd_count_fn = dock_featurecount.ct_tbl,
+	# 	pkm_sc_fn = dockcal_scores.sc_tbl,
+	# 	name_of_feat = feat,
+	# 	gff_db_fn = dockcreate_gffdb.gff_db_fn,
+	# 	DOCKER = docker
+	# }
+
+	# }
+
+	# call mt.dockcollect_output{
+	# 	input: out_files = dock_convtojson.out_json_file,
+	# 	DOCKER = docker
+	# }
 
 	meta {
 		author: "Migun Shakya, B10, LANL"
