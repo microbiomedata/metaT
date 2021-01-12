@@ -152,7 +152,7 @@ task dockcollect_output{
 
 
 
-task dockcollect_output{
+task split_fastq{
 	File intleave_fq_fl
 
 	command <<<
@@ -160,10 +160,6 @@ task dockcollect_output{
 		cat ${intleave_fq_fl} | paste - - - - - - - - | tee | cut -f 5-8 | tr "\t" "\n" | egrep -v '^$' > R2.fastq
 		
 	>>>
-
-	runtime {
-		docker: DOCKER
-	}
 
 	output{
 		File out_r1_file = "R1.fastq"
