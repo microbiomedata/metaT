@@ -48,3 +48,27 @@ task dock_convtojson{
 		docker: DOCKER
 	}
 }
+
+task dock_gtftojson{
+	File gtf_file_name
+	String name_of_feat
+	String DOCKER
+	File py_pack_path="pyp_metat"
+
+	command <<<
+		cp -R ${py_pack_path} pyp_metat
+		python <<CODE
+		from pyp_metat.to_json import GTFtoJSON
+		json_conv_class = GTFtoJSON(gtf_file_name="${gtf_file_name}", name_of_feat="${name_of_feat}", out_json_file="${name_of_feat}.json")
+		json_conv_class.gtf_json()
+		CODE
+	>>>
+
+	output{
+		File out_json_file = "${name_of_feat}.json"
+	}
+
+	runtime {
+		docker: DOCKER
+	}
+}
