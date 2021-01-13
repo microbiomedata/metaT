@@ -64,7 +64,7 @@ json: json file with paths to input and additional information (see below)
   "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
   "metat_omics.sort_rna_db": {
     "rfam_5S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
-    "rfam_56S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
+    "rfam_56S_db": "data/rRNA_databases/rfam-5.8s-database-id98.fasta",
     "silva_arc_16s": "data/rRNA_databases/silva-arc-16s-id95.fasta",
     "silva_arc_23s": "data/rRNA_databases/silva-arc-23s-id98.fasta",
     "silva_bac_16s": "data/rRNA_databases/silva-bac-16s-id90.fasta",
@@ -95,7 +95,7 @@ The output file is a JSON formatted file called `out.json` with JSON records tha
         "FPKM": "76638.023438",
         "TPM": "146003.046875"
     }
-}
+
 
 ```
 
