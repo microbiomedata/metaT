@@ -1,10 +1,10 @@
-FROM conda/miniconda3:latest
+FROM continuumio/miniconda3:4.8.2
 
 # $ docker build . -t microbiomedata/meta_t:latest --build-arg http_proxy=http://proxyout.lanl.gov:8080 --build-arg https_proxy=http://proxyout.lanl.gov:8080
 # $ docker login
 # $ docker push microbiomedata/meta_t:latest
 
-LABEL version="0.0.3"
+LABEL version="0.0.4"
 LABEL software="NMDC_metatranscriptomics workflow"
 LABEL tags="bioinformatics"
 
@@ -17,22 +17,22 @@ RUN apt-get update -y \
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8     
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
-RUN conda update -n base -c defaults conda \
-    && conda config --add channels conda-forge \
-    && conda config --add channels bioconda \
-    && conda install subread \
-    && conda install samtools \
-    && conda install -c bioconda gffutils \
-    && conda install -c anaconda pandas \
-    && conda install sortmerna \
-    && conda install stringtie \
-    && conda install megahit \
-    && conda install hisat2 \
-    && conda clean -a
+RUN conda config --add channels conda-forge
+RUN conda config --add channels bioconda
+RUN conda install -c bioconda stringtie --yes
+# RUN conda install -c bioconda samtools --yes
+# RUN conda install -c bioconda samtools --force-reinstall --yes
+# RUN conda install openssl=1.0 --yes
+RUN conda install -c bioconda megahit --yes
+# RUN conda install -c bioconda hisat2 --yes
+RUN conda install -c bioconda sortmerna --yes
+RUN conda clean -a
+RUN pip install gffutils
+RUN pip install pandas
 # && conda install R \
 
 
