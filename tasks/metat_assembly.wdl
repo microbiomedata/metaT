@@ -4,6 +4,7 @@ task megahit_assembly{
 	String assem_out_fdr
 	String assem_out_prefix
 	Int no_of_cpus
+	String DOCKER
 
 #  parameter from https://www.nature.com/articles/s41597-019-0132-4
 	command <<<
@@ -15,7 +16,7 @@ task megahit_assembly{
 	}
 
 	runtime {
-		docker: "vout/megahit"
+		docker: DOCKER
 	}
 
 	output{
