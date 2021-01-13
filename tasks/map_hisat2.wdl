@@ -19,6 +19,7 @@ task hisat2_mapping{
 	Array[File] rna_clean_reads
 	Array[File] hisat2_ref_dbs
 	File hisat_db_name
+	String DOCKER
 
 
 	command {

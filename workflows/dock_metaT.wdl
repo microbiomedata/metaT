@@ -21,32 +21,37 @@ workflow metat_omics {
 	call aq.remove_rrna{
 		input:rqc_clean_reads = rqc_clean_reads,
 		sort_rna_db = sort_rna_db,
-		no_of_threads = no_of_cpus
+		no_of_threads = no_of_cpus,
+		DOCKER = docker
 	}
 
 	call ma.megahit_assembly{
 		input:rrna_clean_reads = remove_rrna.non_rrna_reads,
 		assem_out_fdr = "out_fdr",
 		assem_out_prefix = "megahit_assem",
-		no_of_cpus = no_of_cpus
+		no_of_cpus = no_of_cpus,
+		DOCKER = docker
 	}
 	call mt.split_fastq{
 		input:intleave_fq_fl=remove_rrna.non_rrna_reads
 	}
 	call bh.dock_BuildHisat2{
 		input:no_of_cpu = no_of_cpus,
-		assem_contig_fna = megahit_assembly.assem_fna_file
+		assem_contig_fna = megahit_assembly.assem_fna_file,
+		DOCKER = docker
 	}
 	call mh.hisat2_mapping{
 		input:rna_clean_reads = [split_fastq.out_r1_file, split_fastq.out_r2_file],
 		no_of_cpus = no_of_cpus,
 		hisat2_ref_dbs = dock_BuildHisat2.hs,
-		hisat_db_name = dock_BuildHisat2.db
+		hisat_db_name = dock_BuildHisat2.db,
+		DOCKER = docker
 	}
 
 	call rs.run_stringtie{
 		input:bam_fl_path = hisat2_mapping.map_bam,
-		no_of_cpus = no_of_cpus
+		no_of_cpus = no_of_cpus,
+		DOCKER = docker
 
 	}
 

@@ -65,6 +65,7 @@
 task dock_BuildHisat2{
 	Int no_of_cpu
 	File assem_contig_fna
+	String DOCKER
 
 	meta {
 		description: "build reference index files for hisat2"
