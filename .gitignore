@@ -9,3 +9,7 @@ cromwell/
 docs/_build/
 docs/chapters/
 *.ai
+ficus_runs/
+data/rRNA_databases
+1781*
+12889*
