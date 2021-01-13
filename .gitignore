@@ -13,3 +13,7 @@ ficus_runs/
 data/rRNA_databases
 1781*
 12889*
+metadata_out.json
+*.bam
+*.gtf
+Notes.md

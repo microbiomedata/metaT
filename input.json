@@ -1,7 +1,15 @@
 {
-    "metat_omics.project_name": "A_GOOD_PROJECT",
-    "metat_omics.no_of_cpu": 1,
-    "metat_omics.contig_file_path": "PATH/TO/CONTIG/FASTA",
-    "metat_omics.gff_file_path": "PATH/TO/GFF/FILE",
-    "metat_omics.bam_file_path": "PATH/TO/BAM/FILE"
+    "metat_omics.project_name": "test",
+    "metat_omics.no_of_cpus": 1,
+    "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
+    "metat_omics.sort_rna_db": {
+        "rfam_5S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
+        "rfam_56S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
+        "silva_arc_16s": "data/rRNA_databases/silva-arc-16s-id95.fasta",
+        "silva_arc_23s": "data/rRNA_databases/silva-arc-23s-id98.fasta",
+        "silva_bac_16s": "data/rRNA_databases/silva-bac-16s-id90.fasta",
+        "silva_bac_23s": "data/rRNA_databases/silva-bac-23s-id98.fasta",
+        "silva_euk_18s": "data/rRNA_databases/silva-euk-18s-id95.fasta",
+        "silva_euk_28s": "data/rRNA_databases/silva-euk-28s-id98.fasta"
+    }
 }

@@ -1,7 +1,15 @@
 {
   "metat_omics.project_name": "1781_100346",
-  "metat_omics.no_of_cpu": 16,
-  "metat_omics.contig_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/assembly_contigs.fna",
-  "metat_omics.gff_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/annotation/1781_100357_functional_annotation.gff",
-  "metat_omics.bam_file_path": "/global/cfs/cdirs/m3408/ficus/pipeline_products/1781_100357/assembly/pairedMapped_sorted.bam"
+  "metat_omics.no_of_cpus": 16,
+  "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
+  "metat_omics.sort_rna_db": {
+    "rfam_5S_db": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/rfam-5s-database-id98.fasta",
+    "rfam_56S_db": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/rfam-5.8s-database-id98.fasta",
+    "silva_arc_16s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-arc-16s-id95.fasta",
+    "silva_arc_23s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-arc-23s-id98.fasta",
+    "silva_bac_16s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-bac-16s-id90.fasta",
+    "silva_bac_23s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-bac-23s-id98.fasta",
+    "silva_euk_18s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-euk-18s-id95.fasta",
+    "silva_euk_28s": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/data/rRNA_databases/silva-euk-28s-id98.fasta"
+  }
 }
