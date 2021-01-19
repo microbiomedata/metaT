@@ -24,23 +24,24 @@ ENV LC_ALL en_US.UTF-8
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
 RUN conda install -c bioconda stringtie --yes
-# RUN conda install -c bioconda samtools --yes
+RUN conda install -c bioconda subread --yes
 # RUN conda install -c bioconda samtools --force-reinstall --yes
 # RUN conda install openssl=1.0 --yes
 RUN conda install -c bioconda megahit --yes
 # RUN conda install -c bioconda hisat2 --yes
-RUN conda install -c bioconda sortmerna --yes
+# RUN conda install -c bioconda sortmerna --yes
+RUN conda install R --yes
 RUN conda clean -a
 RUN pip install gffutils
 RUN pip install pandas
-# && conda install R \
 
 
-# RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
-#     && R -e "BiocManager::install('edgeR')"
 
-# RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
-#     R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
+    && R -e "BiocManager::install('edgeR')"
+
+RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
+    R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
 
 # RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
 #     && unzip master.zip \
