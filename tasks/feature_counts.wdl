@@ -34,8 +34,6 @@ task dock_featurecount{
 
 	runtime {
 		docker: DOCKER
-		memory: "50G"
-		cpu: no_of_cpu
 	}
 
 	meta {
