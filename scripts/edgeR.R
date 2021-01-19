@@ -48,16 +48,16 @@ row.names(group_table) <- as.character(group_table[, 1])
 edger_dge <- edgeR::DGEList(counts = read_counts_non0[, -c(1:6)], group = group_table$group,
                             remove.zeros = TRUE, genes = gene.info)
 
-if (0 %in% colSums(edger_dge$counts)) {
-        print("One of the sample does not have any reads mapped to it, so no further analysis will be done!")
-} else {
+# if (0 %in% colSums(edger_dge$counts)) {
+#         print("One of the sample does not have any reads mapped to it, so no further analysis will be done!")
+# } else {
 
-        ############### calculate RPKM and CPM #########################################
-        rpkm_results <- edgeR::rpkm(edger_dge)
-        cpm_results <- edgeR::cpm(edger_dge)
-        colnames(rpkm_results) <- c("RPKM")
-        rpkm_results = merge(edger_dge$genes,rpkm_results, by=0, all=TRUE)
-        rpkm_results$Row.names = NULL
-        write.csv(rpkm_results, file = out_tbl)
-        ################################################################################
-    }
+############### calculate RPKM and CPM #########################################
+rpkm_results <- edgeR::rpkm(edger_dge)
+cpm_results <- edgeR::cpm(edger_dge)
+colnames(rpkm_results) <- c("RPKM")
+rpkm_results = merge(edger_dge$genes,rpkm_results, by=0, all=TRUE)
+rpkm_results$Row.names = NULL
+write.csv(rpkm_results, file = out_tbl)
+################################################################################
+#     }
