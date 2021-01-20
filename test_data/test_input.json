@@ -1,12 +1,12 @@
 {
   "metat_omics.project_name": "test",
   "metat_omics.no_of_cpus": 1,
-  "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
+  "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq.gz",
   "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz",
-  "metat_omics.metat_contig_fn": "test_data/503568_190753/test_assembly_contigs.fna",
+  "metat_omics.metat_contig_fn": "test_data/test_assembly_contigs.fna",
   "metat_omics.non_ribo_reads": [
-    "test_data/503568_190753/test_R1.fastq",
-    "test_data/503568_190753/test_R2.fastq"
+    "test_data/test_filtered_R1.fastq.gz",
+    "test_data/test_filtered_R2.fastq.gz"
   ],
-  "metat_omics.ann_gff_fn": "test_data/503568_190753/503568_190753_functional_annotation_test.gff"
+  "metat_omics.ann_gff_fn": "test_data/test_functional_annotation.gff"
 }
