@@ -15,5 +15,5 @@ cd /path/to/out
 
 java -Dconfig.file=/path/to/shifter.conf \
     -jar /path/to/cromwell-XX.jar \
-    run -m /path/to/metadata_out.json -i input.json /path/to/metaT/workflows/dock_metaT.wdl 
+    run -m /path/to/metadata_out.json -i /path/to/input.json /path/to/metaT/workflows/dock_metaT.wdl 
 

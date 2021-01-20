@@ -1,6 +1,0 @@
-{
-    "metat_omics.project_name": "test",
-    "metat_omics.no_of_cpus": 1,
-    "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
-    "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz"
-}
