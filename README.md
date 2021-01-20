@@ -1,43 +1,38 @@
 # metaT: The Metatranscriptome Workflow
-## Summary
-This workflow is designed to analyze metatranscriptomes. This is still work in progress.
 
-## Third party tools and packages
-```
-sortmerna v4.2.0
-stringtie v2.1.2
-hisat2
-Python v3.7.6
-pandas v1.0.5 (python package)
-gffutils v0.10.1 (python package)
-Docker
-```
+## Summary
+This workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (workflows/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
 
 ![metatranscriptomics workflow](docs/workflow_metatranscriptomics.png)
-## Running workflow
 
-Details coming soon.
-<!-- ````
-salloc -N 1 -C haswell -q interactive -t 04:00:00
-
-/global/cfs/cdirs/m3408/ficus/pipeline_products
-
-<!-- ``` -->
-<!-- ### In local computer/server with third party tools installed and in PATH.
-Running workflow in a local computer or server where all the dependencies are installed and in path. cromwell should be installed in the same directory as this file. 
-
-`cd` into the folder and:
+## Version
+0.0.2
+## Third party tools and packages
+To run this workflow you will need a Docker (Docker ≥ v2.1.0.3) instance and cromwell. All the third party tools are pulled from Dockerhub.
 
 ```
-	$ java -jar /path/to/cromwell-XX.jar run workflows/metaT.wdl -i test_data/test_input.json -m metadata_out.json
+bbduk ≥ v38.44
+hisat2 ≥ 2.1
+Python ≥ v3.7.6
+featureCounts ≥ v2.0.1
+R ≥ v3.6.0
+edgeR ≥ v3.28.1 (R package)
+pandas ≥ v1.0.5 (python package)
+gffutils ≥ v0.10.1 (python package)
 
-``` -->
+```
+
+## Databases
+A ribokmer file. See [RQC](https://github.com/microbiomedata/ReadsQC) workflow for obtaining the file.
+
+## Running workflow
 
 ### In a local computer/server with docker
 Running workflow in a local computer or server using docker. cromwell should be installed in the same directory as this file.
 
 ```
-   java  -jar /path/to/cromwell-XX.jar run workflows/dock_metaT.wdl -i  test_data/test_input.json -m metadata_out.json 
+   java  -jar /path/to/cromwell-XX.jar run workflows/metaT_part1.wdl -i  test_data/test_input.json -m metadata_out_part1.json
+   java  -jar /path/to/cromwell-XX.jar run workflows/metaT_part2.wdl -i  test_data/test_input.json -m metadata_out_part2.json 
 ```
 
 ###  In cori with shifter 
@@ -45,57 +40,72 @@ Running workflow in a local computer or server using docker. cromwell should be 
 The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications.
 
 ```
-java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out.json -i test_data/test_input_cori.json workflows/dock_metaT.wdl
+java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part1.json -i test_data/test_input_cori.json workflows/metaT_part1.wdl
+java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part2.json -i test_data/test_input_cori.json workflows/metaT_part2.wdl
 
 ```
+If you are running the workflow from a different directory, you will also need to copy the two folders(`scripts` and `pyp_metat`) to that folder.
 ## Docker image
 
-The docker images for all profilers is at the docker hub: `microbiomedata/meta_t:latest`. The `Dockerfile` can be found in `Docker/metatranscriptomics/` directory.
+The docker images: 
+- `microbiomedata/meta_t:latest`. 
+  The `Dockerfile` can be found in `Docker/metatranscriptomics/` directory. 
+- `intelliseqngs/hisat2:1.2.1`
+- `microbiomedata/bbtools:38.44`
 
 
 ## Inputs
-raw reads: Interleaved pairwise reads that have been processed using RQC.
+
+### For Part 1
+raw reads: A Fastq file. Interleaved pairwise reads that have been processed using RQC.
+json: json file with paths to input and additional information (see below). Both part of the workflow uses same format of JSON.
+
+### For Part 2
+assembly : A FASTA file. Contigs assembled from Part of the workflow.
 json: json file with paths to input and additional information (see below)
 
 ```json
 {
-  "metat_omics.project_name": "1781_100346",
+  "metat_omics.project_name": "test",
   "metat_omics.no_of_cpus": 1,
   "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
-  "metat_omics.sort_rna_db": {
-    "rfam_5S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
-    "rfam_56S_db": "data/rRNA_databases/rfam-5.8s-database-id98.fasta",
-    "silva_arc_16s": "data/rRNA_databases/silva-arc-16s-id95.fasta",
-    "silva_arc_23s": "data/rRNA_databases/silva-arc-23s-id98.fasta",
-    "silva_bac_16s": "data/rRNA_databases/silva-bac-16s-id90.fasta",
-    "silva_bac_23s": "data/rRNA_databases/silva-bac-23s-id98.fasta",
-    "silva_euk_18s": "data/rRNA_databases/silva-euk-18s-id95.fasta",
-    "silva_euk_28s": "data/rRNA_databases/silva-euk-28s-id98.fasta"
-  }
+  "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz",
+  "metat_omics.metat_contig_fn": "test_data/test_assembly_contigs.fna",
+  "metat_omics.non_ribo_reads": [
+    "test_data/test_R1.fastq",
+    "test_data/test_R2.fastq"
+  ],
+  "metat_omics.ann_gff_fn": "test_data/test.gff"
+}
 }
 
 ```
 
 ## Outputs
-The output file is a JSON formatted file called `out.json` with JSON records that contains FPKMs, TPMs, and coverage. An example JSON record:
-
+All outputs can be found in the folder created by cromwell.
+### From Part 1
+Ribosome reads filtered fastqs (`filtered_R1.fastq` and `filtered_R2.fastq`) and assemblies.
+### From Part 2
+The output file is a JSON formatted file called `out.json` with JSON records that contains RPKMs, reads, and information from annotation. An example JSON record:
 ```json
-  {
-        "featuretype": "transcript",
-        "seqid": "k123_15",
-        "id": "STRG.2.1",
-        "source": "StringTie",
-        "start": 1,
-        "end": 491,
-        "length": 491,
-        "strand": ".",
-        "frame": ".",
-        "extra": [],
-        "cov": "5.928717",
-        "FPKM": "76638.023438",
-        "TPM": "146003.046875"
-    }
-
+        {
+            "read_count": 5,
+            "rpkm": 4.642,
+            "featuretype": "CDS",
+            "seqid": "seqid_8_10",
+            "id": "seq_327",
+            "source": "GeneMark.hmm_2 v1.05",
+            "start": 10,
+            "end": 327,
+            "length": 318,
+            "strand": "+",
+            "frame": "0",
+            "extra": [],
+            "cog": "COG0208",
+            "ko": "KO:K00526",
+            "ec_number": "EC:1.17.4.1",
+            "product": "ribonucleoside_diphosphate reductase beta chain"
+        }
 
 ```
 

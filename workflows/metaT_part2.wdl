@@ -82,7 +82,7 @@ workflow metat_omics {
 	meta {
 		author: "Migun Shakya, B10, LANL"
 		email: "migun@lanl.gov"
-		version: "0.0.1"
+		version: "0.0.2"
 	}
 }
 

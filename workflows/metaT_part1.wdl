@@ -30,38 +30,38 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
-	call bh.dock_BuildHisat2{
-		input:no_of_cpu = no_of_cpus,
-		assem_contig_fna = megahit_assembly.assem_fna_file,
-		DOCKER = docker
-	}
-	call mh.hisat2_mapping{
-		input:rna_clean_reads = bbduk_rrna.non_rrna_reads,
-		no_of_cpus = no_of_cpus,
-		hisat2_ref_dbs = dock_BuildHisat2.hs,
-		hisat_db_name = dock_BuildHisat2.db,
-		DOCKER = docker
-	}
+	# call bh.dock_BuildHisat2{
+	# 	input:no_of_cpu = no_of_cpus,
+	# 	assem_contig_fna = megahit_assembly.assem_fna_file,
+	# 	DOCKER = docker
+	# }
+	# call mh.hisat2_mapping{
+	# 	input:rna_clean_reads = bbduk_rrna.non_rrna_reads,
+	# 	no_of_cpus = no_of_cpus,
+	# 	hisat2_ref_dbs = dock_BuildHisat2.hs,
+	# 	hisat_db_name = dock_BuildHisat2.db,
+	# 	DOCKER = docker
+	# }
 
-	call rs.run_stringtie{
-		input:bam_fl_path = hisat2_mapping.map_bam,
-		no_of_cpus = no_of_cpus,
-		DOCKER = docker
+	# call rs.run_stringtie{
+	# 	input:bam_fl_path = hisat2_mapping.map_bam,
+	# 	no_of_cpus = no_of_cpus,
+	# 	DOCKER = docker
 
-	}
+	# }
 
-	call tj.dock_gtftojson{
-		input:gtf_file_name = run_stringtie.out_info_fl,
-		name_of_feat = "transcript",
-		DOCKER = docker
+	# call tj.dock_gtftojson{
+	# 	input:gtf_file_name = run_stringtie.out_info_fl,
+	# 	name_of_feat = "transcript",
+	# 	DOCKER = docker
 	
-	}
+	# }
 
 
 	meta {
 		author: "Migun Shakya, B10, LANL"
 		email: "migun@lanl.gov"
-		version: "0.0.1"
+		version: "0.0.2"
 	}
 }
 
