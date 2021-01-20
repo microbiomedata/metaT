@@ -4,7 +4,8 @@ metaT: The Metatranscriptome Workflow
 Summary
 -------
 
-This workflow analyzes metatranscriptomes. It takes contigs and BAM file from [metaAssembly](https://github.com/microbiomedata/metaAssembly) and gff file from [mg_annotation](https://github.com/microbiomedata/mg_annotation) as inputs. It outputs a single JSON file that has metadata derived from gff and read count and RPKM values.
+This workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (workflows/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
+
 
 Workflow Diagram
 ------------------
@@ -18,21 +19,19 @@ Workflow Dependencies
 
 Third-party software/packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. sortmerna ≥ v4.2.0 (GPLv3)    
-2. stringtie ≥ v2.1.2
-3. HISAT2 ≥ v3.24.3(an R package)
-4. Python ≥ v3.7.6
-5. 7. Docker
-
-Python packages
-~~~~~~~~~~~~~~~
-1. pandas ≥ v1.0.5 (python package)
-2. gffutils ≥ v0.10.1 (python package)
+1. bbduk ≥ v38.44
+2. hisat2 ≥ 2.1
+3. Python ≥ v3.7.6
+4. featureCounts ≥ v2.0.1
+5. R ≥ v3.6.0
+6. edgeR ≥ v3.28.1 (R package)
+7. pandas ≥ v1.0.5 (python package)
+8. gffutils ≥ v0.10.1 (python package)
 
 
 Database 
 ~~~~~~~~
-1. rRNA database from `(sortmerna) <https://github.com/biocore/sortmerna/tree/master/data/rRNA_databases>`_.
+1. rRNA k-mer database for bbduk. See `(RQC) <https://github.com/microbiomedata/ReadsQC>`_.
 
 
 Workflow Availability
@@ -40,47 +39,84 @@ Workflow Availability
 The workflow is available in GitHub:
 https://github.com/microbiomedata/metaT
 
-The container is available at Docker Hub `(microbiomedata/meta_t) <https://hub.docker.com/repository/docker/microbiomedata/meta_t>`_.
+Following containers available at Docker Hub 
+
+1. `(microbiomedata/meta_t) <https://hub.docker.com/repository/docker/microbiomedata/meta_t>`_.
+2. `(intelliseqngs/hisat2:1.2.1) <https://hub.docker.com/repository/docker/intelliseqngs/hisat2>`_.
+3. `(microbiomedata/bbtools) <https://hub.docker.com/repository/docker/microbiomedata/bbtools>`_.
 
 Test datasets
 -------------
-
+Test input JSON file and the corresponding test files can be found in the folder test_data.
 
 Details
 -------
-metaT takes the RQC cleaned interleaved reads NMDC RQC workflow as the input and outputs a JSON file 
-with FPKM, coverage, and TPM values for transcripts.
+metaT workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (workflows/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
 
 Inputs
 ~~~~~~
 
-A JSON files with the following entries:
+Part 1
+***********
+raw reads: A Fastq file. Interleaved pairwise reads that have been processed using RQC.
+json: json file with paths to input and additional information (see below). Both part of the workflow uses same format of JSON.
 
-1. Number of CPUs
-2. Project name
-3. Interleaved paired reads
-4. path to rRNA databases
+Part 2
+**********
+assembly : A FASTA file. Contigs assembled from Part of the workflow.
+json: json file with paths to input and additional information (see below)
 
 .. code-block:: JSON
 
-{
-    "metat_omics.project_name": "test",
-    "metat_omics.no_of_cpus": 1,
-    "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
-    "metat_omics.sort_rna_db": {
-        "rfam_5S_db": "data/rRNA_databases/rfam-5.8s-database-id98.fasta",
-        "rfam_56S_db": "data/rRNA_databases/rfam-5s-database-id98.fasta",
-        "silva_arc_16s": "data/rRNA_databases/silva-arc-16s-id95.fasta",
-        "silva_arc_23s": "data/rRNA_databases/silva-arc-23s-id98.fasta",
-        "silva_bac_16s": "data/rRNA_databases/silva-bac-16s-id90.fasta",
-        "silva_bac_23s": "data/rRNA_databases/silva-bac-23s-id98.fasta",
-        "silva_euk_18s": "data/rRNA_databases/silva-euk-18s-id95.fasta",
-        "silva_euk_28s": "data/rRNA_databases/silva-euk-28s-id98.fasta"
+    {
+  "metat_omics.project_name": "test",
+  "metat_omics.no_of_cpus": 1,
+  "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
+  "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz",
+  "metat_omics.metat_contig_fn": "test_data/test_assembly_contigs.fna",
+  "metat_omics.non_ribo_reads": [
+    "test_data/test_R1.fastq",
+    "test_data/test_R2.fastq"
+  ],
+  "metat_omics.ann_gff_fn": "test_data/test.gff"
     }
-}
+
+
 
 Outputs
 ~~~~~~~
+
+All outputs can be found in the folder created by cromwell.
+
+Part 1
+********
+Ribosome reads filtered fastqs (`filtered_R1.fastq` and `filtered_R2.fastq`) and assemblies.
+
+Part 2
+******
+The output file is a JSON formatted file called `out.json` with JSON records that contains RPKMs, reads, and information from annotation. An example JSON record:
+
+.. code-block:: JSON
+        {
+            "read_count": 5,
+            "rpkm": 4.642,
+            "featuretype": "CDS",
+            "seqid": "seqid_8_10",
+            "id": "seq_327",
+            "source": "GeneMark.hmm_2 v1.05",
+            "start": 10,
+            "end": 327,
+            "length": 318,
+            "strand": "+",
+            "frame": "0",
+            "extra": [],
+            "cog": "COG0208",
+            "ko": "KO:K00526",
+            "ec_number": "EC:1.17.4.1",
+            "product": "ribonucleoside_diphosphate reductase beta chain"
+        }
+
+
 
 The output file is a JSON formatted file called `out.JSON` with JSON records. An example JSON record:
 
@@ -146,7 +182,7 @@ The submit script will request a node and launch the Cromwell.  The Cromwell man
 
 Version History
 ---------------
-- 1.0.0
+- 0.0.2
 
 Point of contact
 ----------------
