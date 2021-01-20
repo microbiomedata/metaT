@@ -166,4 +166,3 @@ task split_fastq{
 		File out_r2_file = "R2.fastq"
 	}
 }
-
