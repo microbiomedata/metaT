@@ -19,14 +19,14 @@ Workflow Dependencies
 
 Third-party software/packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. bbduk ≥ v38.44
-2. hisat2 ≥ 2.1
-3. Python ≥ v3.7.6
-4. featureCounts ≥ v2.0.1
-5. R ≥ v3.6.0
-6. edgeR ≥ v3.28.1 (R package)
-7. pandas ≥ v1.0.5 (python package)
-8. gffutils ≥ v0.10.1 (python package)
+1. bbduk >= v38.44
+2. hisat2 >= 2.1
+3. Python >= v3.7.6
+4. featureCounts >= v2.0.1
+5. R >= v3.6.0
+6. edgeR >= v3.28.1 (R package)
+7. pandas >= v1.0.5 (python package)
+8. gffutils >= v0.10.1 (python package)
 
 
 Database 
