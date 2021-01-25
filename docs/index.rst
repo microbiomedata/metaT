@@ -10,7 +10,7 @@ This workflow is designed to analyze metatranscriptomes. It run in two parts. Pa
 Workflow Diagram
 ------------------
 
-.. image:: workflow_metatranscripomics.png
+.. image:: workflow_metatranscriptomics.png
    :scale: 40%
    :alt: Metatranscriptome workflow
 
