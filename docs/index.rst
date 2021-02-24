@@ -1,4 +1,4 @@
-The Metatranscriptome Workflow (v0.0.2)
+Metatranscriptome Workflow (v0.0.2)
 =====================================
 
 Summary
