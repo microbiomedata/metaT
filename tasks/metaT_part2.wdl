@@ -1,11 +1,11 @@
-import "../tasks/feature_counts.wdl" as fc
-import "../tasks/build_hisat2.wdl" as bh
-import "../tasks/map_hisat2.wdl" as mh
-import "../tasks/calc_scores.wdl" as cs
-import "../tasks/to_json.wdl" as tj
-import "../tasks/misc_tasks.wdl" as mt
-import "../tasks/metat_assembly.wdl" as ma
-import "../tasks/run_stringtie.wdl" as rs
+import "feature_counts.wdl" as fc
+import "build_hisat2.wdl" as bh
+import "map_hisat2.wdl" as mh
+import "calc_scores.wdl" as cs
+import "to_json.wdl" as tj
+import "misc_tasks.wdl" as mt
+import "metat_assembly.wdl" as ma
+import "run_stringtie.wdl" as rs
 
 workflow metat_omics {
 	File metat_contig_fn
