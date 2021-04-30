@@ -51,7 +51,7 @@ The docker images:
 - `microbiomedata/meta_t:latest`. 
   The `Dockerfile` can be found in `Docker/metatranscriptomics/` directory. 
 - `intelliseqngs/hisat2:1.2.1`
-- `microbiomedata/bbtools:38.44`
+- `microbiomedata/bbtools:38.90`
 
 
 ## Inputs
