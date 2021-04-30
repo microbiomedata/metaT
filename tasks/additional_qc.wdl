@@ -31,7 +31,7 @@ task bbduk_rrna{
 	>>>
 
 	runtime {
-		docker: "microbiomedata/bbtools:38.44"
+		docker: "microbiomedata/bbtools:38.90"
 	}
 
 	output{
