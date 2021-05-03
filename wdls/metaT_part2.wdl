@@ -78,11 +78,15 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
+    output {
 
+        File summary_json = dockcollect_output.out_json_file
+    }
+# Array[File] out_files
 	meta {
 		author: "Migun Shakya, B10, LANL"
 		email: "migun@lanl.gov"
-		version: "0.0.2"
+		version: "0.0.3"
 	}
 }
 
