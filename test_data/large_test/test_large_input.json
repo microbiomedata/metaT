@@ -1,0 +1,12 @@
+{
+  "metat_omics.project_name": "large_test",
+  "metat_omics.no_of_cpus": 1,
+  "metat_omics.rqc_clean_reads": "test_data/large_test/SRR6324898.int.anqdpht.fastq.gz",
+  "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz",
+  "metat_omics.metat_contig_fn": "test_data/large_test/test_large_assembly_contigs.fna",
+  "metat_omics.non_ribo_reads": [
+    "test_data/large_test/test_large_filtered_R1.fastq.gz",
+    "test_data/large_test/test_large_filtered_R1.fastq.gz"
+  ],
+  "metat_omics.ann_gff_fn": "test_data/test_functional_annotation.gff"
+}
