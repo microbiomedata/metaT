@@ -30,19 +30,10 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
-	# call rs.run_stringtie{
-	# 	input:bam_fl_path = hisat2_mapping.map_bam,
-	# 	no_of_cpus = no_of_cpus,
-	# 	DOCKER = docker
-
-	# }
-
-	# call tj.dock_gtftojson{
-	# 	input:gtf_file_name = run_stringtie.out_info_fl,
-	# 	name_of_feat = "transcript",
-	# 	DOCKER = docker
-	
-	# }
+	output {
+		Array[File] non_rrna_fastq = bbduk_rrna.non_rrna_reads
+        File assemb_file = megahit_assembly.assem_fna_file
+    }
 
 
 	meta {
