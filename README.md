@@ -1,7 +1,7 @@
 # metaT: The Metatranscriptome Workflow
 
 ## Summary
-This workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (workflows/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
+This workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (wdls/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
 
 ![metatranscriptomics workflow](docs/workflow_metatranscriptomics.png)
 
@@ -31,8 +31,8 @@ A ribokmer file. See [RQC](https://github.com/microbiomedata/ReadsQC) workflow f
 Running workflow in a local computer or server using docker. cromwell should be installed in the same directory as this file.
 
 ```
-   java  -jar /path/to/cromwell-XX.jar run workflows/metaT_part1.wdl -i  test_data/test_input.json -m metadata_out_part1.json
-   java  -jar /path/to/cromwell-XX.jar run workflows/metaT_part2.wdl -i  test_data/test_input.json -m metadata_out_part2.json 
+   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part1.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part1.json
+   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part2.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part2.json 
 ```
 
 ###  In cori with shifter 
@@ -40,8 +40,8 @@ Running workflow in a local computer or server using docker. cromwell should be 
 The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications.
 
 ```
-java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part1.json -i test_data/test_input_cori.json workflows/metaT_part1.wdl
-java -Dconfig.file=workflows/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part2.json -i test_data/test_input_cori.json workflows/metaT_part2.wdl
+java -Dconfig.file=wdls/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part1.json -i test_data/test_input_cori.json wdls/metaT_part1.wdl
+java -Dconfig.file=wdls/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part2.json -i test_data/test_input_cori.json wdls/metaT_part2.wdl
 
 ```
 If you are running the workflow from a different directory, you will also need to copy the two folders(`scripts` and `pyp_metat`) to that folder.
