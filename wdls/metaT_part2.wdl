@@ -61,6 +61,7 @@ workflow metat_omics {
 		input: project_name = name_of_proj,
 		name_of_feat = feat,
 		fc_file = dock_featurecount.ct_tbl,
+                edgeR = edgeR,
 		DOCKER = docker
 		}
 
@@ -71,6 +72,7 @@ workflow metat_omics {
 		pkm_sc_fn = dockcal_scores.sc_tbl,
 		name_of_feat = feat,
 		gff_db_fn = dockcreate_gffdb.gff_db_fn,
+                py_pack_path = py_pack_path,
 		DOCKER = docker
 		}
 	}
