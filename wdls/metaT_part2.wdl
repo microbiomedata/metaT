@@ -14,6 +14,8 @@ workflow metat_omics {
 	Int no_of_cpus
 	String? name_of_proj = "metaT"
 	String? docker = "microbiomedata/meta_t:latest"
+		File edgeR="scripts/edgeR.R"
+		File py_pack_path = "pyp_metat"
 
 	call bh.dock_BuildHisat2{
 		input:no_of_cpu = no_of_cpus,
