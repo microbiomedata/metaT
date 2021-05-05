@@ -8,5 +8,7 @@
     "test_data/small_test/test_small_filtered_R1.fastq.gz",
     "test_data/small_test/test_small_filtered_R1.fastq.gz"
   ],
-  "metat_omics.ann_gff_fn": "test_data/test_small_functional_annotation.gff"
+  "metat_omics.ann_gff_fn": "test_data/test_small_functional_annotation.gff",
+  "metat_omics.edgeR": "metaT/scripts/edgeR.R",
+  "metat_omics.py_pack_path": "metaT/pyp_metat"
 }
