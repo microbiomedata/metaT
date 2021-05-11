@@ -56,7 +56,7 @@ task make_part1_output{
  			non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
  			assemb_file_path=`dirname ${assemb_file}`
  			mv -f $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
- 			mv -f ${assemb_file} ${outdir}/
+ 			mv -f $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
  			chmod 764 -R ${outdir}
  		fi
  	}
