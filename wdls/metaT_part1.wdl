@@ -31,15 +31,15 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
-	call make_part1_output{
+	call mt.make_part1_output{
 		input: outdir=outdir,
 			non_rrna_fastq = bbduk_rrna.non_rrna_reads,
         	assemb_file = megahit_assembly.assem_fna_file
 	}
 
 	output {
-		Array[File] non_rrna_fastq = make_part1_output.non_rrna_reads
-        File assemb_file = make_part1_output.assem_fna_file
+		Array[File] non_rrna_fastq = make_part1_output.fastq_out
+        File assemb_file = make_part1_output.assemb_out
     }
 
 

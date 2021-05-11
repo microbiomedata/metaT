@@ -65,8 +65,8 @@ task make_part1_output{
 		cpu:  1
 	}
 	output{
-		Array[File] non_rrna_fastq = ["${outdir}/filtered_R1.fastq", "${outdir}/filtered_R2.fastq"]
-		File assemb_file = "${outdir}/${assemb_file}"
+		Array[File] fastq_out = ["${outdir}/filtered_R1.fastq", "${outdir}/filtered_R2.fastq"]
+		File assemb_out = "${outdir}/${assemb_file}"
 
 	}
 }
