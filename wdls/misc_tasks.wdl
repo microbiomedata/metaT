@@ -55,8 +55,8 @@ task make_part1_output{
  			mkdir -p ${outdir}
  			non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
  			assemb_file_path=`dirname ${assemb_file}`
- 			mv -f $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
- 			mv -f $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
+ 			cp $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
+ 			cp $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
  			chmod 764 -R ${outdir}
  		fi
  	}
@@ -66,7 +66,7 @@ task make_part1_output{
 	}
 	output{
 		Array[File] fastq_out = ["${outdir}/filtered_R1.fastq", "${outdir}/filtered_R2.fastq"]
-		File assemb_out = "${outdir}/${assemb_file}"
+		File assemb_out = "${outdir}/megahit_assem.contigs.fa"
 
 	}
 }
