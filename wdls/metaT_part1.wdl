@@ -49,30 +49,4 @@ workflow metat_omics {
 		version: "0.0.2"
 	}
 }
-	task make_part1_output{
- 	String outdir
- 	Array[File] non_rrna_fastq
-	File assemb_file
-
-
- 	command{
- 		if [ ! -z ${outdir} ]; then
- 			mkdir -p ${outdir}
- 			non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
- 			assemb_file_path=`dirname ${assemb_file}`
- 			mv -f $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
- 			mv -f $assemb_file_path/${assemb_file} ${outdir}/
- 			chmod 764 -R ${outdir}
- 		fi
- 	}
-	runtime {
-		mem: "1 GiB"
-		cpu:  1
-	}
-	output{
-		Array[File] non_rrna_fastq = ["${outdir}/filtered_R1.fastq", "${outdir}/filtered_R2.fastq"]
-		File assemb_file = "${outdir}/${assemb_file}"
-
-	}
-}
 
