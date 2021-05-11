@@ -10,5 +10,6 @@
   ],
   "metat_omics.ann_gff_fn": "test_data/test_small_functional_annotation.gff",
   "metat_omics.edgeR": "metaT/scripts/edgeR.R",
-  "metat_omics.py_pack_path": "metaT/pyp_metat"
+  "metat_omics.py_pack_path": "metaT/pyp_metat",
+  "metat_omics.outdir": "test_data/small_test/output"
 }

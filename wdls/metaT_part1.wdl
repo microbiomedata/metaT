@@ -14,6 +14,7 @@ workflow metat_omics {
 	Int no_of_cpus
 	String? project_name = "metatranscriptomics"
 	String? docker = "microbiomedata/meta_t:latest"
+	String? outdir
 
 	call aq.bbduk_rrna{
 		input:rqc_clean_reads = rqc_clean_reads,
@@ -30,9 +31,15 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
+	call mt.make_part1_output{
+		input: outdir=outdir,
+			non_rrna_fastq = bbduk_rrna.non_rrna_reads,
+        	assemb_file = megahit_assembly.assem_fna_file
+	}
+
 	output {
-		Array[File] non_rrna_fastq = bbduk_rrna.non_rrna_reads
-        File assemb_file = megahit_assembly.assem_fna_file
+		Array[File] non_rrna_fastq = make_part1_output.non_rrna_reads
+        File assemb_file = make_part1_output.assem_fna_file
     }
 
 
