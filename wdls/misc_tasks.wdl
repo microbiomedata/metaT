@@ -53,12 +53,12 @@ task make_part1_output{
  	command{
  		if [ ! -z ${outdir} ]; then
  			mkdir -p ${outdir}
- 			non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
- 			assemb_file_path=`dirname ${assemb_file}`
- 			cp $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
- 			cp $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
- 			chmod 764 -R ${outdir}
  		fi
+		non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
+		assemb_file_path=`dirname ${assemb_file}`
+		cp $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
+		cp $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
+		chmod 764 -R ${outdir}
  	}
 	runtime {
 		mem: "1 GiB"
@@ -70,6 +70,29 @@ task make_part1_output{
 
 	}
 }
+
+task make_part2_output{
+ 	String outdir
+	File json_file
+
+
+ 	command{
+ 		if [ ! -z ${outdir} ]; then
+ 			mkdir -p ${outdir}
+ 		fi
+		json_file_path=`dirname ${json_file}`
+		cp $json_file_path/output.json ${outdir}
+		chmod 764 -R ${outdir}
+ 	}
+	runtime {
+		mem: "1 GiB"
+		cpu:  1
+	}
+	output{
+		File json_out = "${outdir}/output.json"
+	}
+}
+
 task dockextract_feats{
 	File gff_file_path
 	String DOCKER

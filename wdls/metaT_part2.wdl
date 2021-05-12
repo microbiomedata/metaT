@@ -16,6 +16,7 @@ workflow metat_omics {
 	String? docker = "microbiomedata/meta_t:latest"
 		File edgeR="scripts/edgeR.R"
 		File py_pack_path = "pyp_metat"
+	String? outdir
 
 	call bh.dock_BuildHisat2{
 		input:no_of_cpu = no_of_cpus,
@@ -82,11 +83,15 @@ workflow metat_omics {
 		DOCKER = docker
 	}
 
-    output {
+	call mt.make_part2_output{
+		input: json_file = dockcollect_output.out_files,
+		outdir = outdir
+	}
 
-        File summary_json = dockcollect_output.out_json_file
+    output {
+        File json_out = make_part2_output.json_out
     }
-# Array[File] out_files
+
 	meta {
 		author: "Migun Shakya, B10, LANL"
 		email: "migun@lanl.gov"
