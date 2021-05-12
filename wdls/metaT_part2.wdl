@@ -17,6 +17,7 @@ workflow metat_omics {
 		File edgeR="scripts/edgeR.R"
 		File py_pack_path = "pyp_metat"
 	String? outdir
+	String project_name
 
 	call bh.dock_BuildHisat2{
 		input:no_of_cpu = no_of_cpus,
@@ -85,7 +86,8 @@ workflow metat_omics {
 
 	call mt.make_part2_output{
 		input: json_file = dockcollect_output.out_json_file,
-		outdir = outdir
+		outdir = outdir,
+		project_name = project_name
 	}
 
     output {

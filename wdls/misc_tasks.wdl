@@ -76,6 +76,7 @@ task make_part1_output{
 task make_part2_output{
  	String outdir
 	File json_file
+	String project_name
 
 
  	command{
@@ -83,7 +84,7 @@ task make_part2_output{
  			mkdir -p ${outdir}
  		fi
 		json_file_path=`dirname ${json_file}`
-		cp $json_file_path/output.json ${outdir}
+		cp $json_file_path/output.json ${outdir}/${project_name}_output.json
 		chmod 764 -R ${outdir}
  	}
 	runtime {
@@ -91,7 +92,7 @@ task make_part2_output{
 		cpu:  1
 	}
 	output{
-		File json_out = "${outdir}/output.json"
+		File json_out = "${outdir}/${project_name}_output.json"
 	}
 }
 
