@@ -84,7 +84,7 @@ workflow metat_omics {
 	}
 
 	call mt.make_part2_output{
-		input: json_file = dockcollect_output.out_files,
+		input: json_file = dockcollect_output.out_json_file,
 		outdir = outdir
 	}
 
