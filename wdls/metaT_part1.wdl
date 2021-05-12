@@ -34,7 +34,8 @@ workflow metat_omics {
 	call mt.make_part1_output{
 		input: outdir=outdir,
 			non_rrna_fastq = bbduk_rrna.non_rrna_reads,
-        	assemb_file = megahit_assembly.assem_fna_file
+        	assemb_file = megahit_assembly.assem_fna_file,
+			project_name = project_name
 	}
 
 	output {

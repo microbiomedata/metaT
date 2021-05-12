@@ -48,6 +48,7 @@ task make_part1_output{
  	String outdir
  	Array[File] non_rrna_fastq
 	File assemb_file
+	String project_name
 
 
  	command{
@@ -56,8 +57,9 @@ task make_part1_output{
  		fi
 		non_rrna_fastq_path=`dirname ${non_rrna_fastq[0]}`
 		assemb_file_path=`dirname ${assemb_file}`
-		cp $non_rrna_fastq_path/filtered_R*.fastq ${outdir}
-		cp $assemb_file_path/megahit_assem.contigs.fa ${outdir}/
+		cp $non_rrna_fastq_path/filtered_R1.fastq ${outdir}/${project_name}_filtered_R1.fastq
+		cp $non_rrna_fastq_path/filtered_R2.fastq ${outdir}/${project_name}_filtered_R2.fastq
+		cp $assemb_file_path/megahit_assem.contigs.fa ${outdir}/${project_name}_megahit_assem.contigs.fa
 		chmod 764 -R ${outdir}
  	}
 	runtime {
@@ -65,8 +67,8 @@ task make_part1_output{
 		cpu:  1
 	}
 	output{
-		Array[File] fastq_out = ["${outdir}/filtered_R1.fastq", "${outdir}/filtered_R2.fastq"]
-		File assemb_out = "${outdir}/megahit_assem.contigs.fa"
+		Array[File] fastq_out = ["${outdir}/${project_name}_filtered_R1.fastq", "${outdir}/${project_name}_filtered_R2.fastq"]
+		File assemb_out = "${outdir}/${project_name}_megahit_assem.contigs.fa"
 
 	}
 }
