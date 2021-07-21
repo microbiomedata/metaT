@@ -1,16 +1,18 @@
 # metaT: The Metatranscriptome Workflow
 
 ## Summary
-This workflow is designed to analyze metatranscriptomes. It run in two parts. Part 1 (wdls/metaT_part1.wdl) takes in raw reads as input, filters out rRNA reads, and assemble filtered reads into transcripts. Part 2 requires GFF annotation files generated from the the [NMDC annotation workflow](https://github.com/microbiomedata/mg_annotation), assemblies and reads from part 1 to generate RPKMs for each feature in the GFF file.
+This workflow is designed to analyze metatranscriptomes.
 
 ![metatranscriptomics workflow](docs/workflow_metatranscriptomics.png)
 
 ## Version
-0.0.2
+0.0.3
+
 ## Third party tools and packages
 To run this workflow you will need a Docker (Docker ≥ v2.1.0.3) instance and cromwell. All the third party tools are pulled from Dockerhub.
 
 ```
+cromwell ≥ 54
 bbduk ≥ v38.44
 hisat2 ≥ 2.1
 Python ≥ v3.7.6
@@ -23,28 +25,27 @@ gffutils ≥ v0.10.1 (python package)
 ```
 
 ## Databases
-A ribokmer file. See [RQC](https://github.com/microbiomedata/ReadsQC) workflow for obtaining the file.
+metaT uses the same database uses for metagenome annotation. See README [here](https://github.com/microbiomedata/mg_annotation) for required databases.For QC databases see [here](https://github.com/microbiomedata/ReadsQC.)
+
 
 ## Running workflow
 
-### In a local computer/server with docker
-Running workflow in a local computer or server using docker. cromwell should be installed in the same directory as this file.
-
-```
-   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part1.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part1.json
-   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part2.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part2.json 
-```
-
-###  In cori with shifter 
-
+###  In a server with shifter
 The submit script will request a node and launch the Cromwell.  The Cromwell manages the workflow by using Shifter to run applications.
 
-```
-java -Dconfig.file=wdls/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part1.json -i test_data/test_input_cori.json wdls/metaT_part1.wdl
-java -Dconfig.file=wdls/shifter.conf -jar /path/to/cromwell-XX.jar run -m metadata_out_part2.json -i test_data/test_input_cori.json wdls/metaT_part2.wdl
 
 ```
-If you are running the workflow from a different directory, you will also need to copy the two folders(`scripts` and `pyp_metat`) to that folder.
+java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i input.json /full/path/to/wdls/metaT.wdl
+
+```
+<!-- ```
+   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part1.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part1.json
+   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part2.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part2.json 
+``` -->
+
+<!-- java -jar cromwell/cromwell-48.jar run wdls/nmdc-metaT_full.wdl -i test_data/small_test/test_small_input_fullpipe.json -l test_data/small_test/test_small_input_label.json -->
+
+
 ## Docker image
 
 The docker images: 
@@ -56,29 +57,19 @@ The docker images:
 
 ## Inputs
 
-### For Part 1
-raw reads: A Fastq file. Interleaved pairwise reads that have been processed using RQC.
-json: json file with paths to input and additional information (see below). Both part of the workflow uses same format of JSON.
-
-### For Part 2
-assembly : A FASTA file. Contigs assembled from Part of the workflow.
-json: json file with paths to input and additional information (see below)
-
 ```json
 {
-  "metat_omics.project_name": "test",
-  "metat_omics.no_of_cpus": 1,
-  "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
-  "metat_omics.ribo_kmer_file": "data/riboKmers20fused.fa.gz",
-  "metat_omics.metat_contig_fn": "test_data/test_assembly_contigs.fna",
-  "metat_omics.non_ribo_reads": [
-    "test_data/test_R1.fastq",
-    "test_data/test_R2.fastq"
-  ],
-  "metat_omics.ann_gff_fn": "test_data/test.gff"
+    "nmdc_metat.proj": "gold:Ga0370541",
+    "nmdc_metat.input_file": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/small_test/test_smaller_interleave.fastq.gz",
+    "nmdc_metat.git_url": "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1",
+    "nmdc_metat.url_base": "https: //data.microbiomedata.org/data/",
+    "nmdc_metat.outdir": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/test_small_out",
+    "nmdc_metat.resource": "NERSC - Cori",
+    "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
+    "nmdc_metat.rqc_database": "/global/cfs/cdirs/m3408/aim2/database/",
+    "nmdc_metat.annot_database": "/global/cfs/cdirs/m3408/aim2/database/img/",
+    "nmdc_metat.activity_id": "test-activity-id"
 }
-}
-
 ```
 
 ## Outputs
