@@ -4,26 +4,34 @@ import "functional-annotation.wdl" as fa
 workflow annotation {
   File    imgap_input_fasta
   String  imgap_project_id="GaXXXXXXX_contigs.fna"
-  String database_location="/cromwell_root/database"
+  String  database_location="/cromwell_root/database"
   String  imgap_project_type="metagenome"
   Int     additional_threads=16
+  String  container="bfoster1/img-omics:0.1.7"
 
   # structural annotation
   Boolean sa_execute=true
+
   # functional annotation
   Boolean fa_execute=true
 
-  call split {input: infile=imgap_input_fasta}
+  call split {
+    input: infile=imgap_input_fasta,
+           container=container
+  }
+
   scatter(pathname in split.files) {
     if(sa_execute) {
       call sa.s_annotate {
         input:
+          cmzscore = split.cmzscore,
+          imgap_input_fasta = imgap_input_fasta,
           imgap_input_fasta = pathname,
           imgap_project_id = imgap_project_id,
           additional_threads = additional_threads,
           imgap_project_type = imgap_project_type,
           database_location = database_location,
-          rfam_execute = false
+          container=container
       }
     }
 
@@ -36,7 +44,8 @@ workflow annotation {
           additional_threads = additional_threads,
           input_fasta = s_annotate.proteins,
           database_location = database_location,
-          sa_gff = s_annotate.gff
+          sa_gff = s_annotate.gff,
+          container=container
       }
     }
   }
@@ -63,13 +72,15 @@ workflow annotation {
        smart_domtblouts = f_annotate.smart_domtblout,
        supfam_domtblouts = f_annotate.supfam_domtblout,
        cath_funfam_domtblouts = f_annotate.cath_funfam_domtblout,
-       crt_crisprs_s = s_annotate.crisprs
+       crt_crisprs_s = s_annotate.crisprs,
+       container=container
   }
   call final_stats {
     input:
        project_id = imgap_project_id,
        structural_gff = merge_outputs.structural_gff,
-       input_fasta = imgap_input_fasta
+       input_fasta = imgap_input_fasta,
+       container=container
   }
   output {
     File? proteins_faa = merge_outputs.proteins_faa
@@ -95,6 +106,20 @@ workflow annotation {
     File? product_names_tsv = merge_outputs.product_names_tsv
     File? crt_crisprs = merge_outputs.crt_crisprs
   }
+  parameter_meta {
+    imgap_input_fasta: "assembled contig file in fasta format"
+    additional_threads: "optional for number of threads: 16"
+    database_location: "File path to database. This should be /refdata for container runs"
+    imgap_project_id: "Project ID string.  This will be appended to the gene ids"
+    imgap_project_type: "Project Type (isolate, metagenome) defaults to metagenome"
+    container: "Default container to use"
+  }
+  meta {
+    author: "Brian Foster"
+    email: "bfoster@lbl.gov"
+    version: "1.0.0"
+  }
+
 
 }
 
@@ -102,20 +127,26 @@ task split{
    File infile
    String blocksize=10
    String zfile="zscore.txt"
+   String cmzfile="cmzscore.txt"
+   String container
 
    command{
+     set -euo pipefail
      /opt/omics/bin/split.py ${infile} ${blocksize} .
      echo $(egrep -v "^>" ${infile} | tr -d '\n' | wc -m) / 500 | bc > ${zfile}
+     echo "scale=6; ($(grep -v '^>' ${infile} | tr -d '\n' | wc -m) * 2) / 1000000" | bc -l > ${cmzfile}
    }
 
    output{
      Array[File] files = read_lines('splits_out.fof')
      String zscore = read_string(zfile)
+     String cmzscore = read_string(cmzfile)
    }
    runtime {
      memory: "120 GiB"
      cpu:  16
      maxRetries: 1
+     docker: container
    }
 }
 
@@ -143,6 +174,7 @@ task merge_outputs {
   Array[File?] cath_funfam_domtblouts
   Array[File?] product_name_tsvs
   Array[File?] crt_crisprs_s
+  String container
 
   command {
      cat ${sep=" " structural_gffs} > "${project_id}_structural_annotation.gff"
@@ -193,6 +225,12 @@ task merge_outputs {
     File product_names_tsv = "${project_id}_product_names.tsv"
     File crt_crisprs = "${project_id}_crt.crisprs"
   }
+  runtime {
+    memory: "2 GiB"
+    cpu:  4
+    maxRetries: 1
+    docker: container
+  }
 
 # TODO:
 #contig_names_mapping_tsv
@@ -206,8 +244,10 @@ task final_stats {
   String project_id
   String fna="${project_id}_contigs.fna"
   File   structural_gff
+  String container
 
   command {
+    set -euo pipefail
     ln ${input_fasta} ${fna}
     ${bin} ${fna} ${structural_gff}
   }
@@ -219,6 +259,7 @@ task final_stats {
   runtime {
     time: "0:10:00"
     memory: "86G"
+    docker: container
   }
 }
 
