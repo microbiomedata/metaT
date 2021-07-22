@@ -72,17 +72,17 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 }
 ```
 ### Input option descriptions:
-- *proj*: A unique name for your project or sample.
-- *input_file*: Full path to the fastq file. The file must be intereleaved paired end fastq.
-- *git_url*: A link to this version. Update it based on which version you downloaded.
-- *url_base*: A web location where all the data objects from this run will be stored.
-- *url_root*: Same as url_base.
-- *outdir*: Full path of the folder where all the important outputs will be saved.
-- *resource*: A short description or name of where the data was processed.
-- *rqc_database*: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
-- *annot_database*: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
-- *activity_id*: A unique ID for the project.
-- *metat_folder*: Full path to metaT folder.
+- `proj`: A unique name for your project or sample.
+- `input_file`: Full path to the fastq file. The file must be intereleaved paired end fastq.
+- `git_url`: A link to this version. Update it based on which version you downloaded.
+- `url_base`: A web location where all the data objects from this run will be stored.
+- `url_root`: Same as url_base.
+- `outdir`: Full path of the folder where all the important outputs will be saved.
+- `resource`: A short description or name of where the data was processed.
+- `rqc_database`: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
+- `annot_database`: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
+- `activity_id`: A unique ID for the project.
+- `metat_folder`: Full path to metaT folder.
 
 ## Outputs
 All outputs can be found in the `outdir` folder. There are following subfolders:
@@ -96,22 +96,19 @@ All outputs can be found in the `outdir` folder. There are following subfolders:
 The output file is a JSON formatted file called `out.json` with JSON records that contains RPKMs, reads, and information from annotation. An example JSON record:
 ```json
         {
-            "read_count": 5,
-            "rpkm": 4.642,
+            "read_count": 2,
+            "rpkm": 750750.751,
             "featuretype": "CDS",
-            "seqid": "seqid_8_10",
-            "id": "seq_327",
+            "seqid": "contig_3",
+            "id": "contig_3_126_347",
             "source": "GeneMark.hmm_2 v1.05",
-            "start": 10,
-            "end": 327,
-            "length": 318,
+            "start": 126,
+            "end": 347,
+            "length": 222,
             "strand": "+",
             "frame": "0",
             "extra": [],
-            "cog": "COG0208",
-            "ko": "KO:K00526",
-            "ec_number": "EC:1.17.4.1",
-            "product": "ribonucleoside_diphosphate reductase beta chain"
+            "product": "hypothetical protein"
         }
 
 ```
@@ -136,7 +133,7 @@ git checkout full_wdl_v1
 
  ```
 
-### Step 2
+### Step 2:
 
 Create or edit an input.json file using `test_data/test_small_input_fullpipe.json` as a template.
 
