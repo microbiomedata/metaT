@@ -72,25 +72,25 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 }
 ```
 ### Input option descriptions:
-**proj**: A unique name for your project or sample.
-**input_file**: Full path to the fastq file. The file must be intereleaved paired end fastq.
-**git_url**: A link to this version. Update it based on which version you downloaded.
-**url_base**: A web location where all the data objects from this run will be stored.
-**url_root**: Same as url_base.
-**outdir**: Full path of the folder where all the important outputs will be saved.
-**resource**: A short description or name of where the data was processed.
-**rqc_database**: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
-**annot_database**: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
-**activity_id**: A unique ID for the project.
-**metat_folder**: Full path to metaT folder.
+- *proj*: A unique name for your project or sample.
+- *input_file*: Full path to the fastq file. The file must be intereleaved paired end fastq.
+- *git_url*: A link to this version. Update it based on which version you downloaded.
+- *url_base*: A web location where all the data objects from this run will be stored.
+- *url_root*: Same as url_base.
+- *outdir*: Full path of the folder where all the important outputs will be saved.
+- *resource*: A short description or name of where the data was processed.
+- *rqc_database*: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
+- *annot_database*: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
+- *activity_id*: A unique ID for the project.
+- *metat_folder*: Full path to metaT folder.
 
 ## Outputs
 All outputs can be found in the `outdir` folder. There are following subfolders:
-`annotation`: contains gff files from annotation run.
-`assembly`: contains FASTA fils from assembly.
-`mapback`: BAM file where reads were mapped back to the contigs.
-`metat_output`: A JSON file that has records for feature, their annotations, read counts from featurecount, and FPKM values. 
-`qa`: contains cleaned reads and a file with associated statistics.
+- `outdir/annotation`: contains gff files from annotation run.
+- `outdir/assembly`: contains FASTA fils from assembly.
+- `outdir/mapback`: BAM file where reads were mapped back to the contigs.
+- `outdir/metat_output`: A JSON file that has records for feature, their annotations, read counts from featurecount, and FPKM values. 
+- `outdir/qa`: contains cleaned reads and a file with associated statistics.
 
 # Output JSON
 The output file is a JSON formatted file called `out.json` with JSON records that contains RPKMs, reads, and information from annotation. An example JSON record:
