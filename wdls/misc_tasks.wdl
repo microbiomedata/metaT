@@ -100,8 +100,10 @@ task dockcreate_gffdb{
 
 task collect_output{
 	Array[File] out_files
+	String prefix
 
 	command <<<
+		out_file = sub(prefix, "_out.json", "")
 		python <<OEF
 		import json
 		result = []
@@ -109,7 +111,7 @@ task collect_output{
 		for f in list_of_fls:
 			with open(f, "rb") as infile:
 				result.append(json.load(infile))
-		with open("output.json", "w") as outfile:
+		with open(sub(prefix, "_out.json", ""), "w") as outfile:
 			json.dump(result, outfile, indent=4)
 		OEF
 	>>>
@@ -120,23 +122,25 @@ task collect_output{
 	}
 
 	output{
-		File out_json_file = "output.json"
+		File out_json_file = sub(prefix, "_out.json", "")
 	}
 }
 
 task dockcollect_output{
 	Array[File] out_files
+	String prefix
 	String DOCKER
 
 	command <<<
 		python <<OEF
 		import json
+		out_file = "${prefix}" + "_out.json"
 		result = []
 		list_of_fls = ['${sep="','" out_files}']
 		for f in list_of_fls:
 			with open(f, "rb") as infile:
 				result.append(json.load(infile))
-		with open("output.json", "w") as outfile:
+		with open(out_file, "w") as outfile:
 			json.dump(result, outfile, indent=4)
 		OEF
 	>>>
@@ -146,7 +150,7 @@ task dockcollect_output{
 	}
 
 	output{
-		File out_json_file = "output.json"
+		File out_json_file = prefix + "_out.json"
 	}
 }
 
@@ -165,4 +169,110 @@ task split_fastq{
 		File out_r1_file = "R1.fastq"
 		File out_r2_file = "R2.fastq"
 	}
+}
+
+task stage {
+#    String container
+   String proj
+   String prefix=sub(proj, ":", "_")
+   String target="${prefix}.fastq.gz"
+   String input_file
+
+   command{
+       set -e
+       if [ $( echo ${input_file}|egrep -c "https*:") -gt 0 ] ; then
+           wget ${input_file} -O ${target}
+       else
+           cp ${input_file} ${target}
+       fi
+       date --iso-8601=seconds > start.txt
+   }
+
+   output{
+      File read = "${target}"
+      String start = read_string("start.txt")
+      String pref = "${prefix}"
+   }
+   runtime {
+     memory: "1 GiB"
+    #  cpu:  2
+    #  maxRetries: 1
+    #  docker: container
+   }
+}
+
+task split_interleaved_fastq{
+    File reads
+    String container
+    String? memory = "4G"
+    String output1 = "input.left.fastq.gz"
+    String output2 = "input.right.fastq.gz"
+
+    runtime {
+        docker: container
+        mem: "4 GiB"
+        cpu:  1
+    }
+    command {
+         reformat.sh -Xmx${default="10G" memory} in=${reads} out1=${output1} out2=${output2}
+    }
+
+    output {
+            Array[File] outFastq = [output1, output2]
+    }
+}
+
+
+
+task finish_metat {
+   String container
+   String start
+   String activity_id
+   String resource
+   String url_base
+   String git_url
+   File hisat2_bam
+   File out_json
+   File annotation_proteins_faa
+   File annotation_structural_gff
+   File annotation_functional_gff
+   File annotation_ko_tsv
+   File annotation_ec_tsv
+   File annotation_cog_gff
+   File annotation_pfam_gff
+   File annotation_tigrfam_gff
+   File annotation_smart_gff
+   File annotation_supfam_gff
+   File annotation_cath_funfam_gff
+   File annotation_ko_ec_gff
+   String outdir
+   String qadir="${outdir}/qa/"
+   String assemdir="${outdir}/assembly/"
+   String annodir="${outdir}/annotation/"
+   String mapback="${outdir}/mapback/"
+   String out_jsons="${outdir}/metat_output/"
+
+
+   command{
+	   set -e
+	   mkdir -p ${annodir}
+	   end=`date --iso-8601=seconds`
+		nmdc gff2json ${annotation_functional_gff} -of features.json -oa annotations.json -ai ${activity_id}
+       	cp ${annotation_proteins_faa} ${annotation_structural_gff} ${annotation_functional_gff} \
+          ${annotation_ko_tsv} ${annotation_ec_tsv} ${annotation_cog_gff} ${annotation_pfam_gff} ${annotation_tigrfam_gff} \
+          ${annotation_smart_gff} ${annotation_supfam_gff} ${annotation_cath_funfam_gff} ${annotation_ko_ec_gff} \
+          ${annodir}/
+		cp features.json annotations.json ${annodir}/
+		mkdir -p ${mapback}
+		cp ${hisat2_bam} ${mapback}/
+		mkdir -p ${out_jsons}
+		cp ${out_json} ${out_jsons}/
+   }
+
+   runtime {
+     memory: "10 GiB"
+     cpu:  4
+     maxRetries: 1
+     docker: container
+   }
 }

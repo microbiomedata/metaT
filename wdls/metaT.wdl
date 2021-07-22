@@ -110,23 +110,25 @@ workflow nmdc_metat {
 		}
 	}
 
-    call mt.dockcollect_output{
+    call mt.dockcollect_output as mdo {
 		input: out_files = tdc.out_json_file,
+        prefix=sub(proj, ":", "_"),
 		DOCKER = metat_container
 	}
 
     call mt.finish_metat as mfm {
-    input: container=metat_container,
+    input: container="scanon/nmdc-meta:v0.0.1",
            start=stage.start,
            resource=resource,
            url_base=url_base,
            git_url=git_url,
-           activity_id=activity_id,
-           read = stage.read,
-           filtered = qc.filtered[0],
-           filtered_stats = qc.stats[0],
-           fasta=asm.assem_fna_file,
+           activity_id="test",
+        #    read = stage.read,
+        #    filtered = qc.filtered[0],
+        #    filtered_stats = qc.stats[0],
+        #    fasta=asm.assem_fna_file,
            hisat2_bam=h2m.map_bam,
+           out_json=mdo.out_json_file,
            annotation_proteins_faa=iap.proteins_faa,
            annotation_functional_gff=iap.functional_gff,
            annotation_structural_gff=iap.structural_gff,
