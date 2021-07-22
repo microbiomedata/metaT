@@ -67,7 +67,8 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
     "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
     "nmdc_metat.rqc_database": "/global/cfs/cdirs/m3408/aim2/database/",
     "nmdc_metat.annot_database": "/global/cfs/cdirs/m3408/aim2/database/img/",
-    "nmdc_metat.activity_id": "test-activity-id"
+    "nmdc_metat.activity_id": "test-activity-id",
+    "nmdc_metat.metat_folder": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT"
 }
 ```
 ### Input option descriptions:
@@ -81,7 +82,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 **rqc_database**: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
 **annot_database**: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
 **activity_id**: A unique ID for the project.
-
+**metat_folder**: Full path to metaT folder.
 
 ## Outputs
 All outputs can be found in the `outdir` folder. There are following subfolders:
