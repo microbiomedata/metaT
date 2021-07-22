@@ -137,11 +137,13 @@ git checkout full_wdl_v1
 
 ### Step 2
 
+Create or edit an input.json file using `test_data/test_small_input_fullpipe.json` as a template.
+
 - `cd` into the metaT folder and then run the following command. You must have shifter and cromwell downloaded and installed.
 
 ```
 cd metaT
 
-java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i input.json /full/path/to/wdls/metaT.wdl
+java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i /full/path/to/metaT/test_data/test_small_input_fullpipe.json /full/path/to/metaT/wdls/metaT.wdl
 ```
 <!-- #TODO add documentation, get stuff from BIN -->

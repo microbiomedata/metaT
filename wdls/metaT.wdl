@@ -20,8 +20,9 @@ workflow nmdc_metat {
     String  outdir
     String  rqc_database
     String  annot_database
-    File edgeR="scripts/edgeR.R"
-    File py_pack_path = "pyp_metat"
+    File metat_folder
+    # File edgeR="scripts/edgeR.R"
+    # File py_pack_path = "pyp_metat"
 
     call mt.stage as stage {
     input: input_file=input_file,
@@ -95,7 +96,7 @@ workflow nmdc_metat {
 		input: project_name = sub(proj, ":", "_"),
 		name_of_feat = feat,
 		fc_file = dock_featurecount.ct_tbl,
-                edgeR = edgeR,
+                edgeR = metat_folder + "/scripts/edgeR.R",
 		DOCKER = metat_container
 		}
         call tj.dock_convtojson as tdc{
@@ -105,7 +106,7 @@ workflow nmdc_metat {
 		pkm_sc_fn = dockcal_scores.sc_tbl,
 		name_of_feat = feat,
 		gff_db_fn = dockcreate_gffdb.gff_db_fn,
-                py_pack_path = py_pack_path,
+                py_pack_path = metat_folder + "/pyp_metat",
 		DOCKER = metat_container
 		}
 	}
