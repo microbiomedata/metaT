@@ -46,14 +46,13 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 <!-- java -jar cromwell/cromwell-48.jar run wdls/nmdc-metaT_full.wdl -i test_data/small_test/test_small_input_fullpipe.json -l test_data/small_test/test_small_input_label.json -->
 
 
-## Docker image
+## Docker images
 
-The docker images: 
 - `microbiomedata/meta_t:latest`. 
-  The `Dockerfile` can be found in `Docker/metatranscriptomics/` directory. 
+`Dockerfile` can be found in `Docker/metatranscriptomics/` directory. 
 - `intelliseqngs/hisat2:1.2.1`
 - `microbiomedata/bbtools:38.90`
-
+- `scanon/nmdc-meta:v0.0.1`
 
 ## Inputs
 
@@ -71,12 +70,28 @@ The docker images:
     "nmdc_metat.activity_id": "test-activity-id"
 }
 ```
+### Input option descriptions:
+**proj**: A unique name for your project or sample.
+**input_file**: Full path to the fastq file. The file must be intereleaved paired end fastq.
+**git_url**: A link to this version. Update it based on which version you downloaded.
+**url_base**: A web location where all the data objects from this run will be stored.
+**url_root**: Same as url_base.
+**outdir**: Full path of the folder where all the important outputs will be saved.
+**resource**: A short description or name of where the data was processed.
+**rqc_database**: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
+**annot_database**: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
+**activity_id**: A unique ID for the project.
+
 
 ## Outputs
-All outputs can be found in the folder created by cromwell.
-### From Part 1
-Ribosome reads filtered fastqs (`filtered_R1.fastq` and `filtered_R2.fastq`) and assemblies.
-### From Part 2
+All outputs can be found in the `outdir` folder. There are following subfolders:
+`annotation`: contains gff files from annotation run.
+`assembly`: contains FASTA fils from assembly.
+`mapback`: BAM file where reads were mapped back to the contigs.
+`metat_output`: A JSON file that has records for feature, their annotations, read counts from featurecount, and FPKM values. 
+`qa`: contains cleaned reads and a file with associated statistics.
+
+# Output JSON
 The output file is a JSON formatted file called `out.json` with JSON records that contains RPKMs, reads, and information from annotation. An example JSON record:
 ```json
         {
@@ -100,4 +115,33 @@ The output file is a JSON formatted file called `out.json` with JSON records tha
 
 ```
 
+## Test 
+To test the workflow, we have provided a small test dataset and a step by step guidance below:
+
+### Step 1:
+
+- Download the latest version of the metaT workflow.
+
+```
+
+git clone https://github.com/microbiomedata/metaT.git
+
+```
+
+- Change the branch of the repo from `main` to `full_wdl_v1`
+
+ ```
+git checkout full_wdl_v1
+
+ ```
+
+### Step 2
+
+- `cd` into the metaT folder and then run the following command. You must have shifter and cromwell downloaded and installed.
+
+```
+cd metaT
+
+java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i input.json /full/path/to/wdls/metaT.wdl
+```
 <!-- #TODO add documentation, get stuff from BIN -->
