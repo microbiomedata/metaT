@@ -172,7 +172,7 @@ task split_fastq{
 }
 
 task stage {
-#    String container
+   String container
    String proj
    String prefix=sub(proj, ":", "_")
    String target="${prefix}.fastq.gz"
@@ -195,9 +195,9 @@ task stage {
    }
    runtime {
      memory: "1 GiB"
-    #  cpu:  2
-    #  maxRetries: 1
-    #  docker: container
+     cpu:  2
+     maxRetries: 1
+     docker: container
    }
 }
 

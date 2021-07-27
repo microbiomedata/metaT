@@ -18,7 +18,7 @@ workflow nmdc_metat {
     String resource
     File    input_file
     String  outdir
-    String  rqc_database
+    String  database
     String  annot_database
     File metat_folder
     # File edgeR="scripts/edgeR.R"
@@ -26,7 +26,8 @@ workflow nmdc_metat {
 
     call mt.stage as stage {
     input: input_file=input_file,
-           proj=proj
+           proj=proj,
+           container=metat_container
     }
     
     call rqc.jgi_rqcfilter as qc {
@@ -34,7 +35,7 @@ workflow nmdc_metat {
            outdir="${outdir}/qa/",
            threads=32,
            memory="64G",
-           database=rqc_database
+           database=database
     }
 
     call ma.megahit_assembly as asm {
@@ -145,11 +146,10 @@ workflow nmdc_metat {
            outdir=outdir
   }
 
-
     meta {
         author: "Migun Shakya, B10, LANL"
         email: "migun@lanl.gov"
         version: "0.0.2"
     }
-}
 
+}
