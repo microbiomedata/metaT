@@ -19,7 +19,7 @@ workflow nmdc_metat {
     File    input_file
     String  outdir
     String  database
-    String  annot_database
+    Int threads
     File metat_folder
     # File edgeR="scripts/edgeR.R"
     # File py_pack_path = "pyp_metat"
@@ -33,7 +33,7 @@ workflow nmdc_metat {
     call rqc.jgi_rqcfilter as qc {
     input: input_files=[stage.read],
            outdir="${outdir}/qa/",
-           threads=32,
+           threads=threads,
            memory="64G",
            database=database
     }
@@ -42,12 +42,12 @@ workflow nmdc_metat {
     input: rqc_clean_reads = qc.filtered,
            assem_out_fdr = "${outdir}/assembly/",
            assem_out_prefix = sub(proj, ":", "_"),
-           no_of_cpus = 32,
+           no_of_cpus = threads,
            DOCKER = metat_container
   }
 
     call bh.dock_BuildHisat2 as bhd{
-        input:no_of_cpu = 32,
+        input:no_of_cpu = threads,
         assem_contig_fna = asm.assem_fna_file
     }
     call mt.split_interleaved_fastq as sif {
@@ -58,14 +58,15 @@ workflow nmdc_metat {
 
     call mh.hisat2_mapping as h2m{
         input:rna_clean_reads = sif.outFastq,
-        no_of_cpus = 32,
+        no_of_cpus = threads,
         hisat2_ref_dbs = bhd.hs,
         hisat_db_name = bhd.db,
     }
   call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
            imgap_input_fasta=asm.assem_fna_file,
-           database_location=annot_database
+           database_location=database + "img/",
+           additional_threads=threads
     }
 	
     call mt.dockclean_gff as dcg{
@@ -86,7 +87,7 @@ workflow nmdc_metat {
     
     scatter (feat in ef.feats_in_gff) {
 		call fc.dock_featurecount{
-		input: no_of_cpu = 32,
+		input: no_of_cpu = threads,
 		project_name = sub(proj, ":", "_"),
 		gff_file_path = dcg.cln_gff_fl,
 		bam_file_path = h2m.map_bam,
