@@ -79,8 +79,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 - `url_root`: Same as url_base.
 - `outdir`: Full path of the folder where all the important outputs will be saved.
 - `resource`: A short description or name of where the data was processed.
-- `rqc_database`: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
-- `annot_database`: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
+- `database`: Full path to a folder where RQC (`RQCFilterData/`) and IMG (`img/`) annotation database are located.
 - `activity_id`: A unique ID for the project.
 - `metat_folder`: Full path to metaT folder.
 
@@ -116,32 +115,3 @@ The output file is a JSON formatted file called `out.json` with JSON records tha
 ## Test 
 To test the workflow, we have provided a small test dataset and a step by step guidance below:
 
-### Step 1:
-
-- Download the latest version of the metaT workflow.
-
-```
-
-git clone https://github.com/microbiomedata/metaT.git
-
-```
-
-- Change the branch of the repo from `main` to `full_wdl_v1`
-
- ```
-git checkout full_wdl_v1
-
- ```
-
-### Step 2:
-
-Create or edit an input.json file using `test_data/test_small_input_fullpipe.json` as a template.
-
-- `cd` into the metaT folder and then run the following command. You must have shifter and cromwell downloaded and installed.
-
-```
-cd metaT
-
-java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i /full/path/to/metaT/test_data/test_small_input_fullpipe.json /full/path/to/metaT/wdls/metaT.wdl
-```
-<!-- #TODO add documentation, get stuff from BIN -->
