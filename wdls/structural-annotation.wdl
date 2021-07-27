@@ -11,7 +11,7 @@ workflow s_annotate {
   String  imgap_project_type
   Int     additional_threads
   Boolean pre_qc_execute=false
-  Boolean trnascan_se_execute=true
+  Boolean trnascan_se_execute=false
   Boolean rfam_execute=false
   Boolean crt_execute=true
   Boolean prodigal_execute=true
