@@ -4,7 +4,7 @@ import "functional-annotation.wdl" as fa
 workflow annotation {
   File    imgap_input_fasta
   String  imgap_project_id="GaXXXXXXX_contigs.fna"
-  String  database_location="/cromwell_root/database"
+  String  database_location="/databases/img/"
   String  imgap_project_type="metagenome"
   Int     additional_threads=16
   String  container="bfoster1/img-omics:0.1.7"
