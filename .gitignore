@@ -1,5 +1,7 @@
+shane_chages/
 cromwell-workflow-logs/
 cromwell-executions/
+.Rhistory
 cromwell/
 *.buildinfo
 *.html
@@ -17,3 +19,10 @@ metadata_out.json
 *.bam
 *.gtf
 Notes.md
+shane_chages/*.wdl
+.DS_Store
+*.fa.gz
+sftp.json
+settings.json
+*.pyc
+*.zip

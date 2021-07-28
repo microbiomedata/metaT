@@ -1,14 +1,16 @@
-
 task megahit_assembly{
-	Array[File] rrna_clean_reads
+	Array[File] rqc_clean_reads
 	String assem_out_fdr
 	String assem_out_prefix
-	Int no_of_cpus
+    String prefix="contig"
+	Int no_of_cpus=32
 	String DOCKER
 
 #  parameter from https://www.nature.com/articles/s41597-019-0132-4
 	command <<<
-		megahit -1 "${rrna_clean_reads[0]}" -2 "${rrna_clean_reads[1]}" -t "${no_of_cpus}" -o "${assem_out_fdr}" --out-prefix "${assem_out_prefix}" --k-list 23,43,63,83,103,123
+		megahit --12 ${rqc_clean_reads[0]}  -t ${no_of_cpus} -o out/ --out-prefix mh --k-list 23,43,63,83,103,123
+        mkdir -p ${assem_out_fdr}
+		cat out/mh.contigs.fa |sed 's/>.*_/>${prefix}_/'|sed 's/ .*//' > ${assem_out_fdr}/${assem_out_prefix}.contigs.fa
 	>>>
 
 	meta {
@@ -17,6 +19,7 @@ task megahit_assembly{
 
 	runtime {
 		docker: DOCKER
+		cpu: no_of_cpus
 	}
 
 	output{

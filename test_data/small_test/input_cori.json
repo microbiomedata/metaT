@@ -1,0 +1,13 @@
+{
+    "nmdc_metat.proj": "gold:Ga0370541",
+    "nmdc_metat.input_file": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/small_test/test_smaller_interleave.fastq.gz",
+    "nmdc_metat.git_url": "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1",
+    "nmdc_metat.url_base": "https: //data.microbiomedata.org/data/",
+    "nmdc_metat.outdir": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/test_small_out",
+    "nmdc_metat.resource": "NERSC - Cori",
+    "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
+    "nmdc_metat.database": "/global/cfs/cdirs/m3408/aim2/database/",
+    "nmdc_metat.activity_id": "test-activity-id",
+    "nmdc_metat.threads": 64,
+    "nmdc_metat.metat_folder": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT"
+}

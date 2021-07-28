@@ -63,30 +63,29 @@
 # }
 
 task dock_BuildHisat2{
-	Int no_of_cpu
-	File assem_contig_fna
-	String DOCKER
+    Int no_of_cpu
+    File assem_contig_fna
 
-	meta {
-		description: "build reference index files for hisat2"
-	}
+    meta {
+        description: "build reference index files for hisat2"
+    }
 
-	command {
-		hisat2-build -q -p ${no_of_cpu} ${assem_contig_fna} megahit_hisat2
-		touch megahit_hisat2
-		
-	}
-	output {
-		Array[File] hs = ["megahit_hisat2.1.ht2", "megahit_hisat2.2.ht2",
-						"megahit_hisat2.3.ht2",
-					  	"megahit_hisat2.4.ht2",
-					  	"megahit_hisat2.5.ht2",
-					  	"megahit_hisat2.6.ht2",
-					  	"megahit_hisat2.7.ht2",
-					  	"megahit_hisat2.8.ht2"]
-		File db = "megahit_hisat2"
-	}
-	runtime {
-		docker: 'intelliseqngs/hisat2:1.2.1'
-	}
+    command {
+        hisat2-build -q -p ${no_of_cpu} ${assem_contig_fna} megahit_hisat2
+        touch megahit_hisat2
+        
+    }
+    output {
+        Array[File] hs = ["megahit_hisat2.1.ht2", "megahit_hisat2.2.ht2",
+                        "megahit_hisat2.3.ht2",
+                          "megahit_hisat2.4.ht2",
+                          "megahit_hisat2.5.ht2",
+                          "megahit_hisat2.6.ht2",
+                          "megahit_hisat2.7.ht2",
+                          "megahit_hisat2.8.ht2"]
+        File db = "megahit_hisat2"
+    }
+    runtime {
+        docker: 'intelliseqngs/hisat2:1.2.1'
+    }
 }
