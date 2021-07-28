@@ -7,6 +7,7 @@
     "nmdc_metat.resource": "NERSC - Cori",
     "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
     "nmdc_metat.database": "/global/cfs/cdirs/m3408/aim2/database/",
+    "nmdc_metat.annotation_database": "/global/cfs/cdirs/m3408/aim2/database/img/",
     "nmdc_metat.activity_id": "test-activity-id",
     "nmdc_metat.threads": 64,
     "nmdc_metat.metat_folder": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT"

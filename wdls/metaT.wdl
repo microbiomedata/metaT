@@ -19,6 +19,7 @@ workflow nmdc_metat {
     File    input_file
     String  outdir
     String  database
+    String annotation_database
     Int threads
     File metat_folder
     # File edgeR="scripts/edgeR.R"
@@ -65,7 +66,7 @@ workflow nmdc_metat {
   call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
            imgap_input_fasta=asm.assem_fna_file,
-           database_location=database + "img/",
+           database_location=annotation_database,
            additional_threads=threads
     }
 	
