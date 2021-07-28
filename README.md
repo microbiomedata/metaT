@@ -65,9 +65,9 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
     "nmdc_metat.outdir": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/test_small_out",
     "nmdc_metat.resource": "NERSC - Cori",
     "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
-    "nmdc_metat.rqc_database": "/global/cfs/cdirs/m3408/aim2/database/",
-    "nmdc_metat.annot_database": "/global/cfs/cdirs/m3408/aim2/database/img/",
+    "nmdc_metat.database": "/global/cfs/cdirs/m3408/aim2/database/",
     "nmdc_metat.activity_id": "test-activity-id",
+    "nmdc_metat.threads": 64,
     "nmdc_metat.metat_folder": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT"
 }
 ```
@@ -79,7 +79,12 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 - `url_root`: Same as url_base.
 - `outdir`: Full path of the folder where all the important outputs will be saved.
 - `resource`: A short description or name of where the data was processed.
-- `database`: Full path to a folder where RQC (`RQCFilterData/`) and IMG (`img/`) annotation database are located.
+- `database`: Full path to a folder where RQC (`RQCFilterData/`) and IMG (`img/`) annotation database are located. Within the `IMG` folder following folders are expected:
+```
+    Cath-FunFam  COG  IMG-NR  Pfam  Product_Name_Mappings  Rfam  SMART  SuperFamily  TIGRFAM
+```
+
+- `threads`: Number of threads.
 - `activity_id`: A unique ID for the project.
 - `metat_folder`: Full path to metaT folder.
 
@@ -113,5 +118,5 @@ The output file is a JSON formatted file called `out.json` with JSON records tha
 ```
 
 ## Test 
-To test the workflow, we have provided a small test dataset and a step by step guidance below:
+To test the workflow, we have provided a small test dataset and a step by step guidance. See `test_data` folder.
 

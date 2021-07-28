@@ -6,6 +6,7 @@
     "nmdc_metat.outdir": "/expanse/projects/nmdc/edge_app/test/metaT/out",
     "nmdc_metat.resource": "SDSC-expanse",
     "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
+    "nmdc_metat.database": "/expanse/projects/nmdc/refdata/",
     "nmdc_metat.activity_id": "michalT-test",
     "nmdc_metat.threads": 64,
     "nmdc_metat.metat_folder": "/expanse/projects/nmdc/edge_app/test/metaT/"
