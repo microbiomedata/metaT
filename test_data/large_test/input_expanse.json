@@ -1,0 +1,14 @@
+{
+    "nmdc_metat.proj": "SRR:SRR6324898",
+    "nmdc_metat.input_file": "https://portal.nersc.gov/cfs/m3408/test_data/SRR7877884-int-0.1.fastq.gz",
+    "nmdc_metat.git_url": "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1",
+    "nmdc_metat.url_base": "https://data.microbiomedata.org/data/",
+    "nmdc_metat.outdir": "/expanse/projects/nmdc/edge_app/test/metaT/out",
+    "nmdc_metat.resource": "SDSC - Expanse",
+    "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
+    "nmdc_metat.database": "/expanse/projects/nmdc/refdata/",
+    "nmdc_metat.annotation_database": "/databases/img/",
+    "nmdc_metat.activity_id": "michalT-large-test",
+    "nmdc_metat.threads": 64,
+    "nmdc_metat.metat_folder": "/expanse/projects/nmdc/edge_app/test/metaT/"
+}
