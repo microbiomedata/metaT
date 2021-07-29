@@ -53,6 +53,11 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 - `intelliseqngs/hisat2:1.2.1`
 - `microbiomedata/bbtools:38.90`
 - `scanon/nmdc-meta:v0.0.1`
+- `bfoster1/img-omics:0.1.7`
+- `scanon/im-trnascan:v0.0.1`
+- `scanon/im-last:v0.0.1`
+- `scanon/im-hmmsearch:v0.0.0`
+
 
 ## Inputs
 
@@ -83,7 +88,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 ```
     Cath-FunFam  COG  IMG-NR  Pfam  Product_Name_Mappings  Rfam  SMART  SuperFamily  TIGRFAM
 ```
-
+This folder should also be be set in the cromwell config file.
 - `threads`: Number of threads.
 - `activity_id`: A unique ID for the project.
 - `metat_folder`: Full path to metaT folder.
