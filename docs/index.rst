@@ -131,7 +131,7 @@ Below is an example of the output directory files with descriptions to the right
 Version History 
 ---------------
 - 0.0.2 (release date 01/14/2021; previous versions: 0.0.1)
-
+- 0.0.3 (release date 07/28/2021; previous versions: 0.0.2)
 Points of contact
 -----------------
 - Author: Migun Shakya <migun@lanl.gov>
