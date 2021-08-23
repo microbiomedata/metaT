@@ -65,8 +65,8 @@ workflow nmdc_metat {
   call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
            imgap_input_fasta=asm.assem_fna_file,
-           database_location=database + "img/",
-           additional_threads=threads
+           database_location="/databases/img/",
+           #additional_threads=threads
     }
 	
     call mt.dockclean_gff as dcg{
