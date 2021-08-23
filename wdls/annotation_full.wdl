@@ -7,7 +7,7 @@ workflow annotation {
   String  database_location="/cromwell_root/database"
   String  imgap_project_type="metagenome"
   Int     additional_threads=16
-  String  container="bfoster1/img-omics:0.1.7"
+  String  container="bfoster1/img-omics:0.1.9"
 
   # structural annotation
   Boolean sa_execute=true
