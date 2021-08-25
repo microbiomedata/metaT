@@ -1,7 +1,6 @@
 shane_chages/
 cromwell-workflow-logs/
 cromwell-executions/
-test_data/large_test
 .Rhistory
 cromwell/
 *.buildinfo

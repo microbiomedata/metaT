@@ -19,6 +19,7 @@ workflow nmdc_metat {
     File    input_file
     String  outdir
     String  database
+    # String annotation_database
     Int threads
     File metat_folder
     # File edgeR="scripts/edgeR.R"
@@ -67,6 +68,7 @@ workflow nmdc_metat {
            imgap_input_fasta=asm.assem_fna_file,
            database_location="/databases/img/",
            #additional_threads=threads
+
     }
 	
     call mt.dockclean_gff as dcg{
@@ -150,7 +152,7 @@ workflow nmdc_metat {
     meta {
         author: "Migun Shakya, B10, LANL"
         email: "migun@lanl.gov"
-        version: "0.0.2"
+        version: "0.0.3"
     }
 
 }

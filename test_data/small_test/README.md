@@ -45,3 +45,4 @@ Create or edit an input.json file using `test_data/test_small_input_fullpipe.jso
 cd metaT
 
 java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i /full/path/to/metaT/test_data/test_small_input_fullpipe.json /full/path/to/metaT/wdls/metaT.wdl
+

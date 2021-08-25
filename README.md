@@ -53,6 +53,11 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 - `intelliseqngs/hisat2:1.2.1`
 - `microbiomedata/bbtools:38.90`
 - `scanon/nmdc-meta:v0.0.1`
+- `bfoster1/img-omics:0.1.7`
+- `scanon/im-trnascan:v0.0.1`
+- `scanon/im-last:v0.0.1`
+- `scanon/im-hmmsearch:v0.0.0`
+
 
 ## Inputs
 
@@ -65,9 +70,9 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
     "nmdc_metat.outdir": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT/test_data/test_small_out",
     "nmdc_metat.resource": "NERSC - Cori",
     "nmdc_metat.url_root": "https://data.microbiomedata.org/data/",
-    "nmdc_metat.rqc_database": "/global/cfs/cdirs/m3408/aim2/database/",
-    "nmdc_metat.annot_database": "/global/cfs/cdirs/m3408/aim2/database/img/",
+    "nmdc_metat.database": "/global/cfs/cdirs/m3408/aim2/database/",
     "nmdc_metat.activity_id": "test-activity-id",
+    "nmdc_metat.threads": 64,
     "nmdc_metat.metat_folder": "/global/cfs/cdirs/m3408/aim2/metatranscriptomics/metaT"
 }
 ```
@@ -79,8 +84,12 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 - `url_root`: Same as url_base.
 - `outdir`: Full path of the folder where all the important outputs will be saved.
 - `resource`: A short description or name of where the data was processed.
-- `rqc_database`: Full path to the folder where the RQC database is. RQC database folder must have `RQCFilterData` as its name.
-- `annot_database`: Full path to annotation database. Within this folder, it must have number of other folders. See `mg_annotation` repo for more details.
+- `database`: Full path to a folder where RQC (`RQCFilterData/`) and IMG (`img/`) annotation database are located. Within the `IMG` folder following folders are expected:
+```
+    Cath-FunFam  COG  IMG-NR  Pfam  Product_Name_Mappings  Rfam  SMART  SuperFamily  TIGRFAM
+```
+This folder should also be be set in the cromwell config file.
+- `threads`: Number of threads.
 - `activity_id`: A unique ID for the project.
 - `metat_folder`: Full path to metaT folder.
 
@@ -114,34 +123,5 @@ The output file is a JSON formatted file called `out.json` with JSON records tha
 ```
 
 ## Test 
-To test the workflow, we have provided a small test dataset and a step by step guidance below:
+To test the workflow, we have provided a small test dataset and a step by step guidance. See `test_data` folder.
 
-### Step 1:
-
-- Download the latest version of the metaT workflow.
-
-```
-
-git clone https://github.com/microbiomedata/metaT.git
-
-```
-
-- Change the branch of the repo from `main` to `full_wdl_v1`
-
- ```
-git checkout full_wdl_v1
-
- ```
-
-### Step 2:
-
-Create or edit an input.json file using `test_data/test_small_input_fullpipe.json` as a template.
-
-- `cd` into the metaT folder and then run the following command. You must have shifter and cromwell downloaded and installed.
-
-```
-cd metaT
-
-java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i /full/path/to/metaT/test_data/test_small_input_fullpipe.json /full/path/to/metaT/wdls/metaT.wdl
-```
-<!-- #TODO add documentation, get stuff from BIN -->
