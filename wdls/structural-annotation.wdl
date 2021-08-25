@@ -13,7 +13,6 @@ workflow s_annotate {
   Boolean pre_qc_execute=false
   Boolean trnascan_se_execute=true
   Boolean crt_execute=false
-  Boolean crt_execute=true
   Boolean prodigal_execute=true
   Boolean genemark_execute=true
   Boolean gff_and_fasta_stats_execute=true
