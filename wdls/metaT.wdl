@@ -58,7 +58,7 @@ workflow nmdc_metat {
       container="microbiomedata/bbtools:38.90"
     }
 
-    call bb.bbmpap_mapping as bbm{
+    call bb.bbmap_mapping as bbm{
         input:rna_clean_reads = sif.outFastq,
         no_of_cpus = threads,
         hisat2_ref_dbs = bhd.hs,
@@ -93,7 +93,7 @@ workflow nmdc_metat {
 		input: no_of_cpu = threads,
 		project_name = sub(proj, ":", "_"),
 		gff_file_path = dcg.cln_gff_fl,
-		bam_file_path = h2m.map_bam,
+		bam_file_path = bbm.map_bam,
 		name_of_feat = feat,
 		DOCKER = featcounts_container
 		}
@@ -133,7 +133,7 @@ workflow nmdc_metat {
         #    filtered = qc.filtered[0],
         #    filtered_stats = qc.stats[0],
         #    fasta=asm.assem_fna_file,
-           hisat2_bam=h2m.map_bam,
+           hisat2_bam=bbm.map_bam,
            out_json=mdo.out_json_file,
            annotation_proteins_faa=iap.proteins_faa,
            annotation_functional_gff=iap.functional_gff,
