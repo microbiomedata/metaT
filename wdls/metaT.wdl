@@ -3,14 +3,15 @@ import "rqcfilter.wdl" as rqc
 import "additional_qc.wdl" as aq
 import "metat_assembly.wdl" as ma
 import "build_hisat2.wdl" as bh
-import "map_hisat2.wdl" as mh
+import "map_bbmap.wdl" as bb
 import "annotation_full.wdl" as awf
-import "feature_counts.wdl" as fc
+import "feature_counts_updated.wdl" as fc
 import "calc_scores.wdl" as cs
 import "to_json.wdl" as tj
 
 workflow nmdc_metat {
     String  metat_container = "microbiomedata/meta_t:latest"
+    String  featcounts_container = "mbabinski17/featcounts:dev"
     String  proj
     String git_url
     String activity_id
@@ -48,7 +49,7 @@ workflow nmdc_metat {
   }
 
     call bh.dock_BuildHisat2 as bhd{
-        input:no_of_cpu = threads,
+        input:no_of_cpu = 32,
         assem_contig_fna = asm.assem_fna_file
     }
     call mt.split_interleaved_fastq as sif {
@@ -57,7 +58,7 @@ workflow nmdc_metat {
       container="microbiomedata/bbtools:38.90"
     }
 
-    call mh.hisat2_mapping as h2m{
+    call bb.bbmpap_mapping as bbm{
         input:rna_clean_reads = sif.outFastq,
         no_of_cpus = threads,
         hisat2_ref_dbs = bhd.hs,
@@ -94,14 +95,14 @@ workflow nmdc_metat {
 		gff_file_path = dcg.cln_gff_fl,
 		bam_file_path = h2m.map_bam,
 		name_of_feat = feat,
-		DOCKER = metat_container
+		DOCKER = featcounts_container
 		}
 		call cs.dockcal_scores{
 		input: project_name = sub(proj, ":", "_"),
 		name_of_feat = feat,
 		fc_file = dock_featurecount.ct_tbl,
                 edgeR = metat_folder + "/scripts/edgeR.R",
-		DOCKER = metat_container
+		DOCKER = featcounts_container
 		}
         call tj.dock_convtojson as tdc{
 		input:gff_file_path = dcg.cln_gff_fl,
