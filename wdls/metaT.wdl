@@ -62,7 +62,7 @@ workflow nmdc_metat {
         input:rna_clean_reads = sif.outFastq,
         no_of_cpus = threads,
         hisat2_ref_dbs = bhd.hs,
-        hisat_db_name = bhd.db,
+        assembly_fna = asm.assem_fna_file
     }
   call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
