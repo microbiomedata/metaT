@@ -64,7 +64,7 @@ workflow nmdc_metat {
         hisat2_ref_dbs = bhd.hs,
         assembly_fna = asm.assem_fna_file
     }
-  call awf.annotation as iap {
+    call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
            imgap_input_fasta=asm.assem_fna_file,
            database_location="/databases/img/",
@@ -78,12 +78,12 @@ workflow nmdc_metat {
 
 	}
 
-	call mt.dockextract_feats as ef {
+    call mt.dockextract_feats as ef {
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
 
-	call mt.dockcreate_gffdb{
+    call mt.dockcreate_gffdb{
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
