@@ -48,20 +48,20 @@ workflow nmdc_metat {
            DOCKER = metat_container
   }
 
-    call bh.dock_BuildHisat2 as bhd{
-        input:no_of_cpu = 32,
-        assem_contig_fna = asm.assem_fna_file
-    }
-    call mt.split_interleaved_fastq as sif {
-    input:
-      reads=qc.filtered[0],
-      container="microbiomedata/bbtools:38.90"
-    }
+#    call bh.dock_BuildHisat2 as bhd{
+#       input:no_of_cpu = 32,
+#        assem_contig_fna = asm.assem_fna_file
+#    }
+#    call mt.split_interleaved_fastq as sif {
+#    input:
+#      reads=qc.filtered[0],
+#      container="microbiomedata/bbtools:38.90"
+#    }
 
     call bb.bbmap_mapping as bbm{
-        input:rna_clean_reads = sif.outFastq,
-        no_of_cpus = threads,
-        hisat2_ref_dbs = bhd.hs,
+        input:rna_clean_reads = qc.filtered,
+        no_of_cpus = 16,
+#        hisat2_ref_dbs = bhd.hs,
         assembly_fna = asm.assem_fna_file
     }
     call awf.annotation as iap {
@@ -102,7 +102,7 @@ workflow nmdc_metat {
 		name_of_feat = feat,
 		fc_file = dock_featurecount.ct_tbl,
                 edgeR = metat_folder + "/scripts/edgeR.R",
-		DOCKER = featcounts_container
+		DOCKER = metat_container
 		}
         call tj.dock_convtojson as tdc{
 		input:gff_file_path = dcg.cln_gff_fl,
