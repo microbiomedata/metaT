@@ -3,14 +3,15 @@ import "rqcfilter.wdl" as rqc
 import "additional_qc.wdl" as aq
 import "metat_assembly.wdl" as ma
 import "build_hisat2.wdl" as bh
-import "map_hisat2.wdl" as mh
+import "map_bbmap.wdl" as bb
 import "annotation_full.wdl" as awf
-import "feature_counts.wdl" as fc
+import "feature_counts_updated.wdl" as fc
 import "calc_scores.wdl" as cs
 import "to_json.wdl" as tj
 
 workflow nmdc_metat {
     String  metat_container = "microbiomedata/meta_t:latest"
+    String  featcounts_container = "mbabinski17/featcounts:dev"
     String  proj
     String git_url
     String activity_id
@@ -47,23 +48,23 @@ workflow nmdc_metat {
            DOCKER = metat_container
   }
 
-    call bh.dock_BuildHisat2 as bhd{
-        input:no_of_cpu = threads,
-        assem_contig_fna = asm.assem_fna_file
-    }
-    call mt.split_interleaved_fastq as sif {
-    input:
-      reads=qc.filtered[0],
-      container="microbiomedata/bbtools:38.90"
-    }
+#    call bh.dock_BuildHisat2 as bhd{
+#       input:no_of_cpu = 32,
+#        assem_contig_fna = asm.assem_fna_file
+#    }
+#    call mt.split_interleaved_fastq as sif {
+#    input:
+#      reads=qc.filtered[0],
+#      container="microbiomedata/bbtools:38.90"
+#    }
 
-    call mh.hisat2_mapping as h2m{
-        input:rna_clean_reads = sif.outFastq,
-        no_of_cpus = threads,
-        hisat2_ref_dbs = bhd.hs,
-        hisat_db_name = bhd.db,
+    call bb.bbmap_mapping as bbm{
+        input:rna_clean_reads = qc.filtered,
+        no_of_cpus = 16,
+#        hisat2_ref_dbs = bhd.hs,
+        assembly_fna = asm.assem_fna_file
     }
-  call awf.annotation as iap {
+    call awf.annotation as iap {
     input: imgap_project_id=stage.pref,
            imgap_input_fasta=asm.assem_fna_file,
            database_location="/databases/img/",
@@ -77,12 +78,12 @@ workflow nmdc_metat {
 
 	}
 
-	call mt.dockextract_feats as ef {
+    call mt.dockextract_feats as ef {
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
 
-	call mt.dockcreate_gffdb{
+    call mt.dockcreate_gffdb{
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
@@ -92,9 +93,9 @@ workflow nmdc_metat {
 		input: no_of_cpu = threads,
 		project_name = sub(proj, ":", "_"),
 		gff_file_path = dcg.cln_gff_fl,
-		bam_file_path = h2m.map_bam,
+		bam_file_path = bbm.map_bam,
 		name_of_feat = feat,
-		DOCKER = metat_container
+		DOCKER = featcounts_container
 		}
 		call cs.dockcal_scores{
 		input: project_name = sub(proj, ":", "_"),
@@ -132,7 +133,7 @@ workflow nmdc_metat {
         #    filtered = qc.filtered[0],
         #    filtered_stats = qc.stats[0],
         #    fasta=asm.assem_fna_file,
-           hisat2_bam=h2m.map_bam,
+           hisat2_bam=bbm.map_bam,
            out_json=mdo.out_json_file,
            annotation_proteins_faa=iap.proteins_faa,
            annotation_functional_gff=iap.functional_gff,
