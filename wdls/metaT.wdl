@@ -18,7 +18,7 @@ workflow nmdc_metat {
     String url_base
     String resource
     File    input_file
-    String  outdir
+    String  outdir 
     String  database
     # String annotation_database
     Int threads
@@ -114,14 +114,36 @@ workflow nmdc_metat {
                 py_pack_path = metat_folder + "/pyp_metat",
 		DOCKER = metat_container
 		}
-	}
-
+	
+                call cs.dockcal_scores as cs2{
+                input: project_name = sub(proj, ":", "_"),
+                name_of_feat = feat,
+                fc_file = dock_featurecount.ct_tbl2,
+                edgeR = metat_folder + "/scripts/edgeR.R",
+                DOCKER = metat_container
+                }
+        call tj.dock_convtojson as tdc2{
+                input:gff_file_path = dcg.cln_gff_fl,
+                fasta_file_name = asm.assem_fna_file,
+                rd_count_fn = dock_featurecount.ct_tbl2,
+                pkm_sc_fn = cs2.sc_tbl,
+                name_of_feat = feat,
+                gff_db_fn = dockcreate_gffdb.gff_db_fn,
+                py_pack_path = metat_folder + "/pyp_metat",
+                DOCKER = metat_container
+                }
+        }
     call mt.dockcollect_output as mdo {
 		input: out_files = tdc.out_json_file,
         prefix=sub(proj, ":", "_"),
 		DOCKER = metat_container
 	}
 
+    call mt.dockcollect_output2 as mdo2 {
+                input: out_files = tdc2.out_json_file,
+        prefix=sub(proj, ":", "_"),
+                DOCKER = metat_container
+        }
     call mt.finish_metat as mfm {
     input: container="scanon/nmdc-meta:v0.0.1",
            start=stage.start,
@@ -135,6 +157,7 @@ workflow nmdc_metat {
         #    fasta=asm.assem_fna_file,
            hisat2_bam=bbm.map_bam,
            out_json=mdo.out_json_file,
+	   out_json2=mdo2.out_json_file2,
            annotation_proteins_faa=iap.proteins_faa,
            annotation_functional_gff=iap.functional_gff,
            annotation_structural_gff=iap.structural_gff,
