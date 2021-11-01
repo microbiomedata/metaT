@@ -122,7 +122,7 @@ task collect_output{
 	}
 
 	output{
-		File out_json_file = sub(prefix, "_out.json", "")
+		File out_json_file = sub(prefix, "_antisense_out.json", "")
 	}
 }
 
@@ -134,7 +134,7 @@ task dockcollect_output{
 	command <<<
 		python <<OEF
 		import json
-		out_file = "${prefix}" + "_out.json"
+		out_file = "${prefix}" + "_sense_out.json"
 		result = []
 		list_of_fls = ['${sep="','" out_files}']
 		for f in list_of_fls:
@@ -150,10 +150,37 @@ task dockcollect_output{
 	}
 
 	output{
-		File out_json_file = prefix + "_out.json"
+		File out_json_file = prefix + "_sense_out.json"
 	}
 }
 
+task dockcollect_output2{
+        Array[File] out_files
+        String prefix
+        String DOCKER
+
+        command <<<
+                python <<OEF
+                import json
+                out_file = "${prefix}" + "_antisense_out.json"
+                result = []
+                list_of_fls = ['${sep="','" out_files}']
+                for f in list_of_fls:
+                        with open(f, "rb") as infile:
+                                result.append(json.load(infile))
+                with open(out_file, "w") as outfile:
+                        json.dump(result, outfile, indent=4)
+                OEF
+        >>>
+
+        runtime {
+                docker: DOCKER
+        }
+
+        output{
+                File out_json_file2 = prefix + "_antisense_out.json"
+        }
+}
 
 
 task split_fastq{
@@ -233,6 +260,7 @@ task finish_metat {
    String git_url
    File hisat2_bam
    File out_json
+   File out_json2
    File annotation_proteins_faa
    File annotation_structural_gff
    File annotation_functional_gff
@@ -266,7 +294,7 @@ task finish_metat {
 		mkdir -p ${mapback}
 		cp ${hisat2_bam} ${mapback}/
 		mkdir -p ${out_jsons}
-		cp ${out_json} ${out_jsons}/
+		cp ${out_json} ${out_json2} ${out_jsons}/
    }
 
    runtime {
