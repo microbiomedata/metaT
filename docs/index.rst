@@ -30,10 +30,10 @@ Workflow Dependencies
 ---------------------
 Third-party software (These are included in the Docker images.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. `BBTools v38.44 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
-2. `hisat2 v2.1 <http://daehwankimlab.github.io/hisat2/>`_. (License: GPL-3.0)
+1. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
+2. `BBMap v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
 3. `Python v3.7.6 <https://www.python.org/>`_.  (License: Python Software Foundation License)
-4. `featureCounts v2.0.1<http://subread.sourceforge.net/>`_. (License: GNU-GPL)
+4. `featureCounts v2.0.2<http://subread.sourceforge.net/>`_. (License: GNU-GPL)
 5. `R v3.6.0 <https://www.r-project.org/>`_. (License: GPL-2/GPL-3)
 6. `edgeR v3.28.1 <https://bioconductor.org/packages/release/bioc/html/edgeR.html>`_. (R package) (License: GPL (>=2))
 7. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
@@ -88,7 +88,7 @@ An example JSON file is shown below:
 
 Output
 ~~~~~~
-Part 1 output includes the rRNA-filtered reads and the assembled transcripts. Part 2 provides the main output: a JSON file that contain RPKMs, reads, and information from annotation for each feature. An example JSON record:
+Output is split up between steps of the workflow. The first half of the workflow will output rRNA-filtered reads and the assembled transcripts. After annotations and featureCount steps include a JSON file that contain RPKMs for both sense and antisense, reads, and information from annotation for each feature. An example of JSON outpus:
 
 .. code-block:: JSON
 
