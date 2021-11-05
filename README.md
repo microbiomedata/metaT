@@ -96,7 +96,7 @@ All outputs can be found in the `outdir` folder. There are following subfolders:
 - `outdir/annotation`: contains gff files from annotation run.
 - `outdir/assembly`: contains FASTA fils from assembly.
 - `outdir/mapback`: BAM file where reads were mapped back to the contigs.
-- `outdir/metat_output`: A JSON file that has records for feature, their annotations, read counts from featurecount, and FPKM values. 
+- `outdir/metat_output`: Two JSON files for sense and antisense that have records for feature, their annotations, read counts from featurecount, and FPKM values. 
 - `outdir/qa`: contains cleaned reads and a file with associated statistics.
 
 # Output JSON
