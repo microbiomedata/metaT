@@ -49,8 +49,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 
 - `microbiomedata/meta_t:latest`. 
 `Dockerfile` can be found in `Docker/metatranscriptomics/` directory. 
-- `intelliseqngs/hisat2:1.2.1`
-- `microbiomedata/bbtools:38.90`
+- `microbiomedata/bbtools:38.94`
 - `scanon/nmdc-meta:v0.0.1`
 - `bfoster1/img-omics:0.1.7`
 - `scanon/im-trnascan:v0.0.1`
