@@ -13,10 +13,9 @@ To run this workflow you will need a Docker (Docker ≥ v2.1.0.3) instance and c
 
 ```
 cromwell ≥ 54
-bbduk ≥ v38.44
-hisat2 ≥ 2.1
+bbtools ≥ v38.94
 Python ≥ v3.7.6
-featureCounts ≥ v2.0.1
+featureCounts ≥ v2.0.2
 R ≥ v3.6.0
 edgeR ≥ v3.28.1 (R package)
 pandas ≥ v1.0.5 (python package)
