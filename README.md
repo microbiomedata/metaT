@@ -3,7 +3,7 @@
 ## Summary
 This workflow is designed to analyze metatranscriptomes.
 
-![metatranscriptomics workflow](docs/workflow_metatranscriptomics.png)
+![metatranscriptomics workflow](docs/metaT_figure.png)
 
 ## Version
 0.0.3
