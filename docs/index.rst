@@ -10,7 +10,7 @@ This workflow is designed to analyze metatranscriptomes. It is dependent on outp
 Workflow Diagram
 ------------------
 
-.. image:: workflow_metatranscriptomics.png
+.. image:: metaT_figure.png
    :scale: 25%
    :alt: Metatranscriptome workflow
 
