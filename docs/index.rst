@@ -4,7 +4,9 @@ Metatranscriptome Workflow (v0.0.2)
 Summary
 -------
 
-This workflow is designed to analyze metatranscriptomes. It is dependent on outputs from other NMDC workflow for input. It runs in two parts: Part 1 (workflows/metaT_part1.wdl) takes in clean interleaved reads (from the NMDC Reads QC workflow) as input, filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools), and assembles filtered reads into transcripts using MEGAHIT; Part 2 (workflows/metaT_part2.wdl) requires input from Part 1 (filtered reads and assembled transcripts), and the GFF functional annotation files generated from the NMDC Metagenome Annotation Workflow, to generate RPKMs for each feature in the GFF file.
+MetaT is a workflow designed to analyze metatranscriptomes, building on top of already existing NMDC workflows for processing input. The metatranscriptoimics workflow takes in raw data and starts by quality filtering the reads using the [RQC worfklow](https://github.com/microbiomedata/ReadsQC). With filtered reads, the workflow filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools). After the filtering steps, reads are assembled into transcripts and using MEGAHIT and annotated using the [Metagenome Anotation Workflow](https://github.com/microbiomedata/mg_annotation); producing GFF funtional annotation files. Features are counted with [Subread's featureCounts](http://subread.sourceforge.net/) which assigns mapped reads to genomic features and generating RPKMs for each feature in a GFF file for sense and antisense reads. 
+
+
 
 
 Workflow Diagram
