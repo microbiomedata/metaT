@@ -1,11 +1,10 @@
-import "misc_tasks.wdl" as mt
+import "metat_tasks.wdl" as mt
 import "rqcfilter.wdl" as rqc
 import "additional_qc.wdl" as aq
 import "metat_assembly.wdl" as ma
-import "build_hisat2.wdl" as bh
 import "map_bbmap.wdl" as bb
 import "annotation_full.wdl" as awf
-import "feature_counts_updated.wdl" as fc
+import "feature_counts.wdl" as fc
 import "calc_scores.wdl" as cs
 import "to_json.wdl" as tj
 
@@ -13,18 +12,15 @@ workflow nmdc_metat {
     String  metat_container = "microbiomedata/meta_t:latest"
     String  featcounts_container = "mbabinski17/featcounts:dev"
     String  proj
-    String git_url
-    String activity_id
-    String url_base
+    String git_url = "https://data.microbiomedata.org/data/"
+    String activity_id = proj
+    String url_base = "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1"
     String resource
     File    input_file
-    String  outdir
-    String  database
-    # String annotation_database
-    Int threads
-    File metat_folder
-    # File edgeR="scripts/edgeR.R"
-    # File py_pack_path = "pyp_metat"
+    String  outdir 
+    String  database = "/global/cfs/cdirs/m3408/aim2/database/"
+    Int threads = 64
+    File metat_folder = "/global/cfs/cdirs/m3408/aim2/dev/metaT"
 
     call mt.stage as stage {
     input: input_file=input_file,
@@ -48,20 +44,9 @@ workflow nmdc_metat {
            DOCKER = metat_container
   }
 
-#    call bh.dock_BuildHisat2 as bhd{
-#       input:no_of_cpu = 32,
-#        assem_contig_fna = asm.assem_fna_file
-#    }
-#    call mt.split_interleaved_fastq as sif {
-#    input:
-#      reads=qc.filtered[0],
-#      container="microbiomedata/bbtools:38.90"
-#    }
-
     call bb.bbmap_mapping as bbm{
         input:rna_clean_reads = qc.filtered,
         no_of_cpus = 16,
-#        hisat2_ref_dbs = bhd.hs,
         assembly_fna = asm.assem_fna_file
     }
     call awf.annotation as iap {
@@ -72,24 +57,24 @@ workflow nmdc_metat {
 
     }
 	
-    call mt.dockclean_gff as dcg{
+    call mt.clean_gff as dcg{
 		input:gff_file_path = iap.functional_gff,
 		DOCKER = metat_container
 
 	}
 
-    call mt.dockextract_feats as ef {
+    call mt.extract_feats as ef {
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
 
-    call mt.dockcreate_gffdb{
+    call mt.create_gffdb{
 		input:gff_file_path = dcg.cln_gff_fl,
 		DOCKER = metat_container
 	}
     
     scatter (feat in ef.feats_in_gff) {
-		call fc.dock_featurecount{
+		call fc.featurecount{
 		input: no_of_cpu = threads,
 		project_name = sub(proj, ":", "_"),
 		gff_file_path = dcg.cln_gff_fl,
@@ -97,31 +82,53 @@ workflow nmdc_metat {
 		name_of_feat = feat,
 		DOCKER = featcounts_container
 		}
-		call cs.dockcal_scores{
+		call cs.cal_scores{
 		input: project_name = sub(proj, ":", "_"),
 		name_of_feat = feat,
-		fc_file = dock_featurecount.ct_tbl,
+		fc_file = featurecount.ct_tbl,
                 edgeR = metat_folder + "/scripts/edgeR.R",
 		DOCKER = metat_container
 		}
-        call tj.dock_convtojson as tdc{
+        call tj.convtojson as tdc{
 		input:gff_file_path = dcg.cln_gff_fl,
 		fasta_file_name = asm.assem_fna_file,
-		rd_count_fn = dock_featurecount.ct_tbl,
-		pkm_sc_fn = dockcal_scores.sc_tbl,
+		rd_count_fn = featurecount.ct_tbl,
+		pkm_sc_fn = cal_scores.sc_tbl,
 		name_of_feat = feat,
-		gff_db_fn = dockcreate_gffdb.gff_db_fn,
+		gff_db_fn = create_gffdb.gff_db_fn,
                 py_pack_path = metat_folder + "/pyp_metat",
 		DOCKER = metat_container
 		}
-	}
-
-    call mt.dockcollect_output as mdo {
+	
+                call cs.cal_scores as cs2{
+                input: project_name = sub(proj, ":", "_"),
+                name_of_feat = feat,
+                fc_file = featurecount.ct_tbl2,
+                edgeR = metat_folder + "/scripts/edgeR.R",
+                DOCKER = metat_container
+                }
+        call tj.convtojson as tdc2{
+                input:gff_file_path = dcg.cln_gff_fl,
+                fasta_file_name = asm.assem_fna_file,
+                rd_count_fn = featurecount.ct_tbl2,
+                pkm_sc_fn = cs2.sc_tbl,
+                name_of_feat = feat,
+                gff_db_fn = create_gffdb.gff_db_fn,
+                py_pack_path = metat_folder + "/pyp_metat",
+                DOCKER = metat_container
+                }
+        }
+    call mt.collect_output as mdo {
 		input: out_files = tdc.out_json_file,
         prefix=sub(proj, ":", "_"),
 		DOCKER = metat_container
 	}
 
+    call mt.collect_output2 as mdo2 {
+                input: out_files = tdc2.out_json_file,
+        prefix=sub(proj, ":", "_"),
+                DOCKER = metat_container
+        }
     call mt.finish_metat as mfm {
     input: container="scanon/nmdc-meta:v0.0.1",
            start=stage.start,
@@ -129,24 +136,41 @@ workflow nmdc_metat {
            url_base=url_base,
            git_url=git_url,
            activity_id="test",
-        #    read = stage.read,
-        #    filtered = qc.filtered[0],
-        #    filtered_stats = qc.stats[0],
-        #    fasta=asm.assem_fna_file,
-           hisat2_bam=bbm.map_bam,
+           read = stage.read,
+           filtered = qc.filtered[0],
+           filtered_stats = qc.stats[0],
+           fasta=asm.assem_fna_file,
+           bbm_bam=bbm.map_bam,
            out_json=mdo.out_json_file,
-           annotation_proteins_faa=iap.proteins_faa,
-           annotation_functional_gff=iap.functional_gff,
-           annotation_structural_gff=iap.structural_gff,
-           annotation_ko_tsv=iap.ko_tsv,
-           annotation_ec_tsv=iap.ec_tsv,
-           annotation_cog_gff=iap.cog_gff,
-           annotation_pfam_gff=iap.pfam_gff,
-           annotation_tigrfam_gff=iap.tigrfam_gff,
-           annotation_smart_gff=iap.smart_gff,
-           annotation_supfam_gff=iap.supfam_gff,
-           annotation_cath_funfam_gff=iap.cath_funfam_gff,
-           annotation_ko_ec_gff=iap.ko_ec_gff,
+	   out_json2=mdo2.out_json_file2,
+           proteins_faa=iap.proteins_faa,
+           functional_gff=iap.functional_gff,
+           structural_gff=iap.structural_gff,
+           ko_tsv=iap.ko_tsv,
+           ec_tsv=iap.ec_tsv,
+           cog_gff=iap.cog_gff,
+           pfam_gff=iap.pfam_gff,
+           tigrfam_gff=iap.tigrfam_gff,
+           smart_gff=iap.smart_gff,
+           supfam_gff=iap.supfam_gff,
+           cath_funfam_gff=iap.cath_funfam_gff,
+           ko_ec_gff=iap.ko_ec_gff,
+           phylo_tsv=iap.gene_phylogeny_tsv,
+	   cog_domtblout=iap.proteins_cog_domtblout,
+ 	   pfam_domtblout=iap.proteins_pfam_domtblout,
+ 	   tigrfam_domtblout=iap.proteins_tigrfam_domtblout,
+ 	   smart_domtblout=iap.proteins_smart_domtblout,
+ 	   supfam_domtblout=iap.proteins_supfam_domtblout,
+ 	   cath_funfam_domtblout=iap.proteins_cath_funfam_domtblout,
+ 	   product_name_tsv=iap.product_names_tsv,
+ 	   crt_crisprs=iap.crt_crisprs,
+ 	   crt_gff=iap.crt_gff,
+ 	   genemark_gff=iap.genemark_gff,
+ 	   prodigal_gff=iap.prodigal_gff,
+ 	   trna_gff=iap.trna_gff,
+ 	   misc_bind_misc_feature_regulatory_gff=iap.misc_bind_misc_feature_regulatory_gff,
+ 	   rrna_gff=iap.rrna_gff,
+  	   ncrna_tmrna_gff=iap.ncrna_tmrna_gff,
            outdir=outdir
   }
 

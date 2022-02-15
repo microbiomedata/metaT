@@ -12,7 +12,8 @@ workflow s_annotate {
   Int     additional_threads
   Boolean pre_qc_execute=false
   Boolean trnascan_se_execute=true
-  Boolean crt_execute=false
+  Boolean rfam_execute=true
+  Boolean crt_execute=true
   Boolean prodigal_execute=true
   Boolean genemark_execute=true
   Boolean gff_and_fasta_stats_execute=true
@@ -120,11 +121,17 @@ workflow s_annotate {
     }
   }
   output {
-    #File  gff = "${output_dir}"+"/"+"${imgap_project_id}_structural_annotation.gff"
     #File  gff = gff_merge.final_gff
     #File  gff = post_qc.out
     File?  gff = fasta_merge.final_modified_gff
+    File? crt_gff = crt.gff
     File? crisprs = crt.crisprs 
+    File? genemark_gff = genemark.gff
+    File? prodigal_gff = prodigal.gff
+    File? trna_gff = trnascan.gff
+    File? misc_bind_misc_feature_regulatory_gff = rfam.misc_bind_misc_feature_regulatory_gff
+    File? rrna_gff = rfam.rrna_gff
+    File? ncrna_tmrna_gff = rfam.ncrna_tmrna_gff
     File? proteins = fasta_merge.final_proteins 
   }
 }
@@ -247,9 +254,9 @@ task fasta_merge {
   }
 
   runtime {
-    time: "1:00:00"
-    memory: "86G"
-    docker: container
+    time: "2:00:00"
+    memory: "40G"
+    docker: "doejgi/img-annotation-pipeline:5.0.25"
   }
     
   output {

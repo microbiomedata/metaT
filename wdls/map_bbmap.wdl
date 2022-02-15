@@ -1,7 +1,6 @@
 task bbmap_mapping{
 	Int no_of_cpus
 	Array[File] rna_clean_reads
-	#Array[File] hisat2_ref_dbs
 	File assembly_fna
 	# String DOCKER
 
