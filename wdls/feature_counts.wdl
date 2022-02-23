@@ -32,3 +32,31 @@ task featurecount{
 	}
 
 }
+
+task add_feature_types {
+        File sense
+        File antisense
+	String DOCKER
+
+        command {
+                 
+            python /metaT_sort_rpkm.py ${sense} ${antisense}
+        }
+
+        output{
+                File full_features_tsv = "rpkm_sorted_features.tsv"
+                File  top100 = "top100_features.json"
+        }
+
+        runtime {
+                time: "2:00:00"
+                docker: DOCKER
+                memory: "120 GiB"
+        }
+
+        meta {
+                author: "Migun Shakya, B10, LANL"
+                email: "migun@lanl.gov"
+        }
+
+}
