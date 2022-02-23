@@ -18,9 +18,9 @@ workflow nmdc_metat {
     String resource
     File    input_file
     String  outdir 
-    String  database = "/global/cfs/cdirs/m3408/aim2/database/"
+    String  database  
     Int threads = 64
-    File metat_folder = "/global/cfs/cdirs/m3408/aim2/dev/metaT"
+    File metat_folder 
 
     call mt.stage as stage {
     input: input_file=input_file,
@@ -129,6 +129,11 @@ workflow nmdc_metat {
         prefix=sub(proj, ":", "_"),
                 DOCKER = metat_container
         }
+    call fc.add_feature_types as aft{
+	input: sense = mdo.out_json_file,
+	       antisense = mdo2.out_json_file2,
+	       DOCKER =  feature_types_container
+	}
     call mt.finish_metat as mfm {
     input: container="scanon/nmdc-meta:v0.0.1",
            start=stage.start,
@@ -143,6 +148,8 @@ workflow nmdc_metat {
            bbm_bam=bbm.map_bam,
            out_json=mdo.out_json_file,
 	   out_json2=mdo2.out_json_file2,
+	   sorted_features=aft.full_features_tsv, 
+           top100_features=aft.top100,
            proteins_faa=iap.proteins_faa,
            functional_gff=iap.functional_gff,
            structural_gff=iap.structural_gff,
