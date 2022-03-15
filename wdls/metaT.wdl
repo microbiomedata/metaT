@@ -11,6 +11,7 @@ import "to_json.wdl" as tj
 workflow nmdc_metat {
     String  metat_container = "microbiomedata/meta_t:latest"
     String  featcounts_container = "mbabinski17/featcounts:dev"
+    String  feature_types_container = "mbabinski17/sort_rpkm:0.0.2"
     String  proj
     String git_url = "https://data.microbiomedata.org/data/"
     String activity_id = proj
@@ -57,8 +58,12 @@ workflow nmdc_metat {
 
     }
 	
+    call fc.parse_intergenic as pint {
+		input: annotation_gff = iap.functional_gff, 
+		DOCKER = feature_types_container
+	}
     call mt.clean_gff as dcg{
-		input:gff_file_path = iap.functional_gff,
+		input:gff_file_path = pint.filtered_intergenic_gff,
 		DOCKER = metat_container
 
 	}
