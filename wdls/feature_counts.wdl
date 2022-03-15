@@ -1,3 +1,27 @@
+task parse_intergenic{
+	File annotation_gff
+	Int intergenic_len=10
+	String DOCKER
+
+	command {
+	   python /parse_intergenic.py ${annotation_gff} ${intergenic_len}
+	}
+        
+	output{
+           File filtered_intergenic_gff = "filtered_intergenic.gff" 
+        }
+
+        runtime {
+                time: "2:00:00"
+                docker: DOCKER
+                memory: "120 GiB"
+        }
+
+        meta {
+                author: "Migun Shakya, B10, LANL"
+                email: "migun@lanl.gov"
+        }
+}
 task featurecount{
 	Int no_of_cpu
 	String project_name
