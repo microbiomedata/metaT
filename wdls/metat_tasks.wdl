@@ -226,6 +226,9 @@ task finish_metat {
    File misc_bind_misc_feature_regulatory_gff
    File rrna_gff
    File ncrna_tmrna_gff
+   File sorted_features
+   File top100_features
+  
    command{
       set -e
       mkdir -p ${qadir}
@@ -299,8 +302,11 @@ task finish_metat {
              --inputs ${functional_gff} ${bbm_bam}  \
              --outputs \
               ${out_json} 'Sense RPKM' \
-              ${out_json2} 'Anstisense RPKM' 
-      cp ${out_json} ${out_json2} ${metat_out}/
+              ${out_json2} 'Anstisense RPKM' \
+	      ${sorted_features} 'Sorted Features tsv' \
+              ${top100_features} 'Top100 Features json'
+  
+      cp ${out_json} ${out_json2} ${sorted_features} ${top100_features} ${metat_out}/
    }
 
    runtime {
