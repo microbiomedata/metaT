@@ -6,7 +6,7 @@ task bbmap_mapping{
 
 
 	command {
-                bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} ambiguous=random in=${rna_clean_reads[0]} ref=${assembly_fna} out=mapped_sorted.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t 
+                bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} ambiguous=best in=${rna_clean_reads[0]} ref=${assembly_fna} out=mapped_sorted.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t 
 	}
 
 	output{
