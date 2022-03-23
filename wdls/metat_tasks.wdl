@@ -227,12 +227,12 @@ task finish_metat {
    File rrna_gff
    File ncrna_tmrna_gff
    File sorted_features
-   File top100_features
   
    command{
       set -e
       mkdir -p ${qadir}
       mkdir -p ${assemdir}
+      mkdir -p ${mapback}
       mkdir -p ${annodir}
       mkdir -p ${metat_out}
       end=`date --iso-8601=seconds`
@@ -256,7 +256,7 @@ task finish_metat {
              --resource '${resource}' --url ${url_base} --giturl ${git_url} \
              --inputs ${filtered} \
              --outputs \
-             ${fasta} 'Assembled contigs fasta' \
+             ${fasta} 'Assembled contigs fasta'
        cp activity.json data_objects.json ${assemdir}/
 
        # Generate mapping objects
@@ -265,7 +265,7 @@ task finish_metat {
              --resource '${resource}' --url ${url_base} --giturl ${git_url} \
              --inputs ${fasta} \
              --outputs \
-             ${bbm_bam} 'Mapping file' \
+             ${bbm_bam} 'Mapping file'
        cp ${bbm_bam} ${mapback}/
 
        # Generate annotation objects
@@ -303,10 +303,9 @@ task finish_metat {
              --outputs \
               ${out_json} 'Sense RPKM' \
               ${out_json2} 'Anstisense RPKM' \
-	      ${sorted_features} 'Sorted Features tsv' \
-              ${top100_features} 'Top100 Features json'
+	      ${sorted_features} 'Sorted Features tsv'
   
-      cp ${out_json} ${out_json2} ${sorted_features} ${top100_features} ${metat_out}/
+      cp ${out_json} ${out_json2} ${sorted_features} ${metat_out}/
    }
 
    runtime {
