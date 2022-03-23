@@ -60,14 +60,17 @@ task featurecount{
 task add_feature_types {
         File sense
         File antisense
+	String proj
 	String DOCKER
 
         command {
                  
-            python /metaT_sort_rpkm.py ${sense} ${antisense}
+            python /metaT_sort_rpkm.py -sj ${sense} -aj ${antisense} -id ${proj}
         }
 
         output{
+		File filtered_sense_json = "${proj}_sense_counts.json"
+		File filtered_antisense_json = "${proj}_antisense_counts.json"
                 File full_features_tsv = "rpkm_sorted_features.tsv"
                 File  top100 = "top100_features.json"
         }
