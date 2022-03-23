@@ -11,7 +11,7 @@ import "to_json.wdl" as tj
 workflow nmdc_metat {
     String  metat_container = "microbiomedata/meta_t:latest"
     String  featcounts_container = "mbabinski17/featcounts:dev"
-    String  feature_types_container = "mbabinski17/sort_rpkm:0.0.4"
+    String  feature_types_container = "mbabinski17/rpkm_sort:0.0.5"
     String  proj
     String git_url = "https://data.microbiomedata.org/data/"
     String activity_id = proj
@@ -137,6 +137,7 @@ workflow nmdc_metat {
     call fc.add_feature_types as aft{
 	input: sense = mdo.out_json_file,
 	       antisense = mdo2.out_json_file2,
+	       proj = sub(proj, ":", "_"),
 	       DOCKER =  feature_types_container
 	}
     call mt.finish_metat as mfm {
@@ -151,10 +152,9 @@ workflow nmdc_metat {
            filtered_stats = qc.stats[0],
            fasta=asm.assem_fna_file,
            bbm_bam=bbm.map_bam,
-           out_json=mdo.out_json_file,
-	   out_json2=mdo2.out_json_file2,
-	   sorted_features=aft.full_features_tsv, 
-           top100_features=aft.top100,
+           out_json=aft.filtered_sense_json,
+	   out_json2=aft.filtered_antisense_json,
+	   sorted_features=aft.full_features_tsv,
            proteins_faa=iap.proteins_faa,
            functional_gff=iap.functional_gff,
            structural_gff=iap.structural_gff,
