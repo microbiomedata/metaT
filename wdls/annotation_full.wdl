@@ -4,7 +4,7 @@ import "functional-annotation.wdl" as fa
 workflow annotation {
   File    imgap_input_fasta
   String  imgap_project_id="GaXXXXXXX_contigs.fna"
-  String  database_location="/databases/img/"
+  String  database_location="/cromwell_root/database"
   String  imgap_project_type="metagenome"
   Int     additional_threads=16
   String  container="bfoster1/img-omics:0.1.9"
@@ -73,6 +73,13 @@ workflow annotation {
        supfam_domtblouts = f_annotate.supfam_domtblout,
        cath_funfam_domtblouts = f_annotate.cath_funfam_domtblout,
        crt_crisprs_s = s_annotate.crisprs,
+       crt_gffs = s_annotate.crt_gff,
+       genemark_gffs = s_annotate.genemark_gff,
+       prodigal_gffs = s_annotate.prodigal_gff,
+       trna_gffs = s_annotate.trna_gff,
+       misc_bind_misc_feature_regulatory_gffs = s_annotate.misc_bind_misc_feature_regulatory_gff,
+       rrna_gffs = s_annotate.rrna_gff,
+       ncrna_tmrna_gffs = s_annotate.ncrna_tmrna_gff,
        container=container
   }
   call final_stats {
@@ -91,12 +98,20 @@ workflow annotation {
     File? ko_tsv = merge_outputs.ko_tsv
     File? ec_tsv = merge_outputs.ec_tsv
     File? stats_tsv = final_stats.tsv
+    File? stats_json = final_stats.json
     File? cog_gff = merge_outputs.cog_gff
     File? pfam_gff = merge_outputs.pfam_gff
     File? tigrfam_gff = merge_outputs.tigrfam_gff
     File? smart_gff = merge_outputs.smart_gff
     File? supfam_gff = merge_outputs.supfam_gff
     File? cath_funfam_gff = merge_outputs.cath_funfam_gff
+    File? crt_gff = merge_outputs.crt_gff
+    File? genemark_gff = merge_outputs.genemark_gff
+    File? prodigal_gff = merge_outputs.prodigal_gff
+    File? trna_gff = merge_outputs.trna_gff
+    File? misc_bind_misc_feature_regulatory_gff = merge_outputs.misc_bind_misc_feature_regulatory_gff
+    File? rrna_gff = merge_outputs.rrna_gff
+    File? ncrna_tmrna_gff = merge_outputs.ncrna_tmrna_gff
     File? proteins_cog_domtblout = merge_outputs.proteins_cog_domtblout
     File? proteins_pfam_domtblout = merge_outputs.proteins_pfam_domtblout
     File? proteins_tigrfam_domtblout = merge_outputs.proteins_tigrfam_domtblout
@@ -125,7 +140,7 @@ workflow annotation {
 
 task split{
    File infile
-   String blocksize=10
+   String blocksize=100
    String zfile="zscore.txt"
    String cmzfile="cmzscore.txt"
    String container
@@ -174,6 +189,13 @@ task merge_outputs {
   Array[File?] cath_funfam_domtblouts
   Array[File?] product_name_tsvs
   Array[File?] crt_crisprs_s
+  Array[File?] crt_gffs
+  Array[File?] genemark_gffs
+  Array[File?] prodigal_gffs
+  Array[File?] trna_gffs
+  Array[File?] misc_bind_misc_feature_regulatory_gffs
+  Array[File?] rrna_gffs
+  Array[File?] ncrna_tmrna_gffs
   String container
 
   command {
@@ -190,6 +212,13 @@ task merge_outputs {
      cat ${sep=" " smart_gffs} > "${project_id}_smart.gff"
      cat ${sep=" " supfam_gffs} > "${project_id}_supfam.gff"
      cat ${sep=" " cath_funfam_gffs} > "${project_id}_cath_funfam.gff"
+     cat ${sep=" " crt_gffs} > "${project_id}_crt.gff"
+     cat ${sep=" " genemark_gffs} > "${project_id}_genemark.gff"
+     cat ${sep=" " prodigal_gffs} > "${project_id}_prodigal.gff"
+     cat ${sep=" " trna_gffs} > "${project_id}_trna.gff"
+     cat ${sep=" " misc_bind_misc_feature_regulatory_gffs} > "${project_id}_rfam_misc_bind_misc_feature_regulatory.gff"
+     cat ${sep=" " rrna_gffs} > "${project_id}_rfam_rrna.gff"
+     cat ${sep=" " ncrna_tmrna_gffs} > "${project_id}_rfam_ncrna_tmrna.gff"
 
      cat ${sep=" " cog_domtblouts} > "${project_id}_proteins.cog.domtblout"
      cat ${sep=" " pfam_domtblouts} > "${project_id}_proteins.pfam.domtblout"
@@ -215,7 +244,13 @@ task merge_outputs {
     File smart_gff = "${project_id}_smart.gff"
     File supfam_gff = "${project_id}_supfam.gff"
     File cath_funfam_gff = "${project_id}_cath_funfam.gff"
-
+    File crt_gff = "${project_id}_crt.gff"
+    File genemark_gff = "${project_id}_genemark.gff"
+    File prodigal_gff = "${project_id}_prodigal.gff"
+    File trna_gff = "${project_id}_trna.gff"
+    File misc_bind_misc_feature_regulatory_gff = "${project_id}_rfam_misc_bind_misc_feature_regulatory.gff"
+    File rrna_gff = "${project_id}_rfam_rrna.gff"
+    File ncrna_tmrna_gff = "${project_id}_rfam_ncrna_tmrna.gff"
     File proteins_cog_domtblout = "${project_id}_proteins.cog.domtblout"
     File proteins_pfam_domtblout = "${project_id}_proteins.pfam.domtblout"
     File proteins_tigrfam_domtblout = "${project_id}_proteins.tigrfam.domtblout"
@@ -254,6 +289,7 @@ task final_stats {
 
   output {
     File tsv = "${project_id}_structural_annotation_stats.tsv"
+    File json = "${project_id}_structural_annotation_stats.json"
   }
 
   runtime {
