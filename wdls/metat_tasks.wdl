@@ -266,7 +266,7 @@ task finish_metat {
              --inputs ${fasta} \
              --outputs \
              ${bbm_bam} 'Mapping file'
-       cp ${bbm_bam} ${mapback}/
+       cp ${bbm_bam} activity.json data_objects.json ${mapback}/
 
        # Generate annotation objects
        nmdc gff2json ${functional_gff} -of features.json -oa annotations.json -ai ${activity_id}
@@ -305,7 +305,7 @@ task finish_metat {
               ${out_json2} 'Anstisense RPKM' \
 	      ${sorted_features} 'Sorted Features tsv'
   
-      cp ${out_json} ${out_json2} ${sorted_features} ${metat_out}/
+      cp ${out_json} ${out_json2} ${sorted_features} activity.json data_objects.json ${metat_out}/
    }
 
    runtime {
