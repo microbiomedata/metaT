@@ -218,6 +218,7 @@ task finish_metat {
    File supfam_domtblout
    File cath_funfam_domtblout
    File product_name_tsv
+   File gene_phylogeny_tsv
    File crt_crisprs
    File crt_gff
    File genemark_gff
@@ -287,11 +288,15 @@ task finish_metat {
              ${smart_gff} 'SMART GFF file' \
              ${supfam_gff} 'SuperFam GFF file' \
              ${cath_funfam_gff} 'Cath FunFam GFF file' \
-             ${ko_ec_gff} 'KO_EC GFF file'
+             ${ko_ec_gff} 'KO_EC GFF file' \
+	     ${crt_crisprs} 'CRISPRS file' \
+	     ${product_names_tsv} 'Product Names tsv' \
+             ${gene_phylogeny_tsv} 'Gene Phylogeny tsv' \
 
        cp ${proteins_faa} ${structural_gff} ${functional_gff} \
           ${ko_tsv} ${ec_tsv} ${cog_gff} ${pfam_gff} ${tigrfam_gff} \
           ${smart_gff} ${supfam_gff} ${cath_funfam_gff} ${ko_ec_gff} \
+	  ${crt_crisprs} ${product_names_tsv} ${gene_phylogeny_tsv} \
           ${annodir}/
        cp features.json annotations.json activity.json data_objects.json ${annodir}/
 
@@ -306,6 +311,7 @@ task finish_metat {
 	      ${sorted_features} 'Sorted Features tsv'
   
       cp ${out_json} ${out_json2} ${sorted_features} activity.json data_objects.json ${metat_out}/
+
    }
 
    runtime {
