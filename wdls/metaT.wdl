@@ -13,9 +13,10 @@ workflow nmdc_metat {
     String  featcounts_container = "mbabinski17/featcounts:dev"
     String  feature_types_container = "mbabinski17/rpkm_sort:0.0.5"
     String  proj
+    String informed_by
     String git_url = "https://data.microbiomedata.org/data/"
     String activity_id = proj
-    String url_base = "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1"
+    String url_root = "https://github.com/microbiomedata/mg_annotation/releases/tag/0.1"
     String resource
     File    input_file
     String  outdir 
@@ -144,17 +145,23 @@ workflow nmdc_metat {
     input: container="scanon/nmdc-meta:v0.0.1",
            start=stage.start,
            resource=resource,
-           url_base=url_base,
+           proj=proj,
+	   informed_by=informed_by,
+           url_root=url_root,
            git_url=git_url,
            activity_id="test",
            read = stage.read,
            filtered = qc.filtered[0],
            filtered_stats = qc.stats[0],
+	   filtered_stats2 = qc.stats2[0],
            fasta=asm.assem_fna_file,
            bbm_bam=bbm.map_bam,
+	   covstats=bbm.covstats,
            out_json=aft.filtered_sense_json,
 	   out_json2=aft.filtered_antisense_json,
 	   sorted_features=aft.full_features_tsv,
+	   stats_tsv=iap.stats_tsv,
+           stats_json=iap.stats_json,
            proteins_faa=iap.proteins_faa,
            functional_gff=iap.functional_gff,
            structural_gff=iap.structural_gff,
@@ -167,14 +174,14 @@ workflow nmdc_metat {
            supfam_gff=iap.supfam_gff,
            cath_funfam_gff=iap.cath_funfam_gff,
            ko_ec_gff=iap.ko_ec_gff,
-           phylo_tsv=iap.gene_phylogeny_tsv,
+           gene_phylogeny_tsv=iap.gene_phylogeny_tsv,
 	   cog_domtblout=iap.proteins_cog_domtblout,
  	   pfam_domtblout=iap.proteins_pfam_domtblout,
  	   tigrfam_domtblout=iap.proteins_tigrfam_domtblout,
  	   smart_domtblout=iap.proteins_smart_domtblout,
  	   supfam_domtblout=iap.proteins_supfam_domtblout,
  	   cath_funfam_domtblout=iap.proteins_cath_funfam_domtblout,
- 	   product_name_tsv=iap.product_names_tsv,
+ 	   product_names_tsv=iap.product_names_tsv,
  	   crt_crisprs=iap.crt_crisprs,
  	   crt_gff=iap.crt_gff,
  	   genemark_gff=iap.genemark_gff,

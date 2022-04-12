@@ -182,16 +182,23 @@ task finish_metat {
    String container
    String start
    String activity_id
+   String informed_by
    File read
    File filtered 
    File filtered_stats
+   File filtered_stats2
    File fasta
    String resource
-   String url_base
+   String url_root
    String git_url
+   String proj
+   String prefix=sub(proj, ":", "_")
    File bbm_bam
+   File covstats
    File out_json
    File out_json2
+   File stats_json
+   File stats_tsv
    String outdir
    String qadir="${outdir}/qa/"
    String assemdir="${outdir}/assembly/"
@@ -202,7 +209,6 @@ task finish_metat {
    File functional_gff
    File ko_tsv
    File ec_tsv
-   File phylo_tsv
    File proteins_faa
    File ko_ec_gff
    File cog_gff
@@ -217,7 +223,7 @@ task finish_metat {
    File smart_domtblout
    File supfam_domtblout
    File cath_funfam_domtblout
-   File product_name_tsv
+   File product_names_tsv
    File gene_phylogeny_tsv
    File crt_crisprs
    File crt_gff
@@ -228,7 +234,10 @@ task finish_metat {
    File rrna_gff
    File ncrna_tmrna_gff
    File sorted_features
-  
+   String orig_prefix="scaffold"
+   String sed="s/${orig_prefix}_/${proj}_/g"  
+
+
    command{
       set -e
       mkdir -p ${qadir}
@@ -237,80 +246,133 @@ task finish_metat {
       mkdir -p ${annodir}
       mkdir -p ${metat_out}
       end=`date --iso-8601=seconds`
-	
+
+
+       #copy and re-ed qa objects
+       cp ${filtered} ${qadir}/${prefix}_filtered.fastq.gz
+       cp ${filtered_stats} ${qadir}/${prefix}_filterStats.txt
+       cp ${filtered_stats2} ${qadir}/${prefix}_filterStats2.txt	
       
        # Generate QA objects
        /scripts/rqcstats.py ${filtered_stats} > stats.json
-       /scripts/generate_objects.py --type "qa" --id ${activity_id} \
+       cp stats.json ${qadir}/${prefix}_qa_stats.json
+
+       /scripts/generate_objects.py --type "nmdc:ReadQCAnalysisActivity" --id ${informed_by} \
+             --name "Read QC Activity for ${proj}" --part ${proj} \
              --start ${start} --end $end \
-             --resource '${resource}' --url ${url_base} --giturl ${git_url} \
+             --resource '${resource}' --url ${url_root}${proj}/qa/ --giturl ${git_url} \
              --extra stats.json \
              --inputs ${read} \
              --outputs \
-             ${filtered} 'Filtered Reads' \
-             ${filtered_stats} 'Filtered Stats'
+             ${qadir}/${prefix}_filtered.fastq.gz 'Filtered Reads' \
+             ${qadir}/${prefix}_filterStats.txt 'Filtered Stats'
        cp activity.json data_objects.json ${qadir}/
 
+       #rename fasta
+       cat ${fasta} | sed ${sed} > ${assemdir}/${prefix}_contigs.fna
        # Generate assembly objects
-       /scripts/generate_objects.py --type "assembly" --id ${activity_id} \
+       /scripts/generate_objects.py --type "nmdc:MetatranscriptomeAssembly" --id ${informed_by} \
+             --name "Assembly Activity for ${proj}" --part ${proj} \
              --start ${start} --end $end \
-             --resource '${resource}' --url ${url_base} --giturl ${git_url} \
-             --inputs ${filtered} \
+             --resource '${resource}' --url ${url_root}${proj}/assembly/ --giturl ${git_url} \
+             --extra stats.json \
+             --inputs ${qadir}/${prefix}_filtered.fastq.gz \
              --outputs \
-             ${fasta} 'Assembled contigs fasta'
+             ${assemdir}/${prefix}_contigs.fna 'Assembled contigs fasta'
        cp activity.json data_objects.json ${assemdir}/
 
+       #rename mapping objects
+       cat ${covstats} | sed ${sed} > ${mapback}/${prefix}_covstats.txt
+       ## Bam file     
+       samtools view -h ${bbm_bam} | sed ${sed} | \
+          samtools view -hb -o ${mapback}/${prefix}_pairedMapped_sorted.bam
        # Generate mapping objects
-       /scripts/generate_objects.py --type "mapping" --id ${activity_id} \
+       /scripts/generate_objects.py --type "nmdc:MetatranscriptomeMapping" --id ${informed_by} \
              --start ${start} --end $end \
-             --resource '${resource}' --url ${url_base} --giturl ${git_url} \
+             --resource '${resource}' --url ${url_root}${proj}/mapback/ --giturl ${git_url} \
              --inputs ${fasta} \
              --outputs \
-             ${bbm_bam} 'Mapping file'
-       cp ${bbm_bam} activity.json data_objects.json ${mapback}/
+             ${mapback}/${prefix}_pairedMapped_sorted.bam 'Mapping file' \
+	     ${mapback}/${prefix}_covstats.txt 'Metatranscriptome Contig Coverage Stats'
+       cp activity.json data_objects.json ${mapback}/
 
        # Generate annotation objects
        nmdc gff2json ${functional_gff} -of features.json -oa annotations.json -ai ${activity_id}
 
-       /scripts/generate_objects.py --type "annotation" --id ${activity_id} \
-             --start ${start} --end $end \
-             --resource '${resource}' --url ${url_base} --giturl ${git_url} \
-             --inputs ${fasta} \
-             --outputs \
-             ${proteins_faa} 'Protein FAA' \
-             ${structural_gff} 'Structural annotation GFF file' \
-             ${functional_gff} 'Functional annotation GFF file' \
-             ${ko_tsv} 'KO TSV file' \
-             ${ec_tsv} 'EC TSV file' \
-             ${cog_gff} 'COG GFF file' \
-             ${pfam_gff} 'PFAM GFF file' \
-             ${tigrfam_gff} 'TigrFam GFF file' \
-             ${smart_gff} 'SMART GFF file' \
-             ${supfam_gff} 'SuperFam GFF file' \
-             ${cath_funfam_gff} 'Cath FunFam GFF file' \
-             ${ko_ec_gff} 'KO_EC GFF file' \
-	     ${crt_crisprs} 'CRISPRS file' \
-	     ${product_names_tsv} 'Product Names tsv' \
-             ${gene_phylogeny_tsv} 'Gene Phylogeny tsv' \
+       cat ${proteins_faa} | sed ${sed} > ${annodir}/${prefix}_proteins.faa
+       cat ${structural_gff} | sed ${sed} > ${annodir}/${prefix}_structural_annotation.gff
+       cat ${functional_gff} | sed ${sed} > ${annodir}/${prefix}_functional_annotation.gff
+       cat ${ko_tsv} | sed ${sed} > ${annodir}/${prefix}_ko.tsv
+       cat ${ec_tsv} | sed ${sed} > ${annodir}/${prefix}_ec.tsv
+       cat ${cog_gff} | sed ${sed} > ${annodir}/${prefix}_cog.gff
+       cat ${pfam_gff} | sed ${sed} > ${annodir}/${prefix}_pfam.gff
+       cat ${tigrfam_gff} | sed ${sed} > ${annodir}/${prefix}_tigrfam.gff
+       cat ${smart_gff} | sed ${sed} > ${annodir}/${prefix}_smart.gff
+       cat ${supfam_gff} | sed ${sed} > ${annodir}/${prefix}_supfam.gff
+       cat ${cath_funfam_gff} | sed ${sed} > ${annodir}/${prefix}_cath_funfam.gff
+       cat ${crt_gff} | sed ${sed} > ${annodir}/${prefix}_crt.gff
+       cat ${genemark_gff} | sed ${sed} > ${annodir}/${prefix}_genemark.gff
+       cat ${prodigal_gff} | sed ${sed} > ${annodir}/${prefix}_prodigal.gff
+       cat ${trna_gff} | sed ${sed} > ${annodir}/${prefix}_trna.gff
+       cat ${misc_bind_misc_feature_regulatory_gff} | sed ${sed} > ${annodir}/${prefix}_rfam_misc_bind_misc_feature_regulatory.gff
+       cat ${rrna_gff} | sed ${sed} > ${annodir}/${prefix}_rfam_rrna.gff
+       cat ${ncrna_tmrna_gff} | sed ${sed} > ${annodir}/${prefix}_rfam_ncrna_tmrna.gff
+       cat ${crt_crisprs} | sed ${sed} > ${annodir}/${prefix}_crt.crisprs
+       cat ${product_names_tsv} | sed ${sed} > ${annodir}/${prefix}_product_names.tsv
+       cat ${gene_phylogeny_tsv} | sed ${sed} > ${annodir}/${prefix}_gene_phylogeny.tsv
 
-       cp ${proteins_faa} ${structural_gff} ${functional_gff} \
-          ${ko_tsv} ${ec_tsv} ${cog_gff} ${pfam_gff} ${tigrfam_gff} \
-          ${smart_gff} ${supfam_gff} ${cath_funfam_gff} ${ko_ec_gff} \
-	  ${crt_crisprs} ${product_names_tsv} ${gene_phylogeny_tsv} \
-          ${annodir}/
+       cat ${ko_ec_gff} | sed ${sed} > ${annodir}/${prefix}_ko_ec.gff
+       cat ${stats_tsv} | sed ${sed} > ${annodir}/${prefix}_stats.tsv
+       cat ${stats_json} | sed ${sed} > ${annodir}/${prefix}_stats.json
+
+
+       /scripts/generate_objects.py --type "nmdc:MetatranscriptomeAnnotationActivity" --id ${informed_by} \
+             --name "Annotation Activity for ${proj}" --part ${proj} \
+             --start ${start} --end $end \
+             --resource '${resource}' --url ${url_root}${proj}/annotation/ --giturl ${git_url} \
+             --inputs ${assemdir}/${prefix}_contigs.fna \
+             --outputs \
+             ${annodir}/${prefix}_proteins.faa 'Protein FAA' \
+             ${annodir}/${prefix}_structural_annotation.gff 'Structural annotation GFF file' \
+             ${annodir}/${prefix}_functional_annotation.gff 'Functional annotation GFF file' \
+             ${annodir}/${prefix}_ko.tsv 'KO TSV file' \
+             ${annodir}/${prefix}_ec.tsv 'EC TSV file' \
+             ${annodir}/${prefix}_cog.gff 'COG GFF file' \
+             ${annodir}/${prefix}_pfam.gff 'PFAM GFF file' \
+             ${annodir}/${prefix}_tigrfam.gff 'TigrFam GFF file' \
+             ${annodir}/${prefix}_smart.gff 'SMART GFF file' \
+             ${annodir}/${prefix}_supfam.gff 'SuperFam GFF file' \
+             ${annodir}/${prefix}_cath_funfam.gff 'Cath FunFam GFF file' \
+             ${annodir}/${prefix}_crt.gff 'CRT GFF file' \
+             ${annodir}/${prefix}_genemark.gff 'Genemark GFF file' \
+             ${annodir}/${prefix}_prodigal.gff 'Prodigal GFF file' \
+             ${annodir}/${prefix}_trna.gff 'tRNA GFF File' \
+             ${annodir}/${prefix}_rfam_misc_bind_misc_feature_regulatory.gff 'RFAM misc binding GFF file' \
+             ${annodir}/${prefix}_rfam_rrna.gff 'RFAM rRNA GFF file' \
+             ${annodir}/${prefix}_rfam_ncrna_tmrna.gff 'RFAM rmRNA GFF file' \
+	     ${annodir}/${prefix}_crt.crisprs 'CRISPRS file' \
+	     ${annodir}/${prefix}_product_names.tsv 'Product Names tsv' \
+             ${annodir}/${prefix}_gene_phylogeny.tsv 'Gene Phylogeny tsv' \
+	     ${annodir}/${prefix}_ko_ec.gff 'KO_EC GFF file'
        cp features.json annotations.json activity.json data_objects.json ${annodir}/
 
-       # Generate metat objects - this is wrong for now, in development
-       /scripts/generate_objects.py --type "metat" --id ${activity_id} \
+
+       #re-id metat objects
+       cat ${out_json} | sed ${sed} > ${metat_out}/${prefix}_sense_counts.json
+       cat ${out_json2} | sed ${sed} > ${metat_out}/${prefix}_antisense_counts.json
+       ${sorted_features} | sed ${sed} > ${metat_out}/${prefix}_sorted_features.tsv
+       # Generate metat objects
+       /scripts/generate_objects.py --type "nmdc:MetatranscriptomeActivity" --id ${informed_by} \
+             --name "Metatranscriptome Activity for ${proj}"
              --start ${start} --end $end \
-             --resource '${resource}' --url ${url_base} --giturl ${git_url} \
+             --resource '${resource}' --url ${url_root}${proj}/metat_output/ --giturl ${git_url} \
              --inputs ${functional_gff} ${bbm_bam}  \
              --outputs \
-              ${out_json} 'Sense RPKM' \
-              ${out_json2} 'Anstisense RPKM' \
-	      ${sorted_features} 'Sorted Features tsv'
+              ${metat_out}/${prefix}_sense_counts.json 'Sense RPKM' \
+              ${metat_out}/${prefix}_antisense_counts.json 'Anstisense RPKM' \
+	      ${metat_out}/${prefix}_sorted_features.tsv 'Sorted Features tsv'
   
-      cp ${out_json} ${out_json2} ${sorted_features} activity.json data_objects.json ${metat_out}/
+      cp activity.json data_objects.json ${metat_out}/
 
    }
 
