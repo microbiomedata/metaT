@@ -16,6 +16,7 @@ task bbmap_mapping{
 
 	output{
 		File map_bam = "mapped_sorted.bam"
+		File covstats = "covstats.txt"
 	}
 	
 	runtime {
