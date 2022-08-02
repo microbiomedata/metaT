@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+##!/usr/bin/env Rscript
 
 library(edgeR)
 library(dplyr)
@@ -8,8 +8,6 @@ library(optparse)
 option_list <- list(
     make_option(c("-r", "--reads_table"), action = "store",
               help = "reads table generated from featureCounts"),
-    make_option(c("-n", "--name"), action = "store",
-              help = "name of feature from gff file that was chosen to represent each feature"),
     make_option(c("-s", "--sample"), action = "store",
               help = "name of sample which corresponds to count column as well"),
     make_option(c("-o", "--out_tbl"), action = "store",
@@ -18,9 +16,11 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
+
+feat_names <- c("CDS","INTERGENIC","misc_feature","ncRNA","regulatory","rRNA","tmRNA","tRNA")
+
 #==============================================================================#
 reads_file <- opt$reads_table
-feature_name <- opt$name
 out_tbl <- opt$out_tbl
 #==============================================================================#
 
@@ -61,3 +61,6 @@ rpkm_results$Row.names = NULL
 write.csv(rpkm_results, file = out_tbl)
 ################################################################################
 #     }
+
+
+#Rscript script.R -r ${fc_file} -o stranded_edge.tsv -s ${project_name}
