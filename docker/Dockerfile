@@ -1,51 +1,31 @@
 FROM continuumio/miniconda3:4.8.2
 
-# $ docker build . -t microbiomedata/meta_t:latest --build-arg http_proxy=http://proxyout.lanl.gov:8080 --build-arg https_proxy=http://proxyout.lanl.gov:8080
-# $ docker login
-# $ docker push microbiomedata/meta_t:latest
-
 LABEL version="0.0.4"
 LABEL software="NMDC_metatranscriptomics workflow"
 LABEL tags="bioinformatics"
 
 ENV container docker
 
-RUN apt-get update -y \
-    && apt-get install -y build-essential unzip wget curl gawk locales\
+RUN apt-get update --allow-releaseinfo-change -y \
+    && apt-get install -y build-essential unzip wget curl gawk locales r-base\
     && apt-get clean
 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
+RUN conda config --add channels conda-forge && \ 
+    conda config --add channels bioconda
+RUN conda install megahit stringtie 
+Run conda install pandas gffutils
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+RUN Rscript -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
+    && Rscript -e "BiocManager::install('edgeR')"
 
-RUN conda config --add channels conda-forge
-RUN conda config --add channels bioconda
-RUN conda install -c bioconda stringtie --yes
-RUN conda install -c bioconda subread --yes
-# RUN conda install -c bioconda samtools --force-reinstall --yes
-# RUN conda install openssl=1.0 --yes
-RUN conda install -c bioconda megahit --yes
-# RUN conda install -c bioconda hisat2 --yes
-# RUN conda install -c bioconda sortmerna --yes
-RUN conda install R --yes
-RUN conda clean -a
-RUN pip install gffutils
-RUN pip install pandas
+RUN Rscript -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
+    Rscript -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
 
 
-
-RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
-    && R -e "BiocManager::install('edgeR')"
-
-RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
-    R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
-
-# RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
-#     && unzip master.zip \
-#     && cp WorkflowPlanning-master/metatranscriptomics/scripts/edgeR.R /usr/local/bin \
-#     && rm -rf WorkflowPlanning-master/ master.zip
+RUN wget https://github.com/microbiomedata/metaT/archive/refs/heads/metat-develop.zip \
+    && unzip metat-develop.zip \
+    && mkdir /scripts \
+    && cp metaT-metat-develop/scripts/* /scripts \
+    && rm -rf metaT-metat-develop/ metat-develop.zip
 
 CMD ["/bin/bash"]
