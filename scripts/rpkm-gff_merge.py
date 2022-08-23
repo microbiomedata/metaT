@@ -242,8 +242,8 @@ if __name__=="__main__":
 
     parser=argparse.ArgumentParser(description = "Merge GFF, Counts, and RPKM information for MetaT Analysis ")
     parser.add_argument('-gff','--gff3', help='GFF3 file', required = True, type = str)
-    parser.add_argument('-pkm', '--rpkm_file' ,help='Take in functional annotation md5sum', required=True,type=str)
-    parser.add_argument('-rd_count', '--read_count', help='Informed by nmdc activity id', required=True, type=str)
+    parser.add_argument('-pkm', '--rpkm_file' ,help='Rpkm file from edgeR', required=True,type=str)
+    parser.add_argument('-rd_count', '--read_count', help='Read count file from featurecounts', required=True, type=str)
     parser.add_argument('-proj', '--project_id', help='Informed by nmdc activity id', required=True, type=str)
     #set args
     args = parser.parse_args()
