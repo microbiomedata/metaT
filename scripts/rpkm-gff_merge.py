@@ -155,23 +155,23 @@ class SummarizeFeatures():
         try:
             feat_dic['cog'] = feat_obj.attributes['cog'][0]
         except KeyError:
-            pass
+            feat_dic['cog'] = 'N/A'
         try:
             feat_dic['ko'] = feat_obj.attributes['ko'][0]
         except KeyError:
-            pass
+            feat_dic['ko'] = 'N/A'
         try:
             feat_dic['pfam'] = feat_obj.attributes['pfam'][0]
         except KeyError:
-            pass
+            feat_dic['pfam'] = 'N/A'
         try:
             feat_dic['ec_number'] = feat_obj.attributes['ec_number'][0]
         except KeyError:
-            pass
+            feat_dic['ec_number'] = 'N/A'
         try:
             feat_dic['locus_tag'] = feat_obj.attributes['locus_tag'][0]
         except KeyError:
-            pass
+            feat_dic['locus_tag'] = 'N/A'
         try:
             feat_dic['product'] = feat_obj.attributes['product'][0]
         except KeyError:
@@ -179,7 +179,7 @@ class SummarizeFeatures():
         try:
             feat_dic['Note'] = feat_obj.attributes['Note']
         except KeyError:
-            pass
+            feat_dic['Note'] = []
         # just to make sure that keys are strings, else json dump fails
         feat_dic_str = {}
         for key, value in feat_dic.items():
@@ -242,8 +242,8 @@ if __name__=="__main__":
 
     parser=argparse.ArgumentParser(description = "Merge GFF, Counts, and RPKM information for MetaT Analysis ")
     parser.add_argument('-gff','--gff3', help='GFF3 file', required = True, type = str)
-    parser.add_argument('-pkm', '--rpkm_file' ,help='Rpkm file from edgeR', required=True,type=str)
-    parser.add_argument('-rd_count', '--read_count', help='Read count file from featurecounts', required=True, type=str)
+    parser.add_argument('-pkm', '--rpkm_file' ,help='Take in functional annotation md5sum', required=True,type=str)
+    parser.add_argument('-rd_count', '--read_count', help='Informed by nmdc activity id', required=True, type=str)
     parser.add_argument('-proj', '--project_id', help='Informed by nmdc activity id', required=True, type=str)
     #set args
     args = parser.parse_args()
@@ -253,6 +253,7 @@ if __name__=="__main__":
     summary_list = summaryS + summaryA
 
     headers = summary_list[0].keys()
+    print(headers)
 
     with open(f'{args.project_id}_rpkm_summary.tsv', 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, headers, delimiter = "\t")
