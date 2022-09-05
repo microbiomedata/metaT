@@ -11,10 +11,10 @@ task cal_scores{
 
 	command<<<
 
-		Rscript edgeR.R -r ${fc_file} -o stranded_edge.tsv -s ${project_name} && \
+		Rscript /scripts/edgeR.R -r ${fc_file} -o stranded_edge.tsv -s ${project_name} && \
                 
         #python script to merge results with gff
-        python rpkm-gff_merge.py -gff ${gff_file_path} -pkm stranded_edge.tsv -rd_count ${fc_file} -proj ${project_name}
+        python /scripts/rpkm-gff_merge.py -gff ${gff_file_path} -pkm stranded_edge.tsv -rd_count ${fc_file} -proj ${project_name}
 
 	>>>
 
@@ -203,6 +203,7 @@ task finish_metat {
           samtools view -hb -o ${mapback}/${prefix}_pairedMapped_sorted.bam
        # Generate mapping objects
        /scripts/generate_objects.py --type "nmdc:MetatranscriptomeMapping" --id ${informed_by} \
+             --name "Metatranscriptome Alignment Activity for ${proj}" \
              --start ${start} --end $end \
              --resource '${resource}' --url ${url_root}${proj}/mapback/ --giturl ${git_url} \
              --inputs ${fasta} \
@@ -265,15 +266,16 @@ task finish_metat {
              ${annodir}/${prefix}_rfam_misc_bind_misc_feature_regulatory.gff 'RFAM misc binding GFF file' \
              ${annodir}/${prefix}_rfam_rrna.gff 'RFAM rRNA GFF file' \
              ${annodir}/${prefix}_rfam_ncrna_tmrna.gff 'RFAM rmRNA GFF file' \
-	     ${annodir}/${prefix}_crt.crisprs 'CRISPRS file' \
-	     ${annodir}/${prefix}_product_names.tsv 'Product Names tsv' \
+	        ${annodir}/${prefix}_crt.crisprs 'CRISPRS file' \
+	        ${annodir}/${prefix}_product_names.tsv 'Product Names tsv' \
              ${annodir}/${prefix}_gene_phylogeny.tsv 'Gene Phylogeny tsv' \
-	     ${annodir}/${prefix}_ko_ec.gff 'KO_EC GFF file'
+	        ${annodir}/${prefix}_ko_ec.gff 'KO_EC GFF file'
        cp features.json annotations.json activity.json data_objects.json ${annodir}/
 
 
        #re-id metat objects
-       ${features_tsv} | sed ${sed} > ${metat_out}/${prefix}_features_summary.tsv
+       #${features_tsv} | sed ${sed} > ${metat_out}/${prefix}_features_summary.tsv
+       cp ${features_tsv} ${metat_out}/${prefix}_features_summary.tsv
        # Generate metat objects
        /scripts/generate_objects.py --type "nmdc:MetatranscriptomeActivity" --id ${informed_by} \
              --name "Metatranscriptome Activity for ${proj}"
@@ -281,9 +283,7 @@ task finish_metat {
              --resource '${resource}' --url ${url_root}${proj}/metat_output/ --giturl ${git_url} \
              --inputs ${functional_gff} ${bbm_bam}  \
              --outputs \
-              ${metat_out}/${prefix}_sense_counts.json 'Sense RPKM' \
-              ${metat_out}/${prefix}_antisense_counts.json 'Anstisense RPKM' \
-	      ${metat_out}/${prefix}_sorted_features.tsv 'Sorted Features tsv'
+	        ${metat_out}/${prefix}_rpkm_summary.tsv 'Sorted Features tsv'
   
       cp activity.json data_objects.json ${metat_out}/
 
