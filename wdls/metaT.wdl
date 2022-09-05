@@ -5,10 +5,9 @@ import "metat_assembly.wdl" as ma
 import "map_bbmap.wdl" as bb
 import "annotation_full.wdl" as awf
 import "feature_counts.wdl" as fc
-import "calc_scores.wdl" as cs
 
 workflow nmdc_metat {
-    String  metat_container = "microbiomedata/meta_t:latest"
+    String  metat_container = "mbabinski17/metat:dev2"
     String  featcounts_container = "mbabinski17/featcounts:dev"
     String  feature_types_container = "mbabinski17/rpkm_sort:0.0.5"
     String  proj
@@ -37,7 +36,7 @@ workflow nmdc_metat {
     }
 
     call aq.bbduk_rrna as rmrna {
-        input: rqc_clean_reads=qc.filtered,
+        input: rqc_clean_reads=qc.filtered[0],
             DOCKER="microbiomedata/bbtools:38.98"
 
     }
@@ -51,7 +50,7 @@ workflow nmdc_metat {
     }
 
     call bb.bbmap_mapping as bbm{
-        input:rna_clean_reads = qc.filtered,
+        input:rna_clean_reads = rmrna.non_rrna_reads,
         no_of_cpus = 16,
         assembly_fna = asm.assem_fna_file
     }
@@ -83,7 +82,7 @@ workflow nmdc_metat {
 		}
 
     call mt.finish_metat as mfm {
-        input: container="scanon/nmdc-meta:v0.0.1",
+        input: container="microbiomedata/workflowmeta:1.0.5.1",
             start=stage.start,
             resource=resource,
             proj=proj,
