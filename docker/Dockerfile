@@ -10,13 +10,6 @@ RUN apt-get update --allow-releaseinfo-change -y \
     && apt-get install -y build-essential unzip wget curl gawk locales\
     && apt-get clean
 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
-
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
 RUN conda config --add channels conda-forge \
     && conda config --add channels bioconda
 RUN conda install -c bioconda stringtie --yes \
@@ -29,7 +22,7 @@ RUN conda install R-tidyverse R-optparse \
 
 RUN wget https://github.com/microbiomedata/metaT/archive/refs/heads/metat-develop.zip \
     && unzip metat-develop.zip \
-    && mkdir /scripts \
+    && mkdir -p /scripts \
     && cp metaT-metat-develop/scripts/* /scripts \
     && rm -rf metaT-metat-develop/ metat-develop.zip
 
