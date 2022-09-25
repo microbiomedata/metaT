@@ -8,9 +8,11 @@ task bbmap_mapping{
 
 	command {
 		if [["${stranded}" = true]]; then
-            bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} samestrandpairs=t ambiguous=random in=${rna_clean_reads[0]} ref=${assembly_fna} out=mapped_sorted.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t
+            bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} samestrandpairs=t ambiguous=random in1=${rna_clean_reads[0]} in2=${rna_clean_reads[1]} ref=${assembly_fna} out=mapped_sorted.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t && \
+			samtools sort mapped.bam -o mapped_sorted.bam
 		else
-		     bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} samestrandpairs=f ambiguous=random in=${rna_clean_reads[0]} ref=${assembly_fna} out=mapped_sorted.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t
+		    bbmap.sh nodisk=true interleaved=true t=${no_of_cpus} samestrandpairs=f ambiguous=random in=${rna_clean_reads[0]} ref=${assembly_fna} out=mapped.bam covstats=covstats.txt bamscript=to_bam.sh nhtag=t && \
+			samtools sort mapped.bam -o mapped_sorted.bam
 		fi 
 	}
 
