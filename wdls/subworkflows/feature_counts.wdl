@@ -27,13 +27,17 @@ task clean_gff {
 task featurecount{
 	Int no_of_cpu
 	String project_name
+	Boolean stranded = true
 	File gff_file_path
 	File bam_file_path
 	String DOCKER
 
 	command<<<
-        featureCounts -a ${gff_file_path}  -O -p -s 1 --countReadPairs -g ID -t CDS,INTERGENIC,misc_feature,ncRNA,regulatory,rRNA,tmRNA,tRNA -T ${no_of_cpu} -o stranded_features.count ${bam_file_path}
-	    
+	    if [["${stranded}" = true]]; then
+        	featureCounts -a ${gff_file_path}  -O -p -s 1 --countReadPairs -g ID -t CDS,INTERGENIC,misc_feature,ncRNA,regulatory,rRNA,tmRNA,tRNA -T ${no_of_cpu} -o stranded_features.count ${bam_file_path}
+	    else
+			featureCounts -a ${gff_file_path}  -O -s 0 --countReadPairs -g ID -t CDS,INTERGENIC,misc_feature,ncRNA,regulatory,rRNA,tmRNA,tRNA -T ${no_of_cpu} -o stranded_features.count ${bam_file_path}
+		fi
 	>>>
 
 	output{
