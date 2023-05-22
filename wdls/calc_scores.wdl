@@ -11,7 +11,7 @@ task cal_scores{
 
 	command {
 		mv ${edgeR} script.R
-		Rscript script.R -r ${fc_file} -n ${name_of_feat} -o ${name_of_feat}_sc.tsv -s ${project_name}
+		Rscript script.R --reads_table ${fc_file} --name ${name_of_feat} --out_tbl ${name_of_feat}_sc.tsv --sample ${project_name}
 	}
 
 	output {
