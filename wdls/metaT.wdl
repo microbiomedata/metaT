@@ -105,11 +105,10 @@ workflow nmdc_metat {
 		DOCKER = metat_container
 		}
 	
-                call cs.cal_scores as cs2{
+        call cs.cal_scores as cs2{
                 input: project_name = sub(proj, ":", "_"),
                 name_of_feat = feat,
                 fc_file = featurecount.ct_tbl2,
-                edgeR = metat_folder + "/scripts/edgeR.R",
                 DOCKER = metat_container
                 }
         call tj.convtojson as tdc2{
