@@ -92,7 +92,6 @@ workflow nmdc_metat {
 		input: project_name = sub(proj, ":", "_"),
 		name_of_feat = feat,
 		fc_file = featurecount.ct_tbl,
-                edgeR = metat_folder + "/scripts/edgeR.R",
 		DOCKER = metat_container
 		}
         call tj.convtojson as tdc{
