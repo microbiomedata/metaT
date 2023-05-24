@@ -1,5 +1,4 @@
 task cal_scores{
-	File edgeR="scripts/edgeR.R"
 	String project_name
 	String name_of_feat
 	File fc_file
@@ -10,8 +9,7 @@ task cal_scores{
 
 
 	command {
-		mv ${edgeR} script.R
-		Rscript script.R --reads_table ${fc_file} --name ${name_of_feat} --out_tbl ${name_of_feat}_sc.tsv --sample ${project_name}
+		Rscript edgeR.R --reads_table ${fc_file} --name ${name_of_feat} --out_tbl ${name_of_feat}_sc.tsv --sample ${project_name}
 	}
 
 	output {
