@@ -1,0 +1,12 @@
+[submodule "readsqc"]
+	path = readsqc
+	url = https://github.com/microbiomedata/metaT_ReadsQC.git
+[submodule "assembly"]
+	path = assembly
+	url = https://github.com/microbiomedata/metaT_Assembly.git
+[submodule "annotation"]
+	path = annotation
+	url = https://github.com/microbiomedata/mg_annotation
+[submodule "readcount"]
+	path = readcount
+	url = https://github.com/microbiomedata/metaT_ReadCounts
