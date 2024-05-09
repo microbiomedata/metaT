@@ -15,10 +15,13 @@ version 1.0
 # import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/master/annotation_full.wdl" as anno
 # import "https://raw.githubusercontent.com/microbiomedata/metaT_read_counting/main/readcount.wdl?token=GHSAT0AAAAAACMJJVBBCQ6DSV7T6P5IQGL4ZOGLDYA" as rc
 
-import "./readsqc/rqcfilter.wdl" as readsqc 
-import "./assembly/metaT_assembly.wdl" as assembly 
-import "./annotation/annotation_full.wdl" as annotation 
-import "./readcount/readcount.wdl" as readcounts
+import "./git_submodules/readsqc/rqcfilter.wdl" as readsqc 
+import "./git_submodules/assembly/metaT_assembly.wdl" as assembly 
+import "./git_submodules/annotation/annotation_full.wdl" as annotation 
+import "./git_submodules/readcount/readcount.wdl" as readcounts
+import "./git_submodules/ReadbasedAnalysis/ReadbasedAnalysis.wdl" as readanalysis 
+import ".git_submodules/virusPlasmids/viral-plasmid_wf.wdl" as genomad 
+
 
 
 workflow metaT {
@@ -34,16 +37,15 @@ workflow metaT {
 
     call readsqc.metaTReadsQC as qc {
         input:
-        proj = prefix,
+        proj = project_id,
         input_files = input_files
-
     }
 
     call assembly.metatranscriptome_assy as asse{
         input:
         # single file to array of files
         input_files = [qc.filtered_final],
-        rename_contig_prefix = prefix
+        proj_id = prefix
     }
 
     call annotation.annotation as anno{
@@ -60,6 +62,12 @@ workflow metaT {
         out = out_dir,
         rna_type = strand_type,
         proj_id = prefix
+    }
+
+    call readanalysis.ReadbasedAnalysis as rba {
+        input: 
+        input_file = qc.filtered_final,
+        proj = proj_id
     }
 
     output{ # what outputs to give users
