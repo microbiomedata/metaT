@@ -1,19 +1,10 @@
 # metaT workflow wrapper
 version 1.0
 
-# import links once the other repos are public. 
-# import "/expanse/projects/nmdc/edge_app/test/kli/metaT_ReadsQC/rqcfilter.wdl" as readsqc
-# import "/expanse/projects/nmdc/edge_app/test/kli/metaT_Assembly/metaT_assembly.wdl" as assembly
-# import "/expanse/projects/nmdc/edge_app/test/kli/mg_annotation/annotation_full.wdl" as annotation
-# import "/expanse/projects/nmdc/edge_app/test/kli/mg_annotation/structural-annotation.wdl" as sa
-# import "/expanse/projects/nmdc/edge_app/test/kli/mg_annotation/functional-annotation.wdl" as fa
-# import "/expanse/projects/nmdc/edge_app/test/kli/metaT_ReadCounts/readcount.wdl" as readcounts
-
-
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_readsqc/main/rqcfilter.wdl?token=GHSAT0AAAAAACMJJVBAV67KOEXN4FX7EIQGZOGKWDQ" as qc
+# import "https://raw.githubusercontent.com/microbiomedata/metaT_readsqc/main/rqcfilter.wdl" as qc
 # import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/main/metaT_assembly.wdl" as asse
 # import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/master/annotation_full.wdl" as anno
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_read_counting/main/readcount.wdl?token=GHSAT0AAAAAACMJJVBBCQ6DSV7T6P5IQGL4ZOGLDYA" as rc
+# import "https://raw.githubusercontent.com/microbiomedata/metaT_read_counting/main/readcount.wdl" as rc
 
 import "./git_submodules/readsqc/rqcfilter.wdl" as readsqc 
 import "./git_submodules/assembly/metaT_assembly.wdl" as assembly 
@@ -21,6 +12,7 @@ import "./git_submodules/annotation/annotation_full.wdl" as annotation
 import "./git_submodules/readcount/readcount.wdl" as readcounts
 import "./git_submodules/ReadbasedAnalysis/ReadbasedAnalysis.wdl" as readanalysis 
 import ".git_submodules/virusPlasmids/viral-plasmid_wf.wdl" as genomad 
+import "./wdls/to_json.wdl" as json
 
 
 
@@ -64,10 +56,16 @@ workflow metaT {
         proj_id = prefix
     }
 
-    call readanalysis.ReadbasedAnalysis as rba {
-        input: 
-        input_file = qc.filtered_final,
-        proj = proj_id
+    # call readanalysis.ReadbasedAnalysis as rba {
+    #     input: 
+    #     input_file = qc.filtered_final,
+    #     proj = proj_id
+    # }
+
+    call json.rctojson as tj{
+        input:
+        readcount = rc.count_table,
+        func_gff = anno.functional_gff
     }
 
     output{ # what outputs to give users
@@ -114,6 +112,7 @@ workflow metaT {
         File? count_ig = rc.count_table
         File? count_log = rc.count_table
         File readcount_info = rc.info_file
+        File readcount_json = tj.out_json_file
     }
 
     parameter_meta {

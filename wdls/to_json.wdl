@@ -1,3 +1,43 @@
+task rctojson{
+	File struc_gff
+	File readcount
+	String out_json = "read_count_struc.json"
+	String feature = "CDS"
+	File py_pack_path="pyp_metat"
+	String container = "microbiomedata/meta_t@sha256:7e2f1566d3aa64ad55981c5e294b144b20889cbc6d6d24e54d364f379c782324"
+
+	command <<<
+		cp -R ${py_pack_path} pyp_metat
+		python <<CODE
+		from pyp_metat.to_json import *
+		jf1 = "gff.json"
+		jf2 = "rc.json"
+
+		gff_obj = GTFtoJSON(gff_file_name="${struc_gff}", name_of_feat = "${feature}", out_json_file = jf1)
+		gff_obj.gtf_json()
+
+		rc_obj = TSVtoJSON(tsv_file_name = "${readcount}", out_json_file = jf2)
+		rc_obj.tsv_json()
+
+		combine_json(jf1, jf2, "${out_json}")
+
+		CODE
+	>>>
+
+	output{
+		File out_json_file = "read_count_struc.json"
+	}
+
+	runtime {
+		docker: container
+	}
+
+}
+
+
+
+
+
 task convtojson{
 	File gff_file_path
 	File gff_db_fn
