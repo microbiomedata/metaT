@@ -6,7 +6,7 @@ import json
 import pandas as pd
 import gffutils
 
-################################################################################################################################################################################################################################################################################
+########################################################################################################################################
 
 class GTFtoJSON():
     """
@@ -17,18 +17,13 @@ class GTFtoJSON():
     Utilizes package json to write json out and package os to check for db existence. 
     """
 
-    def __init__(self, gtf_file_name: str, name_of_feat: str, out_json_file: str):
+    def __init__(self, gtf_file_name: str, out_json_file: str):
         """
         gtf_file_name: string of gtf or gff file, relative or absolute path both work
-
-        name_of_feat: the type of records stored in gtf, options for gff_utils include: 
-                gene, transcript, exon, CDS, Selenocysteine, start_codon, stop_codon, three_prime_utr and five_prime_utr
-            this is the third column value in gff, as defined at https://agat.readthedocs.io/en/latest/gxf.html#main-points-and-differences-between-gtf-formats
-        
         out_json_file: name of desired json output file, relative or absolute
         """
         self.gtf_file_name = gtf_file_name
-        self.name_of_feat = name_of_feat        #  CDS, gene, etc
+        self.name_of_feat = name_of_feat        #  CDS, gene, , tRNA, etc
         self.out_json_file = out_json_file
 
     def gtf_json(self):
@@ -45,14 +40,14 @@ class GTFtoJSON():
         else:
             gtf_as_db = gffutils.FeatureDB("metat_db.db", keep_order=True)
         json_list = []
-        with open(self.out_json_file, "w") as json_file:
-            for feat_obj in gtf_as_db.all_features():
-                feat_dic = {}  # an empty dictionary to append features
-                if feat_obj.featuretype == self.name_of_feat:
-                    feat_dic_str = self.collect_features(feat_obj=feat_obj, feat_dic=feat_dic)
-                    if bool(feat_dic_str):  # only append if dic is not empty
-                        json_list.append(feat_dic_str)
-            json.dump(json_list, json_file, indent=4)
+        for feat_obj in gtf_as_db.all_features():
+            feat_dic = {}  # an empty dictionary to append features
+            feat_dic_str = self.collect_features(feat_obj=feat_obj, feat_dic=feat_dic)
+            if bool(feat_dic_str):  # only append if dic is not empty
+                json_list.append(feat_dic_str)
+
+        write_json(json_list, self.out_json_file)
+        
 
     def collect_features(self, feat_obj, feat_dic: dict):
         """
@@ -89,7 +84,7 @@ class GTFtoJSON():
             feat_dic_str[str(key)] = value
         return feat_dic_str
 
-################################################################################################################################################################################################################################################################################
+########################################################################################################################################
 
 class TSVtoJSON():
     """ 
@@ -117,19 +112,72 @@ class TSVtoJSON():
                                 "reads_cnt": "sense_read_count",
                                 "reads_cntA": "antisense_read_count",
                                 "locus_type": "featuretype"})
-        tsv_dic = tsv_obj.to_dict(orient="records")
-        with open(self.out_json_file, "w") as json_file:
-            json.dump(tsv_dic, json_file, indent=4)
+        # tsv_dic = tsv_obj.to_dict(orient="records")
 
-################################################################################################################################################################################################################################################################################
+        write_json(tsv_obj.to_dict(orient="records"), self.out_json_file)
 
-def combine_json(json_file1: str, json_file2: str, out_json: str):
+
+########################################################################################################################################
+  
+def final_jsons(gff_in = "paired.gff", rc_in = "paired.rc", 
+                gff_json = "paired.gff.json", 
+                rc_json = "paired.rc.json",
+                gff_rc_json = "gff_rc.json",
+                cds_json = "cds_counts.json",
+                sense_json = "sense_counts.json",
+                anti_json = "antisense_counts.json",
+                sorted_json = "sorted_features.json",
+                sorted_tsv = "sorted_features.tsv",
+                top100_json = "top100_features.json",
+                prefix = ""
+                ):
     """
+    Generate JSON files for NMDC EDGE MetaT output tables. 
     Combine JSON files from GFF and read count TSV using pandas
     """
-    json1 = pd.read_json(json_file1)
-    json2 = pd.read_json(json_file2)
-    json3 = pd.merge(json1, json2, on = ["id", "seqid", "featuretype", "strand", "length"])
-    j3_dic = json3.to_dict(orient="records")
-     with open(self.out_json, "w") as json_file:
-            json.dump(j3_dic, json_file, indent=4)
+    if (prefix != ""):
+        gff_json = prefix + "_paired.gff.json"
+        rc_json = prefix + "_paired.rc.json"
+        gff_rc_json = prefix + "_gff_rc.json"
+        cds_json = prefix + "_cds_counts.json"
+        sense_json = prefix + "_sense_counts.json"
+        anti_json = prefix + "_antisense_counts.json"
+        sorted_json = prefix + "_sorted_features.json"
+        sorted_tsv = prefix + "_sorted_features.tsv"
+        top100_json = prefix + "_top100_features.json"
+
+    gff_obj = GTFtoJSON(gff_in, gff_json)
+    rc_obj = TSVtoJSON(rc_in, rc_json)
+
+    gff_pd = pd.read_json(gff_json)
+    rc_pd = pd.read_json(rc_json)
+    gff_rc_pd = pd.merge(gff_pd, rc_pd, on = ["id", "seqid", "featuretype", "strand", "length"])
+
+    cds_only = gff_rc_pd[gff_rc_pd['featuretype'] = "CDS"]
+
+    sense_reads = cds_only[cds_only['strand'] = "+"].drop(columns = ["antisense_read_count", 
+                                        "meanA",
+                                        "medianA",
+                                        "stdevA"])
+    antisense_reads = cds_only[cds_only['strand'] = "-"].drop(columns = ["sense_read_count", 
+                                        "mean",
+                                        "median",
+                                        "stdev"])
+
+    sorted_features = gff_rc_pd.sort_values(by='sense_read_count', ascending=False)
+    top100 = sorted_features[:100]
+    
+
+    gff_rc_dic = gff_rc_pd.to_dict(orient="records")
+    write_json(gff_rc_pd.to_dict(orient="records"), gff_rc_json)
+    write_json(cds_only.to_dict(orient="records"), cds_json)
+    write_json(sense_reads.to_dict(orient="records"), sense_json)
+    write_json(antisense_reads.to_dict(orient="records"), anti_json)
+    write_json(sorted_features.to_dict(orient="records"), sorted_json)
+    write_json(top100.to_dict(orient="records"), top100_json)
+    
+    sorted_features.to_csv(sorted_tsv, sep="\t") 
+    
+def write_json(js_data, file_out: str):
+    with open(file_out, w) as json_file:
+        json.dump(js_data, json_file), indent=4

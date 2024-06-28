@@ -10,8 +10,8 @@ import "./git_submodules/readsqc/rqcfilter.wdl" as readsqc
 import "./git_submodules/assembly/metaT_assembly.wdl" as assembly 
 import "./git_submodules/annotation/annotation_full.wdl" as annotation 
 import "./git_submodules/readcount/readcount.wdl" as readcounts
-import "./git_submodules/ReadbasedAnalysis/ReadbasedAnalysis.wdl" as readanalysis 
-import ".git_submodules/virusPlasmids/viral-plasmid_wf.wdl" as genomad 
+# import "./git_submodules/ReadbasedAnalysis/ReadbasedAnalysis.wdl" as readanalysis 
+# import ".git_submodules/virusPlasmids/viral-plasmid_wf.wdl" as genomad 
 import "./wdls/to_json.wdl" as json
 
 
@@ -37,14 +37,14 @@ workflow metaT {
         input:
         # single file to array of files
         input_files = [qc.filtered_final],
-        proj_id = prefix
+        proj_id = project_id
     }
 
     call annotation.annotation as anno{
         input:
-        proj = prefix,
+        proj = project_id,
         input_file = asse.final_contigs,
-        imgap_project_id = prefix
+        imgap_project_id = project_id
     }
 
     call readcounts.readcount as rc{
@@ -53,19 +53,15 @@ workflow metaT {
         gff = anno.functional_gff,
         out = out_dir,
         rna_type = strand_type,
-        proj_id = prefix
+        proj_id = project_id
     }
 
-    # call readanalysis.ReadbasedAnalysis as rba {
-    #     input: 
-    #     input_file = qc.filtered_final,
-    #     proj = proj_id
-    # }
 
     call json.rctojson as tj{
         input:
         readcount = rc.count_table,
-        func_gff = anno.functional_gff
+        gff = anno.functional_gff,
+        prefix = prefix
     }
 
     output{ # what outputs to give users
@@ -112,7 +108,16 @@ workflow metaT {
         File? count_ig = rc.count_table
         File? count_log = rc.count_table
         File readcount_info = rc.info_file
-        File readcount_json = tj.out_json_file
+        # output tables
+        File gff_json = tj.gff_json
+        File rc_json = tj.rc_json
+        File gff_rc_json = tj.gff_rc_json
+		File cds_json = tj.cds_json
+		File sense_json = tj.sense_json
+		File anti_json = tj.anti_json
+        File top100_json = tj.top100_json
+		File sorted_json = tj.sorted_json
+        File sorted_tsv = tj.sorted_tsv
     }
 
     parameter_meta {
