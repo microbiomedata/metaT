@@ -51,9 +51,11 @@ workflow metaT {
         input:
         bam = asse.final_bam,
         gff = anno.functional_gff,
+        map = anno.map_file,
         out = out_dir,
         rna_type = strand_type,
         proj_id = project_id
+
     }
 
 
@@ -100,9 +102,11 @@ workflow metaT {
         File prodigal_gff = anno.prodigal_gff
         File trna_gff = anno.trna_gff
         File final_rfam_gff = anno.final_rfam_gff
-        File product_names_tsv = anno.product_names_tsv
-        File crt_crisprs = anno.crt_crisprs
-        File imgap_version = anno.imgap_version
+        File product_names_tsv = finish_ano.final_product_names_tsv
+        File crt_crisprs = finish_ano.final_crt_crisprs
+        File imgap_version = finish_ano.final_version
+        File renamed_fasta = finish_ano.final_renamed_fasta
+        File map_file = finish_ano.final_map_file
         # metaT_ReadCounts
         File count_table = rc.count_table
         File? count_ig = rc.count_table
