@@ -1,5 +1,20 @@
 version 1.0
 
+workflow to_json {
+    input {
+        File gff
+		File readcount
+		String prefix
+    }
+
+    call rctojson{
+        input:
+        gff = gff,
+        readcount = readcount,
+        prefix = prefix
+    }
+}
+
 task rctojson{
 	input {
 		File gff
@@ -14,12 +29,9 @@ task rctojson{
 		import json
 		import pandas as pd
 		import gffutils
-		# Run / Call #######################################################################################################################################
-			final_jsons(gff_in = "~{gff}", rc_in = "~{readcount}", prefix = "~{prefix}")
-
 		# Definitions #####################################################################################################################################
 		# Functions #######################################################################################################################################
-		def final_jsons(gff_in = "paired.gff", rc_in = "paired.rc", 
+		def final_jsons(gff_in = "test_data/paired.gff", rc_in = "test_data/paired.rc", 
 						gff_json = "paired.gff.json", 
 						rc_json = "paired.rc.json",
 						gff_rc_json = "gff_rc.json",
@@ -45,21 +57,22 @@ task rctojson{
 				sorted_json = prefix + "_sorted_features.json"
 				sorted_tsv = prefix + "_sorted_features.tsv"
 				top100_json = prefix + "_top100_features.json"
-
-			gff_obj = GTFtoJSON(gff_in, gff_json)
-			rc_obj = TSVtoJSON(rc_in, rc_json)
+			
+			gff_obj = GTFtoJSON(gff_in, gff_json).gtf_json()
+			
+			rc_obj = TSVtoJSON(rc_in, rc_json).tsv_json()
 
 			gff_pd = pd.read_json(gff_json)
 			rc_pd = pd.read_json(rc_json)
 			gff_rc_pd = pd.merge(gff_pd, rc_pd, on = ["id", "seqid", "featuretype", "strand", "length"])
 
-			cds_only = gff_rc_pd[gff_rc_pd['featuretype'] = "CDS"]
+			cds_only = gff_rc_pd[gff_rc_pd['featuretype'] == "CDS"]
 
-			sense_reads = cds_only[cds_only['strand'] = "+"].drop(columns = ["antisense_read_count", 
+			sense_reads = cds_only[cds_only['strand'] == "+"].drop(columns = ["antisense_read_count", 
 												"meanA",
 												"medianA",
 												"stdevA"])
-			antisense_reads = cds_only[cds_only['strand'] = "-"].drop(columns = ["sense_read_count", 
+			antisense_reads = cds_only[cds_only['strand'] == "-"].drop(columns = ["sense_read_count", 
 												"mean",
 												"median",
 												"stdev"])
@@ -75,11 +88,14 @@ task rctojson{
 			write_json(top100.to_dict(orient="records"), top100_json)
 			
 			sorted_features.to_csv(sorted_tsv, sep="\t") 
+			
+			print("Additional JSON files and tables printed.")
 
 			
 		def write_json(js_data, file_out: str):
-			with open(file_out, w) as json_file:
-				json.dump(js_data, json_file), indent=4
+			with open(file_out, 'w') as json_file:
+				json.dump(js_data, json_file, indent=4)
+
 		# Classes #######################################################################################################################################
 		class GTFtoJSON():
 			"""
@@ -96,7 +112,6 @@ task rctojson{
 				out_json_file: name of desired json output file, relative or absolute
 				"""
 				self.gtf_file_name = gtf_file_name
-				self.name_of_feat = name_of_feat        #  CDS, gene, , tRNA, etc
 				self.out_json_file = out_json_file
 
 			def gtf_json(self):
@@ -110,8 +125,10 @@ task rctojson{
 					gtf_as_db = gffutils.create_db(self.gtf_file_name, dbfn="metat_db.db", force=True,
 												keep_order=True,
 												merge_strategy="create_unique")
+					print("New gffutils db created")
 				else:
 					gtf_as_db = gffutils.FeatureDB("metat_db.db", keep_order=True)
+					print("Cached gffutils db loaded")
 				json_list = []
 				for feat_obj in gtf_as_db.all_features():
 					feat_dic = {}  # an empty dictionary to append features
@@ -120,6 +137,8 @@ task rctojson{
 						json_list.append(feat_dic_str)
 
 				write_json(json_list, self.out_json_file)
+				print("GTF to JSON completed")
+				return json_list
 				
 
 			def collect_features(self, feat_obj, feat_dic: dict):
@@ -136,9 +155,11 @@ task rctojson{
 				feat_dic['length'] = abs(feat_obj.end - feat_obj.start) + 1
 				feat_dic['strand'] = feat_obj.strand
 				feat_dic['frame'] = feat_obj.frame
-				# feat_dic['extra'] = feat_obj.extra
-				feat_dic['product'] = feat_obj.attributes['product'][0]
-				feat_dic['product_source'] = feat_obj.attributes['product_source'][0]
+				try:
+					feat_dic['product'] = feat_obj.attributes['product'][0]
+					feat_dic['product_source'] = feat_obj.attributes['product_source'][0]
+				except KeyError:
+					pass
 				try:
 					feat_dic['cov'] = feat_obj.attributes['cov'][0]
 				except KeyError:
@@ -186,10 +207,12 @@ task rctojson{
 										"reads_cntA": "antisense_read_count",
 										"locus_type": "featuretype"})
 				# tsv_dic = tsv_obj.to_dict(orient="records")
+				print("TSV to JSON completed")
 
 				write_json(tsv_obj.to_dict(orient="records"), self.out_json_file)
-
-
+	
+		# Function call #######################################################################################################################################
+		final_jsons(gff_in = "~{gff}", rc_in = "~{readcount}", prefix = "~{prefix}")
 		########################################################################################################################################
 		CODE
 	>>>

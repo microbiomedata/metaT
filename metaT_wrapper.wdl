@@ -1,14 +1,14 @@
 # metaT workflow wrapper
 version 1.0
 
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_readsqc/main/rqcfilter.wdl" as qc
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/main/metaT_assembly.wdl" as asse
-# import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/master/annotation_full.wdl" as anno
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_read_counting/main/readcount.wdl" as rc
+# import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/main/rqcfilter.wdl?token=GHSAT0AAAAAACMJJVBANGTAHVSNWH57MHOIZUECIAQ" as readsqc
+import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/8374bc8c722ddbf2ec4eb68d0800c29526abc945/metaT_assembly.wdl" as assembly
+import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.1/annotation_full.wdl" as annotation
+# import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/main/readcount.wdl?token=GHSAT0AAAAAACMJJVBATFMRDLN44W4K6J7GZUECILA" as readcounts
 
 import "./git_submodules/readsqc/rqcfilter.wdl" as readsqc 
-import "./git_submodules/assembly/metaT_assembly.wdl" as assembly 
-import "./git_submodules/annotation/annotation_full.wdl" as annotation 
+# import "./git_submodules/assembly/metaT_assembly.wdl" as assembly 
+# import "./git_submodules/annotation/annotation_full.wdl" as annotation 
 import "./git_submodules/readcount/readcount.wdl" as readcounts
 # import "./git_submodules/ReadbasedAnalysis/ReadbasedAnalysis.wdl" as readanalysis 
 # import ".git_submodules/virusPlasmids/viral-plasmid_wf.wdl" as genomad 
@@ -80,6 +80,7 @@ workflow metaT {
 	    File final_readlen = asse.final_readlen
         File final_sam = asse.final_sam
         File final_bam = asse.final_bam
+        File final_asmstats = asse.asmstats
         File asse_info  = asse.info_file
         # mg_annotation
         File proteins_faa = anno.proteins_faa
@@ -102,11 +103,11 @@ workflow metaT {
         File prodigal_gff = anno.prodigal_gff
         File trna_gff = anno.trna_gff
         File final_rfam_gff = anno.final_rfam_gff
-        File product_names_tsv = finish_ano.final_product_names_tsv
-        File crt_crisprs = finish_ano.final_crt_crisprs
-        File imgap_version = finish_ano.final_version
-        File renamed_fasta = finish_ano.final_renamed_fasta
-        File map_file = finish_ano.final_map_file
+        File product_names_tsv = anno.product_names_tsv
+        File crt_crisprs = anno.crt_crisprs
+        File imgap_version = anno.imgap_version
+        File renamed_fasta = anno.renamed_fasta
+        File map_file = anno.map_file
         # metaT_ReadCounts
         File count_table = rc.count_table
         File? count_ig = rc.count_table
