@@ -27,3 +27,4 @@ settings.json
 *.pyc
 *.zip
 test_data/
+/*/*.test
