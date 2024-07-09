@@ -1,0 +1,5 @@
+{
+    "metaT.input_files": ["./test_data/small_test/test_small_interleave.fastq.gz"],
+    "metaT.project_id":"nmdc:xxxxxxx",
+    "metaT.strand_type": "aRNA"
+}
