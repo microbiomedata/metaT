@@ -24,7 +24,6 @@ bbtools ≥ v38.94
 Python ≥ v3.7.12
 pandas ≥ v1.0.5 (python package)
 gffutils ≥ v0.10.1 (python package)
-
 ```
 
 ## Databases
@@ -41,12 +40,6 @@ The submit script will request a node and launch the Cromwell.  The Cromwell man
 java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i input.json /full/path/to/wdls/metaT.wdl
 
 ```
-<!-- ```
-   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part1.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part1.json
-   java  -jar /path/to/cromwell-XX.jar run wdls/metaT_part2.wdl -i  test_data/small_test/test_small_input.json -m metadata_out_part2.json 
-``` -->
-
-<!-- java -jar cromwell/cromwell-48.jar run wdls/nmdc-metaT_full.wdl -i test_data/small_test/test_small_input_fullpipe.json -l test_data/small_test/test_small_input_label.json -->
 
 
 ## Docker images
@@ -67,7 +60,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 ### Input option descriptions:
 - `project_id`: A unique name for your project or sample.
 - `input_files`: Full path to the fastq file. The file must be intereleaved paired end fastq.
-- `strand_type`: RNA strand type. Inputs can be either `aRNA` or `non_stranded_RNA`
+- `strand_type`: (optional) RNA strandedness, either left blank, `aRNA`, or `non_stranded_RNA`
 
 ## Outputs
 All outputs can be found in the `outdir` folder. There are following subfolders:
@@ -82,19 +75,26 @@ All outputs can be found in the `outdir` folder. There are following subfolders:
 The output file is a JSON formatted file called `out.json` with JSON records that contains reads and information from annotation. An example JSON record:
 ```json
         {
-            "read_count": 2,
-            "featuretype": "CDS",
-            "seqid": "contig_3",
-            "id": "contig_3_126_347",
-            "source": "GeneMark.hmm_2 v1.05",
-            "start": 126,
-            "end": 347,
-            "length": 222,
-            "strand": "+",
-            "frame": "0",
-            "extra": [],
-            "product": "hypothetical protein"
-        }
+        "featuretype": "CDS",
+        "seqid": "nmdc:xxxxxxx_001",
+        "id": "nmdc:xxxxxxx_001_1_588",
+        "source": "Prodigal v2.6.3_patched",
+        "start": 1,
+        "end": 588,
+        "length": 588,
+        "strand": "+",
+        "frame": "0",
+        "product": "hypothetical protein",
+        "product_source": "Hypo-rule applied",
+        "sense_read_count": 25,
+        "mean": 5.0,
+        "median": 3.0,
+        "stdev": 6.1,
+        "antisense_read_count": 28,
+        "meanA": 7.14,
+        "medianA": 7,
+        "stdevA": 5.7
+    }
 
 ```
 

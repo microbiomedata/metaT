@@ -5,7 +5,7 @@ import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.1/rq
 import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.0/metaT_assembly.wdl?ref=75f6272246afc4b38f080f844752723e2094634a" as assembly
 import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.1/annotation_full.wdl?ref=ecef194c0fb3c189f977ab194bac39d2cc3f3211" as annotation
 import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.0/readcount.wdl?ref=ef019d90adccbce816ff9d4d7fa219b21e8a46bc" as readcounts
-import "./to_json.wdl" as json
+import "./metat_tasks.wdl" as tasks
 
 
 workflow metaT {
@@ -49,7 +49,7 @@ workflow metaT {
     }
 
 
-    call json.rctojson as tj{
+    call tasks.rctojson as tj{
         input:
         readcount = rc.count_table,
         gff = anno.functional_gff,
