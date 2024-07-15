@@ -8,9 +8,9 @@ This workflow is designed to analyze metatranscriptomes.
 All parts of this workflow are housed in their own repositories and imported via WDL v1.0 https importing. 
 The following repositories are used in this workflow:
  - [metaT_ReadsQC](https://github.com/microbiomedata/metaT_ReadsQC)
- - [metaT_ReadsQC](https://github.com/microbiomedata/metaT_Assembly)
- - [metaT_ReadsQC](https://github.com/microbiomedata/mg_annotation)
- - [metaT_ReadsQC](https://github.com/microbiomedata/metaT_ReadCounts)
+ - [metaT_Assembly](https://github.com/microbiomedata/metaT_Assembly)
+ - [mg_annotation](https://github.com/microbiomedata/mg_annotation)
+ - [metaT_ReadCounts](https://github.com/microbiomedata/metaT_ReadCounts)
 
 ## Version
 1.0.0
