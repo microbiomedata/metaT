@@ -1,10 +1,10 @@
 # metaT workflow wrapper
 version 1.0
 
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.1/rqcfilter.wdl?ref=b9f57348975e0ac4a32f733153ff579488e55ba9" as readsqc
-import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.0/metaT_assembly.wdl?ref=75f6272246afc4b38f080f844752723e2094634a" as assembly
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/main/rqcfilter.wdl" as readsqc
+import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/main/metaT_assembly.wdl" as assembly
 import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.1/annotation_full.wdl?ref=ecef194c0fb3c189f977ab194bac39d2cc3f3211" as annotation
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.0/readcount.wdl?ref=ef019d90adccbce816ff9d4d7fa219b21e8a46bc" as readcounts
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/master/readcount.wdl" as readcounts
 import "./metat_tasks.wdl" as tasks
 
 

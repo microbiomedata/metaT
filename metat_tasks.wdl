@@ -225,7 +225,7 @@ task rctojson{
 		File gff
 		File readcount
 		String prefix
-		String container = "microbiomedata/meta_t@sha256:7e2f1566d3aa64ad55981c5e294b144b20889cbc6d6d24e54d364f379c782324"
+		String container = "microbiomedata/meta_t@sha256:ffeedfb622d1c49ad8a1f13d7608b65d9b88b1d27237328258093d8eccd3a6fc"
 	}
 	command <<<
 		python <<CODE
@@ -269,6 +269,10 @@ task rctojson{
 
 			gff_pd = pd.read_json(gff_json)
 			rc_pd = pd.read_json(rc_json)
+
+         gff_pd = gff_pd.fillna("None")
+         rc_pd = rc_pd.fillna("None")
+
 			gff_rc_pd = pd.merge(gff_pd, rc_pd, on = ["id", "seqid", "featuretype", "strand", "length"])
 
 			cds_only = gff_rc_pd[gff_rc_pd['featuretype'] == "CDS"]

@@ -44,7 +44,7 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 
 ## Docker images
 
-- `microbiomedata/meta_t:latest`
+- `microbiomedata/meta_t:0.0.5`
 - `bryce911/bbtools:38.86`
 
 
