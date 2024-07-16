@@ -18,6 +18,8 @@ task clean_gff{
 
    runtime {
       docker: DOCKER
+      memory: "1 GiB"
+      cpu:  1
    }
 }
 
@@ -37,6 +39,8 @@ task extract_feats{
 
    runtime {
       docker: DOCKER
+      memory: "1 GiB"
+      cpu:  1
    }
 }
 
@@ -58,6 +62,8 @@ task create_gffdb{
    }
    runtime {
       docker: DOCKER
+      memory: "1 GiB"
+      cpu:  1
    }
 }
 
@@ -85,6 +91,8 @@ task collect_output{
 
    runtime {
       docker: DOCKER
+      memory: "1 GiB"
+      cpu:  1
    }
 
    output{
@@ -115,7 +123,9 @@ task collect_output2{
         >>>
 
         runtime {
-                docker: DOCKER
+            docker: DOCKER
+            memory: "1 GiB"
+            cpu:  1
         }
 
         output{
