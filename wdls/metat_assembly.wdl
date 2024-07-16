@@ -20,6 +20,7 @@ task megahit_assembly{
 	runtime {
 		docker: DOCKER
 		cpu: no_of_cpus
+		memory: "120 GiB"
 	}
 
 	output{
