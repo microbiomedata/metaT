@@ -43,9 +43,9 @@ RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org'
 RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
     R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
 
-# RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
-#     && unzip master.zip \
-#     && cp WorkflowPlanning-master/metatranscriptomics/scripts/edgeR.R /usr/local/bin \
-#     && rm -rf WorkflowPlanning-master/ master.zip
+RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
+    && unzip master.zip \
+    && cp WorkflowPlanning-master/metatranscriptomics/scripts/edgeR.R /usr/local/bin \
+    && rm -rf WorkflowPlanning-master/ master.zip
 
 CMD ["/bin/bash"]
