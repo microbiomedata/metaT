@@ -232,7 +232,7 @@ task rctojson{
       File gff
       File readcount
       String prefix
-      String container = "microbiomedata/meta_t@sha256:ffeedfb622d1c49ad8a1f13d7608b65d9b88b1d27237328258093d8eccd3a6fc"
+      String container = "microbiomedata/meta_t@sha256:sha256:b7883805f340ce97d65c884f50d37844300da5db0d42fd6e0a77b2457518cd12"
    }
    command <<<
       python <<CODE
