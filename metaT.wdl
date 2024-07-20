@@ -16,6 +16,8 @@ workflow metaT {
         String? strand_type
         String prefix = sub(project_id, ":", "_")
         String container = "bryce911/bbtools:38.86"
+        String tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
+        String fi_container="scanon/nmdc-meta:v0.0.1"
     }
 
     call readsqc.metaTReadsQC as qc {
@@ -52,12 +54,13 @@ workflow metaT {
         input:
         readcount = rc.count_table,
         gff = anno.functional_gff,
-        prefix = prefix
+        prefix = prefix,
+        container = tj_container
     }
 
     call tasks.finish_metat as fi {
         input: 
-        container="scanon/nmdc-meta:v0.0.1",
+        container=fi_container,
         proj = project_id, 
         filtered = qc.filtered_final,
         filtered_stats = qc.filtered_stats_final,
