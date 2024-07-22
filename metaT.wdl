@@ -1,29 +1,43 @@
 # metaT workflow wrapper
 version 1.0
 
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/main/rqcfilter.wdl" as readsqc
-import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/main/metaT_assembly.wdl" as assembly
-import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.1/annotation_full.wdl?ref=ecef194c0fb3c189f977ab194bac39d2cc3f3211" as annotation
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/master/readcount.wdl" as readcounts
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.3/rqcfilter.wdl" as readsqc
+import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.1/metaT_assembly.wdl" as assembly
+import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.1/annotation_full.wdl" as annotation
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.1/readcount.wdl" as readcounts
 import "./metat_tasks.wdl" as tasks
 
 
-workflow metaT {
+workflow nmdc_metaT {
 
     input {
         String  project_id
-        Array[String] input_files
+        File    input_file
+        File?   input_fq1
+        File?   input_fq2
+        Boolean input_interleaved = false
+        # Array[String] input_files
         String? strand_type
-        String prefix = sub(project_id, ":", "_")
-        String container = "bryce911/bbtools:38.86"
-        String tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
-        String fi_container="scanon/nmdc-meta:v0.0.1"
+        String  prefix = sub(project_id, ":", "_")
+        String  container = "bryce911/bbtools:38.86"
+        String  tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
+        String  fi_container="scanon/nmdc-meta:v0.0.1"
+    }
+
+     if (!input_interleaved) {
+         call tasks.make_interleaved as int  {
+            input:
+            fastq1 = input_fq1,
+	        fastq2 = input_fq2,
+            pref = prefix,
+	        container="microbiomedata/bbtools:38.96"
+           } 
     }
 
     call readsqc.metaTReadsQC as qc {
         input:
         proj = project_id,
-        input_files = input_files
+        input_files = if (input_interleaved) then [input_file] else [int.out_fastq]
     }
 
     call assembly.metatranscriptome_assy as asse{
@@ -178,8 +192,11 @@ workflow metaT {
 
     parameter_meta {
         project_id: "Project ID string.  This will be appended to the gene ids"
-        input_files: "File path(s) to raw fastq, can be interleaved or not"
+        input_files: "File path to raw fastq, must be interleaved and gzipped."
         strand_type: "RNA strandedness, optional, can be left out / blank, 'aRNA', or 'non_stranded_RNA'"
+        input_interleaved: "Optional boolean to specify whether input files are interleaved. Default false."
+        input_fq1: "Optional input file specifications if files need to be interleaved"
+        input_fq2: "Optional input file specifications if files need to be interleaved"
     }
     
 }
