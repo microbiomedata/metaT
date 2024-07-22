@@ -33,14 +33,14 @@ task stage {
 
 task make_interleaved {
    input{
-      File input1
-      File input2
+      File? fastq1
+      File? fastq2
       String pref
       String container
    }
    command <<<
       set -eou pipefail
-      reformat.sh in1=~{input1} in2=~{input2} out="~{pref}.fastq.gz"
+      reformat.sh in1=~{fastq1} in2=~{fastq2} out="~{pref}.fastq.gz"
    >>>
 
    output{
@@ -58,13 +58,13 @@ task split_interleaved_fastq{
     input{
       File reads
       String container
-      String? memory = "4G"
+      String memory = "4G"
       String output1 = "input.left.fastq.gz"
       String output2 = "input.right.fastq.gz"
    }
     runtime {
         docker: container
-        mem: "4 GiB"
+        memory: "4 GiB"
         cpu:  1
     }
     command <<<
