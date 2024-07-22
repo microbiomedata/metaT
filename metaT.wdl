@@ -194,7 +194,7 @@ workflow nmdc_metaT {
         project_id: "Project ID string.  This will be appended to the gene ids"
         input_files: "File path to raw fastq, must be interleaved and gzipped."
         strand_type: "RNA strandedness, optional, can be left out / blank, 'aRNA', or 'non_stranded_RNA'"
-        input_interleaved: "Boolean to specify whether input files are interleaved. Default false."
+        input_interleaved: "Optional boolean to specify whether input files are interleaved. Default false."
         input_fq1: "Optional input file specifications if files need to be interleaved"
         input_fq2: "Optional input file specifications if files need to be interleaved"
     }
