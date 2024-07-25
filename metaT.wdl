@@ -1,8 +1,8 @@
 # metaT workflow wrapper
 version 1.0
 
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.3/rqcfilter.wdl" as readsqc
-import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.1/metaT_assembly.wdl" as assembly
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.4/rqcfilter.wdl" as readsqc
+import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.2/metaT_assembly.wdl" as assembly
 import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.2/annotation_full.wdl" as annotation
 import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.1/readcount.wdl" as readcounts
 import "./metat_tasks.wdl" as tasks
@@ -79,6 +79,7 @@ workflow nmdc_metaT {
         filtered = qc.filtered_final,
         filtered_stats = qc.filtered_stats_final,
         filtered_stats2 = qc.filtered_stats2_final,
+        filtered_ribo = qc.filtered_ribo_final,
         rqc_info = qc.rqc_info,
         tar_bam = asse.final_tar_bam,
         contigs = asse.final_contigs,
@@ -87,6 +88,8 @@ workflow nmdc_metaT {
 	    readlen = asse.final_readlen,
         sam = asse.final_sam,
         bam = asse.final_bam,
+        bamidx = asse.final_bamidx,
+        cov = asse.final_cov,
         asmstats = asse.asmstats,
         asse_info  = asse.info_file,
         proteins_faa = anno.proteins_faa,
@@ -138,6 +141,7 @@ workflow nmdc_metaT {
         File filtered_stats2_final = fi.final_filtered_stats2
         File rqc_info = fi.final_rqc_info
         File rqc_stats = fi.final_rqc_stats
+        File filtered_ribo_final = fi.final_filtered_ribo
         # metaT_Assembly
         File final_tar_bam = fi.final_tar_bam
         File final_contigs = fi.final_contigs
@@ -146,6 +150,8 @@ workflow nmdc_metaT {
 	    File final_readlen = fi.final_readlen
         File final_sam = fi.final_sam
         File final_bam = fi.final_bam
+        File final_bamidx = fi.final_bamidx
+        File final_cov = fi.final_cov
         File final_asmstats = fi.final_asmstats
         File asse_info  = fi.final_asm_info
         # mg_annotation
