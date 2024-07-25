@@ -3,8 +3,8 @@ version 1.0
 
 import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.4/rqcfilter.wdl" as readsqc
 import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.2/metaT_assembly.wdl" as assembly
-import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.2/annotation_full.wdl" as annotation
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.1/readcount.wdl" as readcounts
+import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.3/annotation_full.wdl" as annotation
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.2/readcount.wdl" as readcounts
 import "./metat_tasks.wdl" as tasks
 
 
@@ -19,7 +19,7 @@ workflow nmdc_metaT {
         # Array[String] input_files
         String? strand_type
         String  prefix = sub(project_id, ":", "_")
-        String  container = "bryce911/bbtools:38.86"
+        String  container = "microbiomedata/bbtools:38.96"
         String  tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
         String  fi_container="scanon/nmdc-meta:v0.0.1"
     }
@@ -30,7 +30,7 @@ workflow nmdc_metaT {
             fastq1 = input_fq1,
 	        fastq2 = input_fq2,
             pref = prefix,
-	        container="microbiomedata/bbtools:38.96"
+	        container=container
            } 
     }
 
