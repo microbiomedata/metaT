@@ -581,8 +581,8 @@ task finish_metat {
 
       # move readcount objects
       cp ~{count_table} ~{readmap}/~{prefix}.rnaseq_gea.txt
-      cp ~{count_ig} ~{readmap}/~{prefix}.rnaseq_gea.intergenic.txt
-      cp ~{count_log} ~{readmap}/~{prefix}.readcount.stats.log
+      ~{if defined(count_ig) then "cp ~{count_ig} ~{readmap}/~{prefix}.rnaseq_gea.intergenic.txt" else ""}
+      ~{if defined(count_log) then "cp ~{count_log} ~{readmap}/~{prefix}.readcount.stats.log" else ""}
       cp ~{readcount_info} ~{readmap}/~{prefix}_readcount.info
 
       #move metat tables
