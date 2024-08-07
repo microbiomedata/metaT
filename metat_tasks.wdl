@@ -614,7 +614,7 @@ task finish_metat {
          File final_scaffolds = "~{assemdir}/~{prefix}_scaffolds.fna"
          File final_readlen = "~{assemdir}/~{prefix}_readlen.txt"
          File final_sam = "~{assemdir}/~{prefix}_pairedMapped.sam.gz"
-         File final_bam = "~{assemdir}/~{prefix}_pairedMapped.bam.gz"
+         File final_bam = "~{assemdir}/~{prefix}_pairedMapped.bam"
          File final_bamidx = "~{assemdir}/~{prefix}_pairedMapped_sorted.bam.bai"
          File final_cov = "~{assemdir}/~{prefix}_pairedMapped_sorted.bam.cov"
          File final_asmstats = "~{assemdir}/~{prefix}_scaffold_stats.json"

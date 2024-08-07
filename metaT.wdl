@@ -1,13 +1,12 @@
 # metaT workflow wrapper
 version 1.0
 
-# import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.4/rqcfilter.wdl" as readsqc
+import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/v0.0.6/rqcfilter.wdl" as readsqc
 import "https://raw.githubusercontent.com/microbiomedata/metaT_Assembly/v0.0.2/metaT_assembly.wdl" as assembly
-# import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.3/annotation_full.wdl" as annotation
+# import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/v1.1.4/annotation_full.wdl" as annotation
 import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadCounts/v0.0.2/readcount.wdl" as readcounts
 import "./metat_tasks.wdl" as tasks
 
-import "https://raw.githubusercontent.com/microbiomedata/metaT_ReadsQC/rqc_mem/rqcfilter.wdl" as readsqc
 import "https://raw.githubusercontent.com/microbiomedata/mg_annotation/rfam_mem/annotation_full.wdl" as annotation
 
 
@@ -26,6 +25,10 @@ workflow nmdc_metaT {
         String  container = "microbiomedata/bbtools:38.96"
         String  tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
         String  fi_container="scanon/nmdc-meta:v0.0.1"
+        Int     rqc_mem = 120
+        Int     rqc_thr = 64
+        Int     anno_mem = 120
+        Int     anno_thr = 16
     }
 
      if (!input_interleaved) {
@@ -41,7 +44,9 @@ workflow nmdc_metaT {
     call readsqc.metaTReadsQC as qc {
         input:
         proj = project_id,
-        input_files = if (input_interleaved) then [input_file] else [int.out_fastq]
+        input_files = if (input_interleaved) then [input_file] else [int.out_fastq],
+        rqc_mem = rqc_mem,
+        rqc_thr = rqc_thr
     }
 
     call assembly.metatranscriptome_assy as asse{
@@ -55,7 +60,9 @@ workflow nmdc_metaT {
         input:
         proj = project_id,
         input_file = asse.final_contigs,
-        imgap_project_id = project_id
+        imgap_project_id = project_id,
+        additional_memory = anno_mem,
+        additional_threads = anno_thr
     }
 
     call readcounts.readcount as rc{
