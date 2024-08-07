@@ -1,8 +1,8 @@
-FROM continuumio/miniconda3:4.8.2
+FROM continuumio/miniconda3:4.10.3
 
-# $ docker build . -t microbiomedata/meta_t:latest --build-arg http_proxy=http://proxyout.lanl.gov:8080 --build-arg https_proxy=http://proxyout.lanl.gov:8080
+# $ docker build . -t microbiomedata/meta_t:[version] --build-arg http_proxy=http://proxyout.lanl.gov:8080 --build-arg https_proxy=http://proxyout.lanl.gov:8080
 # $ docker login
-# $ docker push microbiomedata/meta_t:latest
+# $ docker push microbiomedata/meta_t:[version]
 
 LABEL version="0.0.4"
 LABEL software="NMDC_metatranscriptomics workflow"
