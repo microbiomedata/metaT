@@ -22,9 +22,9 @@ jobs:
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       
       - name: Create bundle zip
-        run: zip -r bundle.zip wdls/* pyp_metat/* scripts/*
+        run: zip -r bundle.zip *.wdl
 
       - name: Create Release
-        run: gh release create ${{ env.VERSION }} wdls/metaT.wdl bundle.zip
+        run: gh release create ${{ env.VERSION }} metaT.wdl to_json.wdl bundle.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,6 @@
+{
+    "nmdc_metaT.input_file": "/absolute-path-to/test_data/small_test/test_small_interleave.fastq.gz",
+    "nmdc_metaT.project_id":"nmdc:xxxxxxx",
+    "nmdc_metaT.input_interleaved": true,
+    "nmdc_metaT.strand_type": " "
+}
