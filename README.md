@@ -13,7 +13,7 @@ The following repositories are used in this workflow:
  - [metaT_ReadCounts](https://github.com/microbiomedata/metaT_ReadCounts)
 
 ## Version
-1.0.0
+0.0.6
 
 ## Third party tools and packages
 To run this workflow you will need a Docker (Docker ≥ v2.1.0.3) instance and cromwell. All the third party tools are pulled from Dockerhub.
