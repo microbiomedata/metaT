@@ -12,7 +12,7 @@ workflow nmdc_metat {
 
     input {
         String  project_id
-        File    input_file
+        File?    input_file
         File?   input_fq1
         File?   input_fq2
         Boolean input_interleaved = false
@@ -23,7 +23,7 @@ workflow nmdc_metat {
         String  tj_container =  "microbiomedata/meta_t@sha256:f18ff86c78909f70c7b6b8aa3a2d5c521800e10e0e270a9aa7fce6f383c224ba"
         String  fi_container="scanon/nmdc-meta:v0.0.1"
         Int     rqc_mem = 180
-        Int     rqc_thr = 64
+        Int     rqc_thr = 16
         Int     anno_mem = 120
         Int     anno_thr = 16
     }
