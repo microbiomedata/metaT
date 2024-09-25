@@ -35,11 +35,8 @@ Third-party software (These are included in the Docker images.)
 1. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
 2. `BBMap v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
 3. `Python v3.7.6 <https://www.python.org/>`_.  (License: Python Software Foundation License)
-4. `featureCounts v2.0.2 <http://subread.sourceforge.net/>`_. (License: GNU-GPL)
-5. `R v3.6.0 <https://www.r-project.org/>`_. (License: GPL-2/GPL-3)
-6. `edgeR v3.28.1 <https://bioconductor.org/packages/release/bioc/html/edgeR.html>`_. (R package) (License: GPL (>=2))
-7. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
-8. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
+4. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
+5. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
 
 
 Requisite database
@@ -118,11 +115,8 @@ Output is split up between steps of the workflow. The first half of the workflow
 
 Below is an example of the output directory files with descriptions to the right.
 
-.. list-table:: Title
-   :widths: 25 50
-   :header-rows: 1
 
-.. list-table:: Title
+.. list-table:: 
    :widths: 25 50
    :header-rows: 1
 
