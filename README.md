@@ -66,10 +66,8 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 All outputs can be found in the `outdir` folder. There are following subfolders:
 - `outdir/annotation`: contains gff files from annotation run.
 - `outdir/assembly`: contains FASTA files from assembly and BAM files where reads were mapped back to the contigs.
-- `outdir/mapback`: BAM file where reads were mapped back to the contigs.
-- `outdir/metat_output`: Two JSON files for sense and antisense that have records for feature, their annotations, read counts from featurecount, and FPKM values. 
-- `outdir/qc`: contains cleaned reads and a file with associated statistics.
-- `outdir/rc`: contains read count tables and associated statistics.
+- `outdir/readMapping`: JSON files for sense and antisense that have records for feature, their annotations, read counts, ans associated statistics. 
+- `outdir/readsQC`: contains cleaned reads and a file with associated statistics.
 
 # Output JSON
 The output file is a JSON formatted file called `out.json` with JSON records that contains reads and information from annotation. An example JSON record:
