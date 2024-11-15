@@ -3,7 +3,7 @@
 ## Summary
 This workflow is designed to analyze metatranscriptomes.
 
-![metatranscriptomics workflow](docs/metaT_figure.png)
+![metatranscriptomics workflow](docs/metat_workflow2024.svg)
 
 All parts of this workflow are housed in their own repositories and imported via WDL v1.0 https importing. 
 The following repositories are used in this workflow:
@@ -19,7 +19,6 @@ The following repositories are used in this workflow:
 To run this workflow you will need a Docker (Docker ≥ v2.1.0.3) instance and cromwell. All the third party tools are pulled from Dockerhub.
 
 ```
-cromwell ≥ 54
 bbtools ≥ v38.94
 Python ≥ v3.7.12
 pandas ≥ v1.0.5 (python package)
@@ -59,7 +58,8 @@ java -Dconfig.file=wdls/shifter.conf -jar /full/path/to/cromwell-XX.jar run -i i
 ```
 ### Input option descriptions:
 - `project_id`: A unique name for your project or sample.
-- `input_files`: Full path to the fastq file. The file must be intereleaved paired end fastq.
+- `input_file`: Full path to the fastq file. The file must be intereleaved paired end fastq.
+- `input_fq1` and `input_fq2` if non-interleaved paired end fastqs
 - `strand_type`: (optional) RNA strandedness, either left blank, `aRNA`, or `non_stranded_RNA`
 
 ## Outputs

@@ -8,14 +8,16 @@ Metatranscriptome Workflow (v0.0.6)
 
 Workflow Overview
 -----------------
-MetaT is a workflow designed to analyze metatranscriptomes, building on top of already existing NMDC workflows for processing input. The metatranscriptoimics workflow takes in raw data and starts by quality filtering the reads using the `MetaT RQC workflow <https://github.com/microbiomedata/metaT_ReadsQC>`_. With filtered reads, the workflow filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools). After the filtering steps, reads are assembled into transcripts using the `MetaT Assembly workflow <https://github.com/microbiomedata/metaT_Assembly>`_ and annotated using the `Metagenome Anotation workflow <https://github.com/microbiomedata/mg_annotation>`_; producing GFF funtional annotation files. Features are counted with `MetaT Read Counting <https://github.com/microbiomedata/metaT_ReadCounts>`_ which assigns mapped reads to genomic features for sense and antisense reads. 
+MetaT is a workflow designed to analyze metatranscriptomes, building on top of already existing NMDC workflows for processing input. The metatranscriptoimics workflow takes in raw data and starts by quality filtering the reads using the `MetaT RQC workflow <https://github.com/microbiomedata/metaT_ReadsQC>`_. With filtered reads, the workflow filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools). After the filtering steps, reads are assembled into transcripts using the `MetaT Assembly workflow <https://github.com/microbiomedata/metaT_Assembly>`_ and annotated using the `Metagenome Anotation workflow <https://github.com/microbiomedata/mg_annotation>`_; producing GFF funtional annotation files. Features are counted with `MetaT Read Counting <https://github.com/microbiomedata/metaT_ReadCounts>`_ which assigns mapped reads to genomic features for sense and antisense reads. Please refer to each repository for their detailed documentation. 
 
 
 Workflow Availability
 ---------------------
 The workflow uses the listed docker images to run all third-party tools.
 The workflow is available in GitHub: 
-https://github.com/microbiomedata/metaT; and the corresponding Docker images that have all the required dependencies are available in following DockerHub (https://hub.docker.com/r/microbiomedata/bbtools and https://hub.docker.com/r/microbiomedata/meta_t)
+https://github.com/microbiomedata/metaT; and the corresponding Docker images that have all the required dependencies are available in following DockerHub:
+- `microbiomedata/meta_t:0.0.5 <https://hub.docker.com/r/microbiomedata/meta_t>`_
+- `bryce911/bbtools:38.86 <https://hub.docker.com/r/microbiomedata/bbtools>`_
 
 
 Requirements for Execution (recommendations are in bold):  
@@ -28,10 +30,10 @@ Workflow Dependencies
 Third-party software (These are included in the Docker images.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
-2. `BBMap v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
-3. `Python v3.7.6 <https://www.python.org/>`_.  (License: Python Software Foundation License)
-4. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
-5. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
+2. `Python v3.7.12 <https://www.python.org/>`_.  (License: Python Software Foundation License)
+3. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
+4. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
+
 
 
 Requisite database
@@ -47,65 +49,63 @@ The RQCFilterData Database must be downloaded and installed. This is a 106 GB ta
 
 Sample dataset(s)
 ------------------
-The following files are provided with the GitHub download in the test_data folder:
+- Processed Metatranscriptome of soil microbial communities from the East River watershed near Crested Butte, Colorado, United States - ER_RNA_119 (`SRR11678315 <https://www.ncbi.nlm.nih.gov/sra/SRX8239222>`_) with `metadata available in the NMDC Data Portal <https://data.microbiomedata.org/details/study/nmdc:sty-11-dcqce727>`_. 
+  - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz>`_
+  - The sample outputs are available `here <https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/>`_
 
-1. Raw reads: test_data/test_interleave.fastq.gz (output from ReadsQC workflow)
-
-2. Annotation file: test_functional_annotation.gff (output from mg_annotation workflow)
 
 Input: A JSON file containing the following
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1.	a name for the analysis
-2.	the number of cpus requested 
-3.	the path to the clean input interleaved fastq file (recommended: the output from the Reads QC workflow)
-4.	the path to the rRNA_kmer database provided as part of RQCFilterData
-5.	the path to the assembled transcripts (output of part 1)
-6.	the paths to the reads with rRNA removed (paired-end files) (output of part 1)
-7.	the path to the annotation file (from the Metagenome Annotation workflow) 
+1.	output file prefix
+2.  path to `input_file` if interleaved file
+3.  paths to `input_fq1` and `input_fq2` non-interleaved paired-end reads 
+4.	input_interleaved (boolean)
+5.	RNA strand type (optional) either left blank, `aRNA`, or `non_stranded_RNA`
+
+For further customization (such as databases and licenses outside of the NERSC / JAWS system), please refer to the individual repositories and add input parameters to metaT.wdl. Here is an example for adding the MetaT ReadsQC database:
+
+- Add to input{`String rqc_db`}
+- Add to call readsqc.metaTReadsQC as qc {input: `database = rqc_db`}
+- Add to input.json {`"nmdc_metat.rqc_db": "/your_refdata/"`}
+
 
 An example JSON file is shown below:
 
 .. code-block:: JSON
 
   {
-    "metat_omics.project_name": "test",
-    "metat_omics.no_of_cpus": 1,
-    "metat_omics.rqc_clean_reads": "test_data/test_interleave.fastq",
-    "metat_omics.ribo_kmer_file": "/path/to/riboKmers20fused.fa.gz",
-    "metat_omics.metat_contig_fn": "/path/to/megahit_assem.contigs.fa",
-    "metat_omics.non_ribo_reads": [
-      "/path/to/filtered_R1.fastq",
-      "/path/to/filtered_R2.fastq"
-    ],
-    "metat_omics.ann_gff_fn": "test_data/test_functional_annotation.gff"
+      "nmdc_metat.input_file": "https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz",
+      "nmdc_metat.project_id":"SRR11678315-int-0.1",
+      "nmdc_metat.input_interleaved": true
   }
+
 
 Output
 ~~~~~~
-Output is split up between steps of the workflow. The first half of the workflow will output rRNA-filtered reads and the assembled transcripts. After annotations and featureCount steps include a JSON file that contain read counts for both sense and antisense, reads, and information from annotation for each feature. An example of JSON outpus:
+Outputs are split up between steps of the workflow. The first half of the workflow will output rRNA-filtered reads and the assembled transcripts. After annotations and featureCount steps include a JSON file that contain read counts for both sense and antisense, reads, and information from annotation for each feature. This is the first block from the top 100 features output json:
 
 .. code-block:: JSON
 
  {
         "featuretype":"CDS",
-        "seqid":"nmdc:xxxxxxx_001",
-        "id":"nmdc:xxxxxxx_001_1_588",
+        "seqid":"SRR11678315-int-0.1_02468",
+        "id":"SRR11678315-int-0.1_02468_2_823",
         "source":"Prodigal v2.6.3_patched",
-        "start":1,
-        "end":588,
-        "length":588,
-        "strand":"+",
+        "start":2,
+        "end":823,
+        "length":822,
+        "strand":"-",
         "frame":"0",
-        "product":"hypothetical protein",
-        "product_source":"Hypo-rule applied",
-        "sense_read_count":28,
-        "mean":7.14,
-        "median":7,
-        "stdev":5.7,
-        "antisense_read_count":25,
-        "meanA":5.0,
-        "medianA":3.0,
-        "stdevA":6.1
+        "product":"cation transport ATPase",
+        "product_source":"COG2217",
+        "sense_read_count":3142,
+        "mean":1563.9,
+        "median":1458.0,
+        "stdev":617.57,
+        "antisense_read_count":3064,
+        "meanA":1506.08,
+        "medianA":1408.0,
+        "stdevA":599.53
     }
 
 Below is an example of the output directory files with descriptions to the right.
@@ -160,7 +160,7 @@ Below is an example of the output directory files with descriptions to the right
    * - annotation/structural_annotation.gff
      - structural features  
    * - annotation/ko_ec.gff
-     - features from ko database
+     - features from ko and ec database
    * - annotation/functional_annotation.gff
      - functional features
    * - annotation/ec.tsv
@@ -197,7 +197,7 @@ Below is an example of the output directory files with descriptions to the right
    * - annotation/rfam.gff
      - features from rfam database
 
-   * - annotation/product_names.tsv
+   * - **annotation/product_names.tsv**
      - table of product names
    * - annotation/crt.crisprs
      - file of crisper terms
