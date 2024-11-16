@@ -8,31 +8,32 @@ Metatranscriptome Workflow (v0.0.6)
 
 Workflow Overview
 -----------------
-MetaT is a workflow designed to analyze metatranscriptomes, building on top of already existing NMDC workflows for processing input. The metatranscriptoimics workflow takes in raw data and starts by quality filtering the reads using the `MetaT RQC workflow <https://github.com/microbiomedata/metaT_ReadsQC>`_. With filtered reads, the workflow filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools). After the filtering steps, reads are assembled into transcripts using the `MetaT Assembly workflow <https://github.com/microbiomedata/metaT_Assembly>`_ and annotated using the `Metagenome Anotation workflow <https://github.com/microbiomedata/mg_annotation>`_; producing GFF funtional annotation files. Features are counted with `MetaT Read Counting <https://github.com/microbiomedata/metaT_ReadCounts>`_ which assigns mapped reads to genomic features for sense and antisense reads. Please refer to each repository for their detailed documentation. 
+MetaT is a workflow designed to analyze metatranscriptomes, building on top of already existing NMDC workflows for processing input. The metatranscriptoimics workflow takes in raw data and starts by quality filtering the reads using the `MetaT RQC workflow <https://github.com/microbiomedata/metaT_ReadsQC>`_. With filtered reads, the workflow filters out rRNA reads (and separates the interleaved file into separate files for the pairs) using bbduk (BBTools). After the filtering steps, reads are assembled into transcripts using the `MetaT Assembly workflow <https://github.com/microbiomedata/metaT_Assembly>`_ and annotated using the `Metagenome Anotation workflow <https://github.com/microbiomedata/mg_annotation>`_; producing GFF funtional annotation files. Features are counted with `MetaT Read Counting workflow <https://github.com/microbiomedata/metaT_ReadCounts>`_ which assigns mapped reads to genomic features for sense and antisense reads. Please refer to each repository for their detailed documentation. 
 
 
 Workflow Availability
 ---------------------
 The workflow uses the listed docker images to run all third-party tools.
 The workflow is available in GitHub: 
-https://github.com/microbiomedata/metaT; and the corresponding Docker images that have all the required dependencies are available in following DockerHub:
+https://github.com/microbiomedata/metaT; and the corresponding Docker images that have all the required dependencies are available in following DockerHub:   
+
 - `microbiomedata/meta_t:0.0.5 <https://hub.docker.com/r/microbiomedata/meta_t>`_
 - `bryce911/bbtools:38.86 <https://hub.docker.com/r/microbiomedata/bbtools>`_
 
 
 Requirements for Execution (recommendations are in bold):  
 --------------------------------------------------------
-1. WDL-capable Workflow Execution Tool (**Cromwell**)
-2. Container Runtime that can load Docker images (**Docker v2.1.0.3 or higher**)
+#. WDL-capable Workflow Execution Tool (**Cromwell**)
+#. Container Runtime that can load Docker images (**Docker v2.1.0.3 or higher**)
 
 Workflow Dependencies
 ---------------------
 Third-party software (These are included in the Docker images.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
-2. `Python v3.7.12 <https://www.python.org/>`_.  (License: Python Software Foundation License)
-3. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
-4. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
+#. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
+#. `Python v3.7.12 <https://www.python.org/>`_.  (License: Python Software Foundation License)
+#. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
+#. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
 
 
 
@@ -49,14 +50,13 @@ The RQCFilterData Database must be downloaded and installed. This is a 106 GB ta
 
 Sample dataset(s)
 ------------------
-This dataset is available as a sample run through this workflow.
 - Processed Metatranscriptome of soil microbial communities from the East River watershed near Crested Butte, Colorado, United States - ER_RNA_119 (`SRR11678315 <https://www.ncbi.nlm.nih.gov/sra/SRX8239222>`_) with `metadata available in the NMDC Data Portal <https://data.microbiomedata.org/details/study/nmdc:sty-11-dcqce727>`_. 
-  - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz>`_
-  - The sample outputs are available `here <https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/>`_
+   - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz>`_
+   - The sample outputs are available `here <https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/>`_
 
 
 Input: 
-------------------
+~~~~~~~~~~~~~~~~~~~~
 A JSON file containing the following
 #.	output file prefix
 #.  path to :code:`input_file` if interleaved file
@@ -235,18 +235,19 @@ Below is an example of the output directory files with descriptions to the right
 
 For just the final readmap jsons, they are not included in the MetaT Read Counts repository, but added as an additional task in the MetaT wrapper script. To generate the jsons, run the following in a new WDL file:
 
-.. code-block:: bash
-  import "./metat_tasks.wdl" as tasks
-  input {
-        # input relevate tasks for the files below
-    }
-      call tasks.rctojson as tj{
-        input:
-        readcount = rc.count_table, # this is taken straight from wrapper, so change as needed
-        gff = anno.functional_gff,
-        prefix = prefix,
-        container = tj_container
-    }
+.. code-block::
+
+      import "./metat_tasks.wdl" as tasks
+      input {
+           # input relevate tasks for the files below
+       }
+         call tasks.rctojson as tj{
+           input:
+           readcount = rc.count_table, # this is taken straight from wrapper, so change as needed
+           gff = anno.functional_gff,
+           prefix = prefix,
+           container = tj_container
+       }
 
 Version History 
 ---------------
@@ -255,6 +256,8 @@ Version History
 - 0.0.4 (release date 08/31/2021; previous versions: 0.0.3)
 - 0.0.5 (release date 10/28/2021; previous versions: 0.0.4)
 - 0.0.6 (release date 09/17/2024; previous versions: 0.0.5)
+- 0.0.7 (release date 09/19/2024; previous versions: 0.0.6)
+
 
 Points of contact
 -----------------
