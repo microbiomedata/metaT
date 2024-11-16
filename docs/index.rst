@@ -49,24 +49,26 @@ The RQCFilterData Database must be downloaded and installed. This is a 106 GB ta
 
 Sample dataset(s)
 ------------------
+This dataset is available as a sample run through this workflow.
 - Processed Metatranscriptome of soil microbial communities from the East River watershed near Crested Butte, Colorado, United States - ER_RNA_119 (`SRR11678315 <https://www.ncbi.nlm.nih.gov/sra/SRX8239222>`_) with `metadata available in the NMDC Data Portal <https://data.microbiomedata.org/details/study/nmdc:sty-11-dcqce727>`_. 
   - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz>`_
   - The sample outputs are available `here <https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/>`_
 
 
-Input: A JSON file containing the following
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1.	output file prefix
-2.  path to `input_file` if interleaved file
-3.  paths to `input_fq1` and `input_fq2` non-interleaved paired-end reads 
-4.	input_interleaved (boolean)
-5.	RNA strand type (optional) either left blank, `aRNA`, or `non_stranded_RNA`
+Input: 
+------------------
+A JSON file containing the following
+#.	output file prefix
+#.  path to :code:`input_file` if interleaved file
+#.  paths to :code:`input_fq1` and :code:`input_fq2` non-interleaved paired-end reads 
+#.	input_interleaved (boolean)
+#.	RNA strand type (optional) either left blank, :code:`aRNA`, or :code:`non_stranded_RNA`
 
 For further customization (such as databases and licenses outside of the NERSC / JAWS system), please refer to the individual repositories and add input parameters to metaT.wdl. Here is an example for adding the MetaT ReadsQC database:
 
-- Add to input{`String rqc_db`}
-- Add to call readsqc.metaTReadsQC as qc {input: `database = rqc_db`}
-- Add to input.json {`"nmdc_metat.rqc_db": "/your_refdata/"`}
+- Add to input{:code:`String rqc_db`}
+- Add to call readsqc.metaTReadsQC as qc {input: :code:`database = rqc_db`}
+- Add to input.json {:code:`"nmdc_metat.rqc_db": "/your_refdata/"`}
 
 
 An example JSON file is shown below:
@@ -112,7 +114,6 @@ Below is an example of the output directory files with descriptions to the right
 
 
 .. list-table:: 
-   :widths: 25 50
    :header-rows: 1
 
    * - Directory/File Name
@@ -154,59 +155,59 @@ Below is an example of the output directory files with descriptions to the right
    * - assembly/spades.log
      - spades run log 
 
+   * - annotation/prefix_cath_funfam.gff
+     - gff functional annotation generated from Cath-FunFam (Functional Families) database
+   * - annotation/prefix_cog.gff
+     - gff functional annotation generated from COG (Clusters of Orthologous Groups) database
+   * - annotation/prefix_contig_names_mapping.tsv
+     - tsv mapping assembly scaffold IDs to contig annotation IDs (to be uniform)
+   * - annotation/prefix_contigs.fna
+     - fasta with contigs renamed to annotation IDs
+   * - annotation/prefix_crt.crisprs
+     - xml file with CRISPR terms
+   * - annotation/prefix_crt.gff
+     - gff structural annotation generated with CRT
+   * - annotation/prefix_ec.tsv
+     - tsv file for EC annotation
+   * - annotation/prefix_functional_annotation.gff
+     - gff with functional annotations
+   * - annotation/prefix_genemark.gff
+     - gff with structural annotation by GeneMark
+   * - annotation/prefix_gene_phylogeny.tsv
+     - tsv of gene phylogeny
+   * - annotation/prefix_imgap.info
+     - workflow information
+   * - annotation/prefix_ko_ec.gff
+     - gff annotation with KO and EC terms
+   * - annotation/prefix_ko.tsv
+     - tsv of only KO terms
+   * - annotation/prefix_pfam.gff
+     - gff functional annotation from Pfam database
+   * - annotation/prefix_prodigal.gff
+     - gff structural annotation by Prodigal
+   * - annotation/prefix_product_names.tsv
+     - tsv of annotation products
+   * - annotation/prefix_proteins.faa
+     - fasta of protein sequences
+   * - annotation/prefix_rfam.gff
+     - gff structural annotation by RFAM
+   * - annotation/prefix_scaffold_lineage.tsv
+     - tsv of phylogeny at scaffold level
+   * - annotation/prefix_smart.gff
+     - gff functional annotation from SMART database
+   * - annotation/prefix_stats.json
+     - json of annotation statistics report
+   * - annotation/prefix_stats.tsv
+     - tsv of annotation statistics report
+   * - annotation/prefix_structural_annotation.gff
+     - gff structural annotation
+   * - annotation/prefix_supfam.gff
+     - gff functional annotation from SUPERFAMILY database
+   * - annotation/prefix_tigrfam.gff
+     - gff functional annotation from TIGRFAM database
+   * - annotation/prefix_trna.gff
+     - gff structural annotation by tRNAscan-SE
 
-   * - annotation/proteins.faa  
-     - fasta containing protiens 
-   * - annotation/structural_annotation.gff
-     - structural features  
-   * - annotation/ko_ec.gff
-     - features from ko and ec database
-   * - annotation/functional_annotation.gff
-     - functional features
-   * - annotation/ec.tsv
-     - ec terms tsv
-   * - annotation/ko.tsv
-     - ko terms tsv
-
-   * - annotation/scaffold_lineage.tsv
-     - ec terms tsv
-   * - annotation/anno_stats.tsv
-     - ko terms tsv
-   * - annotation/anno_stats.json
-     - ec terms tsv
-   * - annotation/cog.gff
-     - features from cog databse
-   * - annotation/pfam.gff
-     - features from pfam database
-   * - annotation/tigrfam.gff
-     - features from trigfam database
-   * - annotation/smart.gff
-     - features from smart database
-   * - annotation/supfam.gff
-     - features from supfam databse
-   * - annotation/cath_funfam.gff
-     - features from cath database
-   * - annotation/crt.gff
-     - features from crt database
-   * - annotation/genemark.gff
-     - features from genemark database
-   * - annotation/prodigal.gff
-     - features from prodigal database
-   * - annotation/trna.gff
-     - trna features
-   * - annotation/rfam.gff
-     - features from rfam database
-
-   * - **annotation/product_names.tsv**
-     - table of product names
-   * - annotation/crt.crisprs
-     - file of crisper terms
-   * - annotation/anno.info
-     - annotation workflow info
-   * - annotation/renamed_contigs.fna
-     - contigs renamed with annotation id
-   * - annotation/contig_names_mapping.tsv
-     - mapped renames of annotation id and original
    * - readmap/rnaseq_gea.txt
      - read counts table 
    * - readmap/readcount.stats.log
@@ -232,6 +233,20 @@ Below is an example of the output directory files with descriptions to the right
    * - readmap/sorted_features.tsv
      - tsv format of sorted feature counts 
 
+For just the final readmap jsons, they are not included in the MetaT Read Counts repository, but added as an additional task in the MetaT wrapper script. To generate the jsons, run the following in a new WDL file:
+
+.. code-block:: bash
+  import "./metat_tasks.wdl" as tasks
+  input {
+        # input relevate tasks for the files below
+    }
+      call tasks.rctojson as tj{
+        input:
+        readcount = rc.count_table, # this is taken straight from wrapper, so change as needed
+        gff = anno.functional_gff,
+        prefix = prefix,
+        container = tj_container
+    }
 
 Version History 
 ---------------
