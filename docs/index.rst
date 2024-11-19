@@ -55,7 +55,7 @@ Sample datasets
   - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz>`_
   - The sample outputs are available `here <https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/>`_
 
-- A larger dataset from the same study: SRR11678313
+- A larger dataset from the same study: `SRR11678313 <https://www.ncbi.nlm.nih.gov/sra/SRX8239220>`_
 
   - The zipped raw fastq file is available `here <https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678313.fastq.gz>`_
 
