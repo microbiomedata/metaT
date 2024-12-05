@@ -2,7 +2,6 @@ Metatranscriptome Workflow (v0.0.6)
 =====================================
 
 .. image:: metat_workflow2024.svg
-   :scale: 25%
    :alt: Metatranscriptome workflow
 
 
