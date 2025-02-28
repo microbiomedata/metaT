@@ -38,7 +38,7 @@ jobs:
                   context: .
                   file: docker/Dockerfile
                   push: true
-                  tags: ghcr.io/microbiomedata/nmdc-meta_T:${{ steps.get_version.outputs.version }}
+                  tags: ghcr.io/microbiomedata/nmdc-meta_t:${{ steps.get_version.outputs.version }}
 
 # References:
 # - https://docs.github.com/en/actions/learn-github-actions/variables#using-the-vars-context-to-access-configuration-variable-values
