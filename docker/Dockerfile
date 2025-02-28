@@ -4,7 +4,7 @@ FROM continuumio/miniconda3:4.10.3
 # $ docker login
 # $ docker push microbiomedata/meta_t:[version]
 
-LABEL version="0.0.4"
+LABEL version="0.0.5"
 LABEL software="NMDC_metatranscriptomics workflow"
 LABEL tags="bioinformatics"
 
