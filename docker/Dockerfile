@@ -30,18 +30,11 @@ RUN conda install -c bioconda subread --yes
 RUN conda install -c bioconda megahit --yes
 # RUN conda install -c bioconda hisat2 --yes
 # RUN conda install -c bioconda sortmerna --yes
-RUN conda install R --yes
+RUN conda install conda-forge::r-base conda-forge::r-tidyverse bioconda::bioconductor-edger conda-forge::r-optparse --yes
 RUN conda clean -a
 RUN pip install gffutils
 RUN pip install pandas
 
-
-
-RUN R -e "install.packages('BiocManager', repos = 'http://cran.us.r-project.org')" \
-    && R -e "BiocManager::install('edgeR')"
-
-RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org')" \
-    R -e "install.packages('optparse', repos = 'http://cran.us.r-project.org')"
 
 # RUN wget https://github.com/mshakya/WorkflowPlanning/archive/master.zip \
 #     && unzip master.zip \
