@@ -88,7 +88,7 @@ An example JSON file is shown below:
 .. code-block:: JSON
 
   {
-      "nmdc_metat.input_file": "https://portal.nersc.gov/project/m3408//test_data/metaT/SRR11678315.fastq.gz",
+      "nmdc_metat.input_file": "https://portal.nersc.gov/cfs/m3408/test_data/metaT/SRR11678315/SRR11678315.fastq.gz",
       "nmdc_metat.project_id":"SRR11678315-int-0.1",
       "nmdc_metat.input_interleaved": true
   }
