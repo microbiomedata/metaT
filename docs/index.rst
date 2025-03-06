@@ -40,7 +40,7 @@ Third-party software (These are included in the Docker images.)
 #. `BBTools v38.94 <https://jgi.doe.gov/data-and-tools/bbtools/>`_. (License: `BSD-3-Clause-LBNL <https://bitbucket.org/berkeleylab/jgi-bbtools/src/master/license.txt>`_.)
 #. `Python v3.7.12 <https://www.python.org/>`_.  (License: Python Software Foundation License)
 #. `pandas v1.0.5 <https://pandas.pydata.org/>`_. (python package) (License: BSD-3-Clause)
-#. `gffutils v0.10.1 <https://pythonhosted.org/gffutils/>`_. (python package) (License: MIT)
+#. `gffutils v0.10.1 <https://daler.github.io/gffutils/>`_. (python package) (License: MIT)
 
 
 
