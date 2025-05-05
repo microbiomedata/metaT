@@ -70,6 +70,7 @@ Sample datasets
 Input: 
 ~~~~~~~~~~~~~~~~~~~~
 A JSON file containing the following
+
 #.	output file prefix
 #.  path to :code:`input_file` if interleaved file
 #.  paths to :code:`input_fq1` and :code:`input_fq2` non-interleaved paired-end reads 
@@ -78,9 +79,9 @@ A JSON file containing the following
 
 For further customization (such as databases and licenses outside of the NERSC / JAWS system), please refer to the individual repositories and add input parameters to metaT.wdl. Here is an example for adding the MetaT ReadsQC database:
 
-- Add to input{:code:`String rqc_db`}
-- Add to call readsqc.metaTReadsQC as qc {input: :code:`database = rqc_db`}
-- Add to input.json {:code:`"nmdc_metat.rqc_db": "/your_refdata/"`}
+- Add to WDL :code:`input` {:code:`String rqc_db`}
+- Add to :code:`call readsqc.metaTReadsQC as qc` {input: :code:`database = rqc_db`}
+- Add to :code:`input.json` {:code:`"nmdc_metat.rqc_db": "/your_refdata/"`}
 
 
 An example JSON file is shown below:
