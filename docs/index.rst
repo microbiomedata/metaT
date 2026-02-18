@@ -274,6 +274,5 @@ Version History
 
 Points of contact
 -----------------
-- Author: Migun Shakya <migun@lanl.gov>
-- Maintainer: Kaitlyn Li <kli@lanl.gov>
+- Maintainer: Samantha Obermiller samantha.obermiller@pnnl.gov
 
